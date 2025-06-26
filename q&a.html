@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スピリチュアルセラピスト未依 - Q&A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSSカスタムプロパティでカラーパレットを定義 */
+        :root {
+            --color-accent: #E4C1B5;
+            --color-accent-darker: #ccac9c;
+            --color-base: #EAE6E1;
+            --color-text: #544C40;
+            --color-text-light: #7a736a;
+            --color-accent-rgb: 228, 193, 181;
+        }
+
+        /* 基本的なスタイル */
+        body {
+            font-family: 'Shippori Mincho', serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* スマートフォン版の背景 */
+        @media (max-width: 768px) {
+            body {
+                background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei-sumaho.jpg');
+            }
+        }
+
+        /* フェードインアニメーション */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 2s ease-out, transform 2s ease-out;
+        }
+        .fade-in-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* オフキャンバスメニュー */
+        .off-canvas-menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: var(--color-base);
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            transition: right 0.3s ease-in-out;
+            z-index: 1000;
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .off-canvas-menu.open {
+            right: 0;
+        }
+        .off-canvas-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+        .off-canvas-menu ul li a {
+            display: block;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+        .off-canvas-menu ul li a:hover {
+            background-color: rgba(var(--color-accent-rgb),0.1);
+            color: var(--color-accent);
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--color-text);
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Q&Aページのメインコンテンツ */
+        main {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* 横幅を少し広げる */
+            width: 90%;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--color-text);
+            font-size: 3em;
+            margin-bottom: 40px;
+        }
+
+        /* アコーディオンのスタイル */
+        .accordion-item {
+            border-bottom: 1px solid var(--color-accent);
+        }
+
+        .accordion-button {
+            width: 100%;
+            background-color: transparent;
+            border: none;
+            text-align: left;
+            padding: 20px 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--color-text);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .accordion-button:hover {
+            background-color: rgba(var(--color-accent-rgb), 0.1);
+        }
+
+        .accordion-button .icon {
+            transition: transform 0.3s ease-in-out;
+            font-size: 1.5em; /* アイコンを少し大きく */
+        }
+        
+        .accordion-item.active .accordion-button .icon {
+            transform: rotate(45deg);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+            background-color: rgba(var(--color-base), 0.3);
+        }
+        
+        .accordion-content p {
+            padding: 20px 25px;
+            margin: 0;
+            line-height: 1.8;
+        }
+
+        /* 質問と回答のテキストの頭文字 */
+        .q-prefix, .a-prefix {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+            color: var(--color-accent);
+        }
+        
+        .a-prefix {
+             color: var(--color-text-light);
+        }
+
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            main { padding: 20px; width: 95%; }
+            .accordion-button { font-size: 1.1em; padding: 15px 10px;}
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ヘッダーとナビゲーションバー -->
+    <header class="bg-white shadow-lg h-20 sticky top-0 z-50 w-full">
+        <nav class="container mx-auto flex flex-row justify-between items-center h-full max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center h-full">
+                <a href="index.html#home">
+                    <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-64.png" onerror="this.onerror=null;this.src='https://placehold.co/100x100/CCCCCC/000000?text=Logo';" alt="サイトロゴ" class="h-full w-auto object-contain">
+                </a>
+            </div>
+            <div>
+                <button id="menu-toggle" class="text-[var(--color-text)] focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Off-canvas menu -->
+    <div id="off-canvas-menu" class="off-canvas-menu">
+        <span class="close-btn" id="close-menu">&times;</span>
+        <ul>
+            <li><a href="index.html#home">HOME</a></li>
+            <li><a href="menu.html">メニュー</a></li>
+            <li><a href="reservation.html">予約</a></li>
+            <li><a href="index.html#customer-voice">お客様の声</a></li>
+            <li><a href="index.html#links">リンク</a></li>
+            <li><a href="index.html#blog">ブログ</a></li>
+            <li><a href="index.html#qna">Q＆A</a></li>
+            <li><a href="index.html#contact">お問合わせ</a></li>
+        </ul>
+    </div>
+
+    <!-- Overlay for when menu is open -->
+    <div id="menu-overlay" class="overlay"></div>
+
+    <main class="fade-in-on-scroll">
+        <h1>Q&A</h1>
+        
+        <div class="accordion">
+
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>ヒーリングは何歳から受けられますか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>年齢制限はありません。何歳でも大丈夫です。</p>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>家族にヒーリングしてもらえますか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>大丈夫です。ご家族の場合、自然と影響し合うので、ご本人の許可がなくてもヒーリングは可能です。恋人や友人など、家族外ですと、少し距離があるので、本人の承諾を得た方が良いと感じています。</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>ヒーリングとリーディングの違いは何ですか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>リーディングは、お客様のエネルギー状態や魂のメッセージを読み解き、現状や課題、可能性などをお伝えするものです。一方、ヒーリングは、エネルギーのバランスを整え、心身の不調や滞りを癒すことを目的とします。リーディングで課題を明確にし、ヒーリングでそれを癒す、という組み合わせも効果的です。</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>セッションを受けるにあたって、何か準備は必要ですか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>水分を良くとってリラックスできる状態でお過ごしいただくのが一番です。服装も自由ですし、何か特別なものをご用意いただく必要もありません。</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>対面でのヒーリングは可能ですか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>現在は、遠隔でのヒーリングのみとさせていただいております。遠隔でもエネルギーのやり取りに支障はなく、対面と同等の効果が期待できますのでご安心ください。遠隔の利点として、ご自宅など慣れた環境でリラックスして受けていただける点が挙げられます。</p>
+                </div>
+            </div>
+
+
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>対面でのセッションは可能ですか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>リーディングのみおこなっております。詳しくはリーディングメニューをご覧ください。</p>
+                </div>
+            </div>
+
+
+             <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>効果が感じられなかった場合はどうなりますか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>ヒーリングやリーディングの効果の感じ方には個人差があります。セッション直後に劇的な変化を感じる方もいれば、数日〜数週間かけてゆっくりと内面が変化していく方もいらっしゃいます。もし何も感じられない、ご満足いただけなかったという場合は、納品後3日以内にご連絡ください。状況をお伺いした上で、誠心誠意ご対応させていただきます。</p>
+                </div>
+            </div>
+
+             <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>鑑定結果はどのような形でもらえますか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>鑑定結果は、基本的にLINEまたはメールにて、鑑定書（PDFまたはテキスト形式）をお送りする形でお伝えします。お見積りフォームの「ライト割引」を選択された場合は、A4用紙1枚程度の要約版となります。通常の場合は、より詳細な内容をお伝えいたします。</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-button">
+                    <span><span class="q-prefix">Q.</span>ペットのヒーリングもお願いできますか？</span>
+                    <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                    <p><span class="a-prefix">A.</span>はい、可能です。ペットも大切な家族の一員であり、人間と同じようにエネルギーを持っています。体調不良や問題行動の背景にあるストレスなどを癒すお手伝いができます。ペットのお名前とお写真をご用意ください。</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-[var(--color-base)] text-[var(--color-text)] py-8 mt-20 w-full">
+        <div class="container mx-auto text-center text-sm">
+            <p>&copy; 2024 by Therapist Mii. All rights reserved.</p>
+            <div class="flex justify-center gap-x-4 mt-2">
+                <a href="privacy.html" class="text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors duration-300">プライバシーポリシー</a>
+                <span class="text-[var(--color-text)]">|</span>
+                <a href="tokusho.html" class="text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors duration-300">特定商取引法に基づく表記</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- ハンバーガーメニューの開閉機能 ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const offCanvasMenu = document.getElementById('off-canvas-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const menuLinks = offCanvasMenu.querySelectorAll('ul li a');
+
+            function toggleMenu() {
+                offCanvasMenu.classList.toggle('open');
+                menuOverlay.classList.toggle('open');
+            }
+
+            menuToggle.addEventListener('click', toggleMenu);
+            closeMenuBtn.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu); 
+            menuLinks.forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+
+            // --- スクロール時のフェードインアニメーション ---
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in-on-scroll').forEach(element => {
+                observer.observe(element);
+            });
+
+            // --- アコーディオン機能 ---
+            const accordionItems = document.querySelectorAll('.accordion-item');
+
+            accordionItems.forEach(item => {
+                const button = item.querySelector('.accordion-button');
+                const content = item.querySelector('.accordion-content');
+                const icon = button.querySelector('.icon');
+
+                button.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+
+                    // すべてのアクティブなクラスを解除
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                           otherItem.classList.remove('active');
+                           otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                           otherItem.querySelector('.icon').textContent = '+';
+                           otherItem.querySelector('.icon').style.transform = 'rotate(0deg)';
+                        }
+                    });
+
+                    // クリックされたアイテムのクラスを切り替え
+                    if (isActive) {
+                        item.classList.remove('active');
+                        content.style.maxHeight = null;
+                        icon.textContent = '+';
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.textContent = '+';
+                        icon.style.transform = 'rotate(45deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

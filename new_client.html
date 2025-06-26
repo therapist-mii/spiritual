@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>はじめての方へ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* CSSカスタムプロパティでカラーパレットを定義 */
+    :root {
+        --color-accent: #E4C1B5; /* アクセントカラー */
+        --color-accent-darker: #ccac9c; /* アクセントカラーの少し濃い色（ホバー用） */
+        --color-base: #EAE6E1; /* ベースカラー */
+        --color-text: #544C40; /* テキストカラー */
+        --color-text-light: #7a736a; /* テキストカラーの少し薄い色 */
+        --color-accent-rgb: 228, 193, 181; /* アクセントカラーのRGB値（透過色用） */
+    }
+
+    /* Shippori Minchoフォントの指定と、ベースカラー・テキストカラーの適用 */
+    body {
+        font-family: 'Shippori Mincho', serif; /* 明朝系のフォントに変更 */
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        color: var(--color-text); /* テキストカラーを適用 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        /* PC版の背景画像を設定 */
+        background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    /* スマートフォン版の背景画像を設定 */
+    @media (max-width: 768px) {
+        body {
+            background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei-sumaho.jpg'); /* スマートフォン用の画像 */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    }
+
+    /* Header Container Styles (Not visible, but kept for consistency) */
+    .header-container {
+        display: none; /* 背景画像とロゴを非表示にする */
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+        margin-bottom: 20px;
+    }
+    .header-bg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+    .header-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 30%;
+        height: auto;
+        z-index: 2;
+    }
+
+    @media (max-width: 768px) {
+        .header-logo {
+            max-width: 80%;
+        }
+    }
+
+    h1 { /* h1スタイルはページタイトルとしてのみ存在するため、このページでは非表示 */
+        display: none;
+    }
+
+    h2 { /* 一般的なh2のスタイル */
+        text-align: center;
+        color: var(--color-text);
+    }
+
+    /* Main Content Styling for Form Page */
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.5); /* 透明度を0.5に変更 */
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 700px;
+        width: 90%;
+        margin-top: 60px; /* ヘッダーからの余白 */
+        margin-bottom: 30px;
+        box-sizing: border-box;
+        text-align: left; /* テキストを左寄せに */
+    }
+
+    .form-container h2 {
+        margin-top: 0;
+        margin-bottom: 30px;
+        font-size: 2em;
+        text-align: center; /* h2は中央寄せ */
+    }
+
+    .form-container p {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        color: var(--color-text);
+        text-align: center; /* 説明文は中央寄せ */
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--color-text);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        background-color: white; /* 入力フィールドの背景を白に */
+        color: var(--color-text);
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-group .radio-group {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .form-group .radio-group label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+        font-weight: 400; /* ラジオボタンのラベルの太さを通常に */
+    }
+
+    .form-group .radio-group input[type="radio"] {
+        margin-right: 8px;
+        transform: scale(1.2); /* ラジオボタンを少し大きく表示 */
+    }
+
+    .required::after {
+        content: " *";
+        color: red;
+        margin-left: 4px;
+    }
+
+    .submit-button {
+        background-color: var(--color-text); /* Darker to stand out */
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: block;
+        width: 100%;
+        max-width: 200px;
+        margin: 30px auto 0; /* 中央寄せ */
+    }
+    .submit-button:hover {
+        background-color: var(--color-text-light);
+    }
+
+    /* Off-canvas menu */
+    .off-canvas-menu {
+        position: fixed;
+        top: 0;
+        right: -250px;
+        width: 250px;
+        height: 100%;
+        background-color: var(--color-base);
+        box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+        transition: right 0.3s ease-in-out;
+        z-index: 1000;
+        color: var(--color-text);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .off-canvas-menu.open {
+        right: 0;
+    }
+
+    .off-canvas-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .off-canvas-menu ul li a {
+        display: block;
+        padding: 1rem 1.5rem;
+        text-decoration: none;
+        color: var(--color-text);
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        text-align: center;
+    }
+
+    .off-canvas-menu ul li a:hover {
+        background-color: rgba(var(--color-accent-rgb),0.1);
+        color: var(--color-accent);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        font-size: 2rem;
+        cursor: pointer;
+        color: var(--color-text);
+    }
+
+    /* Dark overlay for when menu is open */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+    }
+
+    .overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Responsive Design for smaller screens */
+    @media (max-width: 768px) {
+        .form-container h2 { font-size: 1.5em; }
+        .form-container { padding: 20px; width: 95%; }
+    }
+
+    /* For family member input */
+    .family-member-input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap; /* Added for responsiveness */
+    }
+
+    .family-member-input-group input {
+        flex: 1;
+        min-width: 120px; /* Adjust as needed for smaller screens */
+    }
+
+    .family-member-input-group button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .family-member-input-group button:hover {
+        background-color: #c82333;
+    }
+
+    .add-family-member-button {
+        background-color: var(--color-accent);
+        color: var(--color-text);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+    }
+    .add-family-member-button:hover {
+        background-color: var(--color-accent-darker);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="bg-white shadow-lg h-20 w-full sticky top-0 z-50">
+      <nav class="container mx-auto flex flex-row justify-between items-center h-full max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center h-full">
+              <a href="index.html">
+                  <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-64.png" onerror="this.onerror=null;this.src='https://placehold.co/100x100/CCCCCC/000000?text=Logo';" alt="サイトロゴ" class="h-full w-auto object-contain">
+              </a>
+          </div>
+          <div>
+              <button id="menu-toggle" class="text-[var(--color-text)] focus:outline-none">
+                  <i class="fas fa-bars text-2xl"></i>
+              </button>
+          </div>
+      </nav>
+  </header>
+
+  <div id="off-canvas-menu" class="off-canvas-menu">
+      <span class="close-btn" id="close-menu">&times;</span>
+      <ul>
+          <li><a href="index.html#home">HOME</a></li>
+          <li><a href="index.html#menu">メニュー</a></li>
+          <li><a href="index.html#reservation">予約</a></li>
+          <li><a href="index.html#customer-voice">お客様の声</a></li>
+          <li><a href="index.html#links">リンク</a></li>
+          <li><a href="index.html#blog">ブログ</a></li>
+          <li><a href="index.html#contact">お問合わせ</a></li>
+      </ul>
+  </div>
+
+  <div id="menu-overlay" class="overlay"></div>
+
+  <div class="form-container">
+    <h2>はじめての方へ</h2>
+    <p>はじめまして！<br>ご依頼ありがとうございます。<br>以下のフォームにご記入お願いいたします。</p>
+    <p>営業時間　9：00～17：00<br>休日：土日祝日、他指定日<br>セッション中はご返信が遅くなる場合がございます。<br>ご了承ください。</p>
+
+    <form action="#" method="POST"> <!-- action="#" for now, replace with actual form submission URL -->
+      <div class="form-group">
+        <label for="name" class="required">お名前</label>
+        <input type="text" id="name" name="name" placeholder="お名前" required>
+      </div>
+
+      <div class="form-group">
+        <label for="furigana" class="required">お名前ふりがな</label>
+        <input type="text" id="furigana" name="furigana" placeholder="ふりがな" required>
+      </div>
+
+      <div class="form-group">
+        <label for="birth-year" class="required">生まれ年（西暦）</label>
+        <input type="number" id="birth-year" name="birth_year" placeholder="例: 1980" min="1900" max="2024" required>
+      </div>
+
+      <div class="form-group">
+        <label for="birth-month" class="required">誕生月</label>
+        <select id="birth-month" name="birth_month" required>
+          <option value="">選択</option>
+          <option value="1">1月</option>
+          <option value="2">2月</option>
+          <option value="3">3月</option>
+          <option value="4">4月</option>
+          <option value="5">5月</option>
+          <option value="6">6月</option>
+          <option value="7">7月</option>
+          <option value="8">8月</option>
+          <option value="9">9月</option>
+          <option value="10">10月</option>
+          <option value="11">11月</option>
+          <option value="12">12月</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="birth-day" class="required">誕生日</label>
+        <select id="birth-day" name="birth_day" required>
+          <option value="">選択</option>
+          <!-- JavaScript will populate days based on month -->
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="required">性別</label>
+        <div class="radio-group">
+          <label><input type="radio" name="gender" value="female" required> 女性</label>
+          <label><input type="radio" name="gender" value="male"> 男性</label>
+          <label><input type="radio" name="gender" value="other"> その他</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="prefecture" class="required">都道府県</label>
+        <select id="prefecture" name="prefecture" required>
+          <option value="">選択してください</option>
+          <!-- Populate with Japan's prefectures -->
+          <option value="北海道">北海道</option>
+          <option value="青森県">青森県</option>
+          <option value="岩手県">岩手県</option>
+          <option value="宮城県">宮城県</option>
+          <option value="秋田県">秋田県</option>
+          <option value="山形県">山形県</option>
+          <option value="福島県">福島県</option>
+          <option value="茨城県">茨城県</option>
+          <option value="栃木県">栃木県</option>
+          <option value="群馬県">群馬県</option>
+          <option value="埼玉県">埼玉県</option>
+          <option value="千葉県">千葉県</option>
+          <option value="東京都">東京都</option>
+          <option value="神奈川県">神奈川県</option>
+          <option value="新潟県">新潟県</option>
+          <option value="富山県">富山県</option>
+          <option value="石川県">石川県</option>
+          <option value="福井県">福井県</option>
+          <option value="山梨県">山梨県</option>
+          <option value="長野県">長野県</option>
+          <option value="岐阜県">岐阜県</option>
+          <option value="静岡県">静岡県</option>
+          <option value="愛知県">愛知県</option>
+          <option value="三重県">三重県</option>
+          <option value="滋賀県">滋賀県</option>
+          <option value="京都府">京都府</option>
+          <option value="大阪府">大阪府</option>
+          <option value="兵庫県">兵庫県</option>
+          <option value="奈良県">奈良県</option>
+          <option value="和歌山県">和歌山県</option>
+          <option value="鳥取県">鳥取県</option>
+          <option value="島根県">島根県</option>
+          <option value="岡山県">岡山県</option>
+          <option value="広島県">広島県</option>
+          <option value="山口県">山口県</option>
+          <option value="徳島県">徳島県</option>
+          <option value="香川県">香川県</option>
+          <option value="愛媛県">愛媛県</option>
+          <option value="高知県">高知県</option>
+          <option value="福岡県">福岡県</option>
+          <option value="佐賀県">佐賀県</option>
+          <option value="長崎県">長崎県</option>
+          <option value="熊本県">熊本県</option>
+          <option value="大分県">大分県</option>
+          <option value="宮崎県">宮崎県</option>
+          <option value="鹿児島県">鹿児島県</option>
+          <option value="沖縄県">沖縄県</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="city" class="required">市町村（番地は不要です）</label>
+        <input type="text" id="city" name="city" placeholder="例: 成田市飯田町" required>
+      </div>
+
+      <div class="form-group">
+        <label for="old-name">旧姓</label>
+        <input type="text" id="old-name" name="old_name" placeholder="旧姓">
+      </div>
+
+      <div class="form-group">
+        <label class="required">同居のご家族構成と年齢</label>
+        <div id="family-members-container">
+          <!-- 家族構成の入力欄がここに追加されます -->
+          <div class="family-member-input-group">
+            <input type="text" name="family_relation[]" placeholder="関係 (例: 夫)" required>
+            <input type="number" name="family_age[]" placeholder="年齢 (例: 35)" min="0" required>
+            <button type="button" class="remove-family-member-button" style="display: none;">削除</button>
+          </div>
+        </div>
+        <button type="button" id="add-family-member-button" class="add-family-member-button">家族を追加</button>
+      </div>
+
+      <div class="form-group">
+        <label for="job-details" class="required">職務内容</label>
+        <textarea id="job-details" name="job_details" placeholder="詳しく書いてくださると見やすいです" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="referrer">ご紹介の方は紹介者名</label>
+        <input type="text" id="referrer" name="referrer" placeholder="紹介者名">
+      </div>
+
+      <button type="submit" class="submit-button">送信</button>
+    </form>
+  </div>
+
+  <footer class="bg-[var(--color-base)] text-[var(--color-text)] py-8 mt-20 w-full">
+      <div class="container mx-auto text-center text-sm">
+          <p>&copy; 2024 by Therapist Mii. All rights reserved.</p>
+          <div class="flex justify-center gap-x-4 mt-2">
+              <a href="privacy.html" class="text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors duration-300">プライバシーポリシー</a>
+              <span class="text-[var(--color-text)]">|</span>
+              <a href="tokusho.html" class="text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors duration-300">特定商取引法に基づく表記</a>
+          </div>
+      </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ハンバーガーメニュー関連のDOM要素
+        const menuToggle = document.getElementById('menu-toggle');
+        const offCanvasMenu = document.getElementById('off-canvas-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const closeMenuBtn = document.getElementById('close-menu');
+
+        // Custom message box function (replaces alert()) - Not directly used for form submission but kept for consistency
+        function showMessageBox(message, callback) {
+            const messageBox = document.createElement('div');
+            messageBox.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-size: 1.2em;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            `;
+            messageBox.textContent = message;
+            document.body.appendChild(messageBox);
+
+            setTimeout(() => {
+                messageBox.style.opacity = 1;
+            }, 10); // Small delay to trigger transition
+
+            setTimeout(() => {
+                messageBox.style.opacity = 0;
+                messageBox.addEventListener('transitionend', () => {
+                    messageBox.remove();
+                    if (callback) callback();
+                });
+            }, 2000);
+        }
+
+        // --- ハンバーガーメニュー関連の機能設定 ---
+        function setupMenuListeners() {
+            if (!menuToggle || !offCanvasMenu || !menuOverlay || !closeMenuBtn) {
+                console.error("DOMエラー: メニューの要素が1つ以上見つかりませんでした。メニュー機能は無効です。");
+                return;
+            }
+
+            function toggleMenu() {
+                offCanvasMenu.classList.toggle('open');
+                menuOverlay.classList.toggle('open');
+            }
+
+            menuToggle.addEventListener('click', toggleMenu);
+            closeMenuBtn.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            const menuLinks = offCanvasMenu.querySelectorAll('ul li a');
+            if (menuLinks && menuLinks.length > 0) {
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', (event) => {
+                        if (link.getAttribute('href').startsWith('index.html#')) {
+                            event.preventDefault();
+                            const targetId = link.getAttribute('href').split('#')[1];
+                            const targetElement = document.getElementById(targetId);
+                            if (targetElement) {
+                                targetElement.scrollIntoView({
+                                    behavior: 'smooth'
+                                });
+                            }
+                        } else if (link.getAttribute('href') === 'menu.html') {
+                            window.location.href = link.getAttribute('href');
+                        }
+                        toggleMenu();
+                    });
+                });
+            } else {
+                console.warn("DOM警告: オフキャンバスメニュー内にメニューリンクが見つからないか、配列が空です。");
+            }
+        }
+
+        // Populate days in birth-day select based on selected month and year
+        const birthMonthSelect = document.getElementById('birth-month');
+        const birthDaySelect = document.getElementById('birth-day');
+        const birthYearInput = document.getElementById('birth-year');
+
+        function populateDays() {
+            const year = parseInt(birthYearInput.value);
+            const month = parseInt(birthMonthSelect.value);
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1; // Month is 0-indexed
+            const currentDay = today.getDate();
+
+            birthDaySelect.innerHTML = '<option value="">選択</option>'; // Clear existing options
+
+            // 年と月が選択されている場合のみ日を生成
+            if (!isNaN(year) && month) {
+                let daysInMonth = new Date(year, month, 0).getDate();
+
+                for (let i = 1; i <= daysInMonth; i++) {
+                    // 未来の日付を無効にする条件
+                    if (year === currentYear && month === currentMonth && i > currentDay) {
+                        break; // 現在の日付を超えたらループを終了
+                    }
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i + '日';
+                    birthDaySelect.appendChild(option);
+                }
+            }
+        }
+
+        birthMonthSelect.addEventListener('change', populateDays);
+        birthYearInput.addEventListener('change', populateDays);
+        
+        // ページロード時に一度populateDaysを呼び出す
+        // これは、ユーザーが入力した値が既に存在する場合に、初期表示で日付を正しく設定するため
+        populateDays();
+
+
+        // --- 家族構成の動的追加・削除機能 ---
+        const familyMembersContainer = document.getElementById('family-members-container');
+        const addFamilyMemberButton = document.getElementById('add-family-member-button');
+
+        function updateRemoveButtons() {
+            const removeButtons = familyMembersContainer.querySelectorAll('.remove-family-member-button');
+            if (removeButtons.length === 1) {
+                removeButtons[0].style.display = 'none'; // 1つだけの場合は非表示
+            } else {
+                removeButtons.forEach(button => button.style.display = 'inline-block'); // 複数ある場合は表示
+            }
+        }
+
+        // 初期ロード時に削除ボタンの状態を更新
+        updateRemoveButtons();
+
+        addFamilyMemberButton.addEventListener('click', () => {
+            const newFamilyMemberGroup = document.createElement('div');
+            newFamilyMemberGroup.classList.add('family-member-input-group');
+            newFamilyMemberGroup.innerHTML = `
+                <input type="text" name="family_relation[]" placeholder="関係 (例: 夫)" required>
+                <input type="number" name="family_age[]" placeholder="年齢 (例: 35)" min="0" required>
+                <button type="button" class="remove-family-member-button">削除</button>
+            `;
+            familyMembersContainer.appendChild(newFamilyMemberGroup);
+            updateRemoveButtons(); // ボタン追加後に削除ボタンの状態を更新
+        });
+
+        familyMembersContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-family-member-button')) {
+                // 最後の入力欄は削除しない
+                if (familyMembersContainer.children.length > 1) {
+                    event.target.closest('.family-member-input-group').remove();
+                    updateRemoveButtons(); // ボタン削除後に削除ボタンの状態を更新
+                }
+            }
+        });
+
+        // DOMContentLoaded時にメニュー機能をセットアップ
+        setupMenuListeners();
+    });
+  </script>
+</body>
+</html>
