@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ウェブサイトヘッダー</title>
+    <!-- Google Fonts: Noto Serif JP (明朝体) をインポート -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* グローバルなリセットと基本スタイル */
+        body {
+            margin: 0;
+            font-family: 'Noto Serif JP', serif; /* 明朝体 */
+            color: #544C40; /* テキストカラー */
+            background-color: #FFFFFF; /* 背景は白 */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            text-decoration: none;
+            color: #544C40; /* リンクの色もテキストカラーに合わせる */
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #E4C1B5; /* ホバー時の色 */
+        }
+
+        /* ヘッダーセクション */
+        .header {
+            background-color: #FFFFFF; /* ヘッダーは白 */
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* 控えめな影 */
+            position: fixed; /* ページ上部に固定 */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* 他の要素より手前に */
+            box-sizing: border-box; /* パディングを幅に含める */
+        }
+
+        .header-logo img {
+            height: 64px; /* ロゴの高さ */
+            display: block;
+            border-radius: 8px; /* 角を丸く */
+        }
+
+        /* ハンバーガーメニューアイコン */
+        .hamburger-menu-icon {
+            width: 35px; /* アイコンの幅 */
+            height: 28px; /* アイコンの高さ */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            z-index: 1100; /* メニューより手前に */
+            padding: 5px; /* クリックしやすいようにパディング */
+            box-sizing: content-box;
+        }
+
+        .hamburger-menu-icon span {
+            display: block;
+            width: 100%;
+            height: 3px; /* 線の太さ */
+            background-color: #544C40; /* 線の色 */
+            border-radius: 2px; /* 線の角を丸く */
+            transition: all 0.3s ease-in-out; /* アニメーション */
+        }
+
+        /* ハンバーガーメニューアイコンのアニメーション (開いた状態) */
+        .hamburger-menu-icon.open span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger-menu-icon.open span:nth-child(2) {
+            opacity: 0; /* 中央の線を消す */
+        }
+
+        .hamburger-menu-icon.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        /* ハンバーガーメニュー本体 (オフキャンバス) */
+        .hamburger-menu {
+            position: fixed;
+            top: 0;
+            right: -320px; /* 最初は画面外に隠す (幅より少し大きく) */
+            width: 300px; /* メニューの幅 */
+            max-width: 80vw; /* 画面幅の80%まで */
+            height: 100%;
+            background-color: #fff4f5; /* ハンバーガーメニューの背景色 */
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15); /* 深めの影 */
+            transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* スムーズなアニメーション */
+            padding-top: 100px; /* ヘッダーの高さと余白 */
+            box-sizing: border-box;
+            z-index: 1050; /* ヘッダーより少し低い */
+            overflow-y: auto; /* メニューが多い場合にスクロール */
+        }
+
+        .hamburger-menu.open {
+            right: 0; /* 開いた時に表示 */
+        }
+
+        .hamburger-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .hamburger-menu ul li {
+            border-bottom: 1px solid #EAE6E1; /* 区切り線 */
+        }
+
+        .hamburger-menu ul li:last-child {
+            border-bottom: none; /* 最後の項目には線なし */
+        }
+
+        .hamburger-menu ul li a {
+            display: block;
+            padding: 15px 25px;
+            color: #544C40;
+            font-size: 1.1em;
+            font-weight: 400;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .hamburger-menu ul li a:hover {
+            background-color: #EAE6E1; /* ホバー時の背景色 */
+            color: #544C40; /* ホバー時のテキスト色 */
+        }
+
+        /* サブメニューのスタイル */
+        .hamburger-menu ul li ul {
+            padding-left: 30px; /* サブメニューのインデント */
+            background-color: rgba(228, 193, 181, 0.2); /* サブメニューの背景色 #E4C1B5 の透明度を下げたもの */
+            border-top: 1px solid rgba(228, 193, 181, 0.5);
+            border-bottom: 1px solid rgba(228, 193, 181, 0.5);
+            display: none; /* デフォルトでは非表示 */
+            overflow: hidden; /* アニメーション用 */
+            max-height: 0; /* アニメーション用 */
+            transition: max-height 0.4s ease-out;
+        }
+
+        .hamburger-menu ul li.has-submenu.open > ul {
+            display: block; /* 開いた時に表示 */
+            max-height: 500px; /* 十分な高さを設定して表示 */
+        }
+
+        .hamburger-menu ul li ul li {
+            border-bottom: 1px solid rgba(84, 76, 64, 0.1); /* サブメニュー内の区切り線 */
+        }
+
+        .hamburger-menu ul li ul li:last-child {
+            border-bottom: none;
+        }
+
+        .hamburger-menu ul li ul li a {
+            padding: 12px 25px 12px 40px; /* サブメニューのリンクのパディング */
+            font-size: 1em;
+        }
+
+        .hamburger-menu ul li ul li a:hover {
+            background-color: rgba(228, 193, 181, 0.4); /* サブメニューホバー時の背景色 */
+        }
+
+        /* オーバーレイ (メニューが開いているときに背景を暗くする) */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* 半透明の黒 */
+            z-index: 1040; /* メニューより低い */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* サブメニューの矢印アイコン (CSSのみで実装) */
+        .has-submenu > a::after {
+            content: '▼'; /* 下向き矢印 */
+            font-size: 0.7em;
+            margin-left: 10px;
+            float: right;
+            transition: transform 0.3s ease;
+        }
+
+        .has-submenu.open > a::after {
+            transform: rotate(180deg); /* 開いた時に上向きに */
+        }
+
+        /* メディアクエリ：モバイル対応 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 15px;
+            }
+
+            .header-logo img {
+                height: 50px; /* モバイルでのロゴの高さ */
+            }
+
+            .hamburger-menu {
+                width: 250px; /* モバイルでのメニューの幅 */
+                max-width: 90vw;
+            }
+
+            .hamburger-menu ul li a {
+                font-size: 1em;
+                padding: 12px 20px;
+            }
+
+            .hamburger-menu ul li ul li a {
+                padding: 10px 20px 10px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <a href="https://therapist-mii.github.io/spiritual/index.html">
+                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-64.png" alt="ロゴ">
+            </a>
+        </div>
+        <div class="hamburger-menu-icon" id="hamburgerIcon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <nav class="hamburger-menu" id="hamburgerMenu">
+        <ul>
+            <li><a href="https://therapist-mii.github.io/spiritual/index.html">HOME</a></li>
+            <li class="has-submenu">
+                <a href="https://therapist-mii.github.io/spiritual/menu.html">メニュー</a>
+                <ul>
+                    <li><a href="https://therapist-mii.github.io/spiritual/reading.html">リーディング</a></li>
+                    <li><a href="https://therapist-mii.github.io/spiritual/mirainavi.html">未来ナビ</a></li>
+                    <li><a href="https://therapist-mii.github.io/spiritual/art_therapy.html">アートセラピー</a></li>
+                    <li><a href="https://therapist-mii.github.io/spiritual/color.html">色彩心理セラピー</a></li>
+                    <li><a href="https://therapist-mii.github.io/spiritual/healing.html">ヒーリング</a></li>
+                </ul>
+            </li>
+            <li><a href="https://therapist-mii.github.io/spiritual/new_client.html">はじめての方のフォーム</a></li>
+            <li><a href="https://therapist-mii.github.io/spiritual/q&a.html">Q&A</a></li>
+            <li><a href="https://therapist-mii.github.io/spiritual/voices.html">お客様の声</a></li>
+            <li><a href="https://lit.link/miiart" target="_blank" rel="noopener noreferrer">リンク</a></li>
+            <li><a href="https://therapist-mii.github.io/spiritual/contact.html">お問合わせ</a></li>
+            <li><a href="https://therapist-mii.github.io/spiritual/sitemap.html">サイトマップ</a></li>
+        </ul>
+    </nav>
+
+    <div class="overlay" id="overlay"></div> <!-- メニューが開いたときに背景を覆うオーバーレイ -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerIcon = document.getElementById('hamburgerIcon');
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const overlay = document.getElementById('overlay');
+            const hasSubmenuItems = document.querySelectorAll('.has-submenu > a');
+
+            // ハンバーガーアイコンクリックでメニューを開閉
+            hamburgerIcon.addEventListener('click', function() {
+                hamburgerIcon.classList.toggle('open');
+                hamburgerMenu.classList.toggle('open');
+                overlay.classList.toggle('open');
+                document.body.style.overflow = hamburgerMenu.classList.contains('open') ? 'hidden' : ''; // メニューオープン時にスクロールを無効化
+            });
+
+            // オーバーレイクリックでメニューを閉じる
+            overlay.addEventListener('click', function() {
+                hamburgerIcon.classList.remove('open');
+                hamburgerMenu.classList.remove('open');
+                overlay.classList.remove('open');
+                document.body.style.overflow = ''; // スクロールを有効化
+                // サブメニューも全て閉じる
+                document.querySelectorAll('.has-submenu.open').forEach(item => {
+                    item.classList.remove('open');
+                });
+            });
+
+            // メニュー内のリンククリックでメニューを閉じる (サブメニューの親リンクは除く)
+            hamburgerMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    // サブメニューの親リンクでなければメニューを閉じる
+                    if (!this.parentElement.classList.contains('has-submenu')) {
+                        hamburgerIcon.classList.remove('open');
+                        hamburgerMenu.classList.remove('open');
+                        overlay.classList.remove('open');
+                        document.body.style.overflow = '';
+                        // サブメニューも全て閉じる
+                        document.querySelectorAll('.has-submenu.open').forEach(item => {
+                            item.classList.remove('open');
+                        });
+                    }
+                });
+            });
+
+            // サブメニューの開閉
+            hasSubmenuItems.forEach(item => {
+                item.addEventListener('click', function(event) {
+                    event.preventDefault(); // 親リンクへの遷移を阻止
+                    const parentLi = this.parentElement;
+                    parentLi.classList.toggle('open');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
