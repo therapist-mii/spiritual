@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ヘッダー</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Zen Old Mincho for 明朝体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&display=swap" rel="stylesheet">
+    <style>
+        /* カスタムCSS */
+        body {
+            background-color: white; /* 背景は白 */
+            font-family: 'Zen Old Mincho', serif; /* 明朝体フォントを適用 */
+            color: #544C40; /* テキストカラー */
+        }
+        /* ハンバーガーメニューのアイコンスタイル */
+        .hamburger-icon span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #544C40; /* テキストカラーと同じ色 */
+            border-radius: 9999px;
+            transition: all 0.3s ease-in-out;
+        }
+        .hamburger-icon span:nth-child(2) {
+            margin: 5px 0;
+        }
+        /* ハンバーガーメニューが開いた時のアイコンアニメーション */
+        .hamburger-icon.open span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .hamburger-icon.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-icon.open span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        /* サブメニューのスタイル */
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .submenu.open {
+            max-height: 500px; /* 十分な高さを設定して展開 */
+        }
+        /* メニュー項目のホバー効果 */
+        .nav-item a:hover {
+            color: #E4C1B5; /* ホバー時の色 */
+        }
+        /* サブメニュー項目のホバー効果 */
+        .submenu a:hover {
+            color: #E4C1B5; /* ホバー時の色 */
+        }
+        /* 閉じるボタンのスタイル */
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #544C40;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .close-button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- ヘッダーセクション -->
+    <header class="bg-white shadow-md py-4 px-6 md:px-10 flex justify-between items-center relative z-50">
+        <!-- ロゴ -->
+        <div class="flex items-center">
+            <a href="https://therapist-mii.github.io/spiritual/index.html">
+                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-64.png" alt="ロゴ" class="h-12 md:h-16 rounded-full">
+            </a>
+        </div>
+
+        <!-- ハンバーガーメニューアイコン -->
+        <div id="hamburger" class="hamburger-icon cursor-pointer p-2 rounded-md transition-all duration-300 ease-in-out">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- ナビゲーションメニュー (非表示) -->
+        <nav id="mobile-menu" class="fixed top-0 right-0 h-full w-64 bg-[#ede1e1] transform translate-x-full transition-transform duration-300 ease-in-out z-40 overflow-y-auto shadow-lg">
+            <!-- 閉じるボタン -->
+            <button id="close-menu" class="close-button">
+                &times; <!-- '×' の記号 -->
+            </button>
+            <div class="p-6 pt-20"> <!-- ヘッダーの高さ分を考慮してパディング -->
+                <ul class="space-y-4">
+                    <li class="nav-item">
+                        <a href="https://therapist-mii.github.io/spiritual/index.html" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <div id="menu-toggle" class="flex justify-between items-center cursor-pointer text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">
+                            <span>メニュー</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                        <ul id="menu-submenu" class="submenu pl-8 pt-2 space-y-2">
+                            <li><a href="https://therapist-mii.github.io/spiritual/reading.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">リーディング</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/mirainavi.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">未来ナビ</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/art_therapy.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">アートセラピー</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/color.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">色彩心理セラピー</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/healing.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">ヒーリング</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <div id="reservation-toggle" class="flex justify-between items-center cursor-pointer text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">
+                            <span>予約</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                        <ul id="reservation-submenu" class="submenu pl-8 pt-2 space-y-2">
+                            <li><a href="https://therapist-mii.github.io/spiritual/reading-r.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">リーディング予約</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/f2f_reading-r.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">対面リーディング予約</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/mirainavi-r.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">未来ナビ予約</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/art_therapy_r.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">アートセラピー予約</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/color_r.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">色彩心理セラピー予約</a></li>
+                            <li><a href="https://therapist-mii.github.io/spiritual/healing-r.html" class="block text-base py-1 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200">ヒーリング予約</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://therapist-mii.github.io/spiritual/new_client.html" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">はじめての方のフォーム</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://therapist-mii.github.io/spiritual/q&a.html" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">Q&A</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://therapist-mii.github.io/spiritual/voices.html" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">お客様の声</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://lit.link/miiart" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4" target="_blank" rel="noopener noreferrer">リンク</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://therapist-mii.github.io/spiritual/contact.html" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">お問合わせ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://therapist-mii.github.io/spiritual/sitemap.html" class="block text-lg font-medium py-2 rounded-md hover:bg-[#EAE6E1] transition-colors duration-200 pl-4">サイトマップ</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <script>
+        // ハンバーガーメニューの開閉機能
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuButton = document.getElementById('close-menu'); // 閉じるボタンの要素を取得
+        const body = document.body;
+
+        // メニューを開く関数
+        function openMenu() {
+            mobileMenu.classList.remove('translate-x-full');
+            hamburger.classList.add('open');
+            body.classList.add('overflow-hidden'); // メニューオープン時にスクロールを無効化
+        }
+
+        // メニューを閉じる関数
+        function closeMenu() {
+            mobileMenu.classList.add('translate-x-full');
+            hamburger.classList.remove('open');
+            body.classList.remove('overflow-hidden'); // メニュークローズ時にスクロールを有効化
+            // サブメニューが開いている場合は閉じる
+            document.querySelectorAll('.submenu.open').forEach(submenu => {
+                submenu.classList.remove('open');
+                const toggle = submenu.previousElementSibling;
+                if (toggle && toggle.querySelector('svg')) {
+                    toggle.querySelector('svg').classList.remove('rotate-180');
+                }
+            });
+        }
+
+        hamburger.addEventListener('click', openMenu); // ハンバーガーアイコンでメニューを開く
+        closeMenuButton.addEventListener('click', closeMenu); // 閉じるボタンでメニューを閉じる
+
+        // サブメニューの開閉機能
+        function setupSubmenuToggle(toggleId, submenuId) {
+            const toggle = document.getElementById(toggleId);
+            const submenu = document.getElementById(submenuId);
+
+            if (toggle && submenu) {
+                toggle.addEventListener('click', () => {
+                    submenu.classList.toggle('open');
+                    // SVGの矢印を回転させる
+                    const svg = toggle.querySelector('svg');
+                    if (svg) {
+                        svg.classList.toggle('rotate-180');
+                    }
+                });
+            }
+        }
+
+        // 各サブメニューに開閉機能を設定
+        setupSubmenuToggle('menu-toggle', 'menu-submenu');
+        setupSubmenuToggle('reservation-toggle', 'reservation-submenu');
+
+        // メニュー項目をクリックしたときにメニューを閉じる (サブメニューの項目も含む)
+        mobileMenu.querySelectorAll('a').forEach(item => {
+            item.addEventListener('click', closeMenu); // リンククリックでメニューを閉じる
+        });
+
+        // 画面サイズ変更時にメニューを閉じる
+        window.addEventListener('resize', () => {
+            if (mobileMenu.classList.contains('translate-x-0')) {
+                closeMenu();
+            }
+        });
+    </script>
+</body>
+</html>
