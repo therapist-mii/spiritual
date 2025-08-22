@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>リーディングお見積り＆ご予約</title>
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Homemade+Apple&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Colors */
+        :root {
+            --color-error: #ff0000;
+            --color-add-button: #E4C1B5; /* Changed to match button color for consistency */
+            --color-clear-button-bg: #ad9196;
+            --color-button-text: white;
+            --color-button-hover: #E4C1B5;
+            --color-button-hover-text: white;
+            --color-text: #544C40;
+            --color-first-time-button: #d2bdc3;
+            --color-first-time-button-hover: #ad9196;
+            --color-first-time-button-hover-text: white;
+            --color-clear-btn-bg-light: #EAE6E1;
+            --color-clear-btn-text-light: #cbb6b6;
+            --color-clear-btn-hover-light: #cbb6b6;
+            --color-clear-btn-hover-text-light: #EAE6E1;
+            --color-clear-circle-bg: #7a736a;
+            --color-clear-circle-text: white;
+            --color-clear-circle-hover: #E4C1B5;
+        }
+
+        body {
+            font-family: 'Noto Serif JP', serif;
+            color: var(--color-text);
+            background-color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align content to the top */
+            padding-bottom: 80px; /* Space for the bottom logo */
+            position: relative;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Background Images */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1; /* Place behind content */
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Mobile Background */
+        body::before {
+            background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei-sumaho.jpg');
+        }
+
+        /* PC Background */
+        @media (min-width: 768px) {
+            body::before {
+                background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei.jpg');
+            }
+        }
+
+        h1, h2, h3 {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .english-font {
+            font-family: 'Homemade Apple', cursive;
+        }
+
+        /* Custom Button Styles */
+        .btn-primary {
+            background-color: var(--color-button-hover); /* E4C1B5 */
+            color: var(--color-text); /* 544C40 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Fully rounded */
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-clear-button-bg); /* ad9196 */
+            color: var(--color-button-hover-text); /* white */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-add-option {
+            background-color: var(--color-add-button); /* ad9196 */
+            color: var(--color-button-text); /* white */
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-add-option:hover {
+            background-color: var(--color-button-hover); /* E4C1B5 */
+            color: var(--color-text); /* 544C40 */
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-clear-light {
+            background-color: var(--color-clear-btn-bg-light); /* EAE6E1 */
+            color: var(--color-clear-btn-text-light); /* cbb6b6 */
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-clear-light:hover {
+            background-color: var(--color-clear-btn-hover-light); /* cbb6b6 */
+            color: var(--color-clear-btn-hover-text-light); /* EAE6E1 */
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-first-time {
+            background-color: var(--color-first-time-button); /* d2bdc3 */
+            color: var(--color-text); /* 544C40 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-first-time:hover {
+            background-color: var(--color-first-time-button-hover); /* ad9196 */
+            color: var(--color-first-time-button-hover-text); /* white */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-circle-clear {
+            background-color: var(--color-clear-circle-bg); /* 7a736a */
+            color: var(--color-clear-circle-text); /* white */
+            width: 2rem; /* 32px */
+            height: 2rem; /* 32px */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem; /* 20px */
+            line-height: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: absolute; /* For positioning within cards or relative containers */
+            top: 0.5rem; /* Adjust as needed */
+            right: 0.5rem; /* Adjust as needed */
+        }
+
+        .btn-circle-clear:hover {
+            background-color: var(--color-clear-circle-hover); /* E4C1B5 */
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Error styling */
+        .input-error {
+            border-color: var(--color-error) !important;
+            box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+        }
+
+        .error-message {
+            color: var(--color-error);
+            font-size: 0.875rem; /* 14px */
+            margin-top: 0.25rem;
+        }
+
+        /* Card styles */
+        .consultation-card {
+            background-color: white;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            position: relative;
+            transition: all 0.3s ease-in-out;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .consultation-card.fade-out {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .consultation-card.fade-in {
+            animation: fadeInSlideUp 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Required asterisk */
+        .required-asterisk {
+            color: var(--color-error);
+            margin-left: 0.25rem;
+        }
+
+        /* Custom select arrow */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23544C40'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        /* Fixed bottom logo */
+        .bottom-logo-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0)); /* Fade out effect */
+            z-index: 10;
+        }
+
+        .bottom-logo {
+            max-width: 150px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        /* Responsive adjustments for overall layout */
+        .container {
+            width: 100%;
+            max-width: 800px; /* Max width for content */
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Logo -->
+    <a href="https://spiritual-therapist-mii.studio.site/" target="_blank" class="mt-8 mb-4">
+        <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="max-w-[250px] h-auto rounded-lg">
+    </a>
+
+    <div class="container mx-auto p-4 md:p-8 bg-white rounded-xl shadow-2xl my-8 relative z-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">リーディングお見積り＆ご予約</h1>
+        <p class="text-center mb-8 text-lg text-gray-600">必要事項を記入してください。<br>一番下に見積もりが出ます。</p>
+
+        <!-- Error Message Display -->
+        <div id="errorMessage" class="error-message text-center mb-4 hidden"></div>
+
+        <!-- Consultation Section -->
+        <section id="consultation-section" class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">ご相談内容<span class="required-asterisk">*</span></h2>
+            <div id="consultation-cards-container">
+                <!-- Initial Consultation Card (template for cloning) -->
+                <div class="consultation-card" data-consultation-id="1">
+                    <label for="consultation-content-1" class="block text-lg font-semibold mb-2">相談内容の要点のみご記入ください。<br>詳細はLINEにてお知らせください。</label>
+                    <textarea id="consultation-content-1" rows="4" placeholder="例：守護霊様からのメッセージをお願いします"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200"></textarea>
+
+                    <h3 class="text-xl font-bold mt-6 mb-3 text-gray-700">ご相談内容に関係する方</h3>
+                    <p class="text-sm mb-4 text-gray-600">人間関係のご相談など、鑑定結果に言及する必要のある方のお名前（ニックネーム可）。最大5名まで</p>
+                    <div class="relationships-container">
+                        <!-- Initial Relationship (template for cloning) -->
+                        <div class="flex items-center space-x-2 mb-3 relative relationship-entry">
+                            <select class="relationship-type p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 flex-shrink-0">
+                                <option value="">関係性を選択</option>
+                                <option value="家族">家族</option>
+                                <option value="恋愛のお相手">恋愛のお相手</option>
+                                <option value="その他の関係">その他の関係</option>
+                            </select>
+                            <input type="text" placeholder="名前"
+                                class="relationship-name w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200">
+                            <!-- No clear button for the first relationship -->
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-option mt-4 mb-4" onclick="addRelationship(this)">関係者を追加</button>
+                    <span class="text-gray-600 ml-2">人数: <span class="relationship-count">1</span></span>
+                </div>
+            </div>
+
+            <div class="text-center mt-6">
+                <button type="button" id="addConsultationBtn" class="btn-primary">相談を追加</button>
+            </div>
+        </section>
+
+        <!-- Options Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">オプション</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-gray-50 p-4 rounded-xl shadow-md flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-700">筆跡診断</h3>
+                        <p class="text-sm text-gray-600">文字の癖から思考傾向や内面のブロックを診断します。<br>6,000円</p>
+                    </div>
+                    <button type="button" class="btn-add-option" data-option="handwriting" data-price="6000">追加する</button>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl shadow-md flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-700">お顔オーラカラーマップ</h3>
+                        <p class="text-sm text-gray-600">お顔に現れるエネルギー傾向をカラーマップで可視化します。<br>4,000円</p>
+                    </div>
+                    <button type="button" class="btn-add-option" data-option="aura-map" data-price="4000">追加する</button>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl shadow-md flex items-center justify-between col-span-1 md:col-span-2">
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-700">ライト割引</h3>
+                        <p class="text-sm text-gray-600">A4用紙1枚程度の量の鑑定書のみ<br>詳細な説明はありません。<br>納品後のLINEは、お気持ちだけいただき、基本的にこちらからのご返信は控えさせていただきます。<br>5,000円引き</p>
+                    </div>
+                    <button type="button" class="btn-add-option" data-option="light-discount" data-price="-5000">追加する</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">お支払いについて</h2>
+            <div class="mb-4">
+                <label for="coupon-select" class="block text-lg font-semibold mb-2">クーポンをお持ちの方は選択してください。</label>
+                <select id="coupon-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200">
+                    <option value="none">選択してください</option>
+                    <option value="intro-discount">-500円</option>
+                    <option value="5-percent">5％OFFクーポン</option>
+                    <option value="10-percent">10％OFFクーポン</option>
+                    <option value="15-percent">15％OFFクーポン</option>
+                    <option value="20-percent">20％OFFクーポン</option>
+                    <option value="25-percent">25％OFFクーポン</option>
+                    <option value="30-percent">30％OFFクーポン</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="payment-method-select" class="block text-lg font-semibold mb-2">お支払い方法<span class="required-asterisk">*</span></label>
+                <select id="payment-method-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200">
+                    <option value="">選択してください</option>
+                    <option value="bank-transfer">銀行振込</option>
+                    <option value="paypay">Paypay</option>
+                    <option value="paypal">Paypal</option>
+                    <option value="credit-card">クレジットカード</option>
+                    <option value="convenience-store">コンビニ払い（手数料220円）</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="remarks" class="block text-lg font-semibold mb-2">備考</label>
+                <div class="relative"> <!-- Added for positioning the clear button -->
+                    <textarea id="remarks" rows="4" placeholder="ご希望・ご質問があればご記入ください"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200"></textarea>
+                    <button type="button" class="btn-circle-clear hidden" id="clearRemarksBtn" onclick="clearRemarks()">×</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Confirmation Section -->
+        <section class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">ご確認事項</h2>
+
+            <div class="mb-4">
+                <h3 class="font-semibold text-lg mb-2 text-gray-700">セッションについて</h3>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>セッション形式： 遠隔</li>
+                    <li>ご予約： 日にち指定のみ（時間指定不可）</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-semibold text-lg mb-2 text-gray-700">納品日・営業時間</h3>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>納品日：セッション日より5営業日</li>
+                    <li>営業時間： 9：00～17：00</li>
+                    <li>休日：土日祝日、他指定日</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-semibold text-lg mb-2 text-gray-700">セッション後の追加料金について</h3>
+                <p class="text-gray-600">納品後に、追加の相談がある場合、追加料金が発生いたします。</p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>ご相談１件：3,000円～</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-lg mb-2 text-gray-700">【ご提出いただくもの】</h3>
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li>目元の写真</li>
+                    <li>手書きのお名前</li>
+                    <li>手書きの相談のタイトル</li>
+                </ul>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <img src="https://github.com/therapist-mii/spiritual/raw/main/images/memoto.jpg" alt="目元の写真の例" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 rounded-lg shadow-md">
+                    <img src="https://github.com/therapist-mii/spiritual/raw/main/images/tegaki-r.jpg" alt="手書きのお名前の例" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 rounded-lg shadow-md">
+                </div>
+            </div>
+        </section>
+
+        <!-- Estimate Output Section -->
+        <section class="mb-8 p-6 bg-gray-50 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">お見積り内容</h2>
+            <div id="estimate-output" class="whitespace-pre-wrap text-gray-800 text-base md:text-lg bg-white p-4 rounded-lg border border-gray-200">
+                <!-- Estimate will be displayed here -->
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+            <button type="button" id="copyEstimateBtn" class="btn-primary flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                </svg>
+                コピー
+            </button>
+            <button type="button" id="lineReservationBtn" class="btn-primary flex items-center justify-center">
+                LINEに貼り付けて予約する
+            </button>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-xl shadow-md mb-8">
+            <h3 class="font-semibold text-lg mb-2 text-gray-700">【LINEで予約する際の手順】</h3>
+            <ol class="list-decimal list-inside text-gray-600">
+                <li>お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。</li>
+                <li>「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
+            </ol>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="text-center mt-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-700">はじめての方へ</h2>
+            <p class="text-gray-600 mb-4">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
+            <button type="button" class="btn-first-time mb-4" onclick="window.open('https://spiritual-therapist-mii.studio.site/form', '_blank')">
+                はじめての方のフォーム
+            </button>
+            <button type="button" class="btn-primary" onclick="window.open('https://spiritual-therapist-mii.studio.site/', '_blank')">
+                Home
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Logo -->
+    <div class="bottom-logo-container">
+        <a href="https://spiritual-therapist-mii.studio.site/" target="_blank">
+            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="bottom-logo">
+        </a>
+    </div>
+
+    <!-- Templates for dynamic content -->
+    <template id="consultation-card-template">
+        <div class="consultation-card fade-in" data-consultation-id="">
+            <button type="button" class="btn-circle-clear remove-consultation-btn">×</button>
+            <label for="consultation-content" class="block text-lg font-semibold mb-2">相談内容の要点のみご記入ください。<br>詳細はLINEにてお知らせください。</label>
+            <textarea id="consultation-content" rows="4" placeholder="例：守護霊様からのメッセージをお願いします"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200"></textarea>
+
+            <h3 class="text-xl font-bold mt-6 mb-3 text-gray-700">ご相談内容に関係する方</h3>
+            <p class="text-sm mb-4 text-gray-600">人間関係のご相談など、鑑定結果に言及する必要のある方のお名前（ニックネーム可）。最大5名まで</p>
+            <div class="relationships-container">
+                <div class="flex items-center space-x-2 mb-3 relative relationship-entry">
+                    <select class="relationship-type p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 flex-shrink-0">
+                        <option value="">関係性を選択</option>
+                        <option value="家族">家族</option>
+                        <option value="恋愛のお相手">恋愛のお相手</option>
+                        <option value="その他の関係">その他の関係</option>
+                    </select>
+                    <input type="text" placeholder="名前"
+                        class="relationship-name w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200">
+                </div>
+            </div>
+            <button type="button" class="btn-add-option mt-4 mb-4" onclick="addRelationship(this)">関係者を追加</button>
+            <span class="text-gray-600 ml-2">人数: <span class="relationship-count">1</span></span>
+        </div>
+    </template>
+
+    <template id="relationship-entry-template">
+        <div class="flex items-center space-x-2 mb-3 relative relationship-entry fade-in">
+            <select class="relationship-type p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 flex-shrink-0">
+                <option value="">関係性を選択</option>
+                <option value="家族">家族</option>
+                <option value="恋愛のお相手">恋愛のお相手</option>
+                <option value="その他の関係">その他の関係</option>
+            </select>
+            <input type="text" placeholder="名前"
+                class="relationship-name w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 transition duration-200">
+            <button type="button" class="btn-circle-clear remove-relationship-btn">×</button>
+        </div>
+    </template>
+
+    <script>
+        // DOM要素の取得
+        const consultationCardsContainer = document.getElementById('consultation-cards-container');
+        const addConsultationBtn = document.getElementById('addConsultationBtn');
+        const estimateOutput = document.getElementById('estimate-output');
+        const copyEstimateBtn = document.getElementById('copyEstimateBtn');
+        const lineReservationBtn = document.getElementById('lineReservationBtn');
+        const couponSelect = document.getElementById('coupon-select');
+        const paymentMethodSelect = document.getElementById('payment-method-select');
+        const optionButtons = document.querySelectorAll('.btn-add-option[data-option]');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const remarksTextarea = document.getElementById('remarks'); // 備考欄のテキストエリア
+        const clearRemarksBtn = document.getElementById('clearRemarksBtn'); // 備考欄のクリアボタン
+
+        // 料金設定
+        const PRICES = {
+            baseReading: 16000, // 1件の相談を含む
+            additionalConsultation: 3000, // 2つ目から
+            relationship: {
+                家族: 1500,
+                恋愛のお相手: 5000,
+                その他の関係: 3000,
+            },
+            options: {
+                handwriting: 6000,
+                auraMap: 4000,
+                lightDiscount: -5000,
+            },
+            convenienceFee: 220 // お客様が支払うため、合計には加算しない
+        };
+
+        // 選択されたオプションの状態管理
+        const selectedOptions = {
+            handwriting: false,
+            auraMap: false,
+            lightDiscount: false,
+        };
+
+        // 初期化処理
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初期の見積もり計算とイベントリスナー設定
+            calculateEstimate();
+            attachInitialListeners();
+            toggleRemarksClearButton(); // ページ読み込み時に備考クリアボタンの表示状態を初期化
+        });
+
+        // 初期の要素にイベントリスナーをアタッチ
+        function attachInitialListeners() {
+            // 相談内容と支払い方法の変更を監視
+            document.getElementById('consultation-content-1').addEventListener('input', calculateEstimate);
+            paymentMethodSelect.addEventListener('change', calculateEstimate);
+            couponSelect.addEventListener('change', calculateEstimate);
+
+            // 関係性の変更を監視 (初期の1つ目)
+            const initialRelationshipType = document.querySelector('.consultation-card[data-consultation-id="1"] .relationship-type');
+            const initialRelationshipName = document.querySelector('.consultation-card[data-consultation-id="1"] .relationship-name');
+            if (initialRelationshipType) initialRelationshipType.addEventListener('change', calculateEstimate);
+            if (initialRelationshipName) initialRelationshipName.addEventListener('input', calculateEstimate);
+
+            // オプションボタンのイベントリスナー
+            optionButtons.forEach(button => {
+                button.addEventListener('click', toggleOption);
+            });
+
+            // コピーボタンとLINEボタン
+            copyEstimateBtn.addEventListener('click', () => {
+                if (validateForm()) {
+                    copyEstimate();
+                }
+            });
+            lineReservationBtn.addEventListener('click', () => {
+                if (validateForm()) {
+                    copyEstimate(); // LINEに貼り付ける前にコピー
+                    window.open('https://line.me/ti/p/Kv76GQK_UI', '_blank');
+                }
+            });
+
+            // 相談追加ボタン
+            addConsultationBtn.addEventListener('click', addConsultationCard);
+
+            // 備考欄の入力イベントリスナー
+            remarksTextarea.addEventListener('input', toggleRemarksClearButton);
+        }
+
+        // オプションの選択/解除
+        function toggleOption(event) {
+            const button = event.target;
+            const option = button.dataset.option;
+
+            if (selectedOptions[option]) {
+                // オプションが選択されている場合、解除
+                selectedOptions[option] = false;
+                button.classList.remove('bg-ad9196', 'text-white');
+                button.classList.add('bg-E4C1B5', 'text-544C40');
+                button.textContent = '追加する';
+            } else {
+                // オプションが選択されていない場合、追加
+                selectedOptions[option] = true;
+                button.classList.remove('bg-E4C1B5', 'text-544C40');
+                button.classList.add('bg-ad9196', 'text-white');
+                button.textContent = '追加済み';
+            }
+            calculateEstimate();
+        }
+
+        // フォームのバリデーション
+        function validateForm() {
+            let isValid = true;
+            errorMessageDiv.textContent = '';
+            errorMessageDiv.classList.add('hidden');
+
+            // すべての必須項目からエラークラスを削除
+            document.querySelectorAll('.input-error').forEach(el => {
+                el.classList.remove('input-error');
+            });
+
+            // 相談内容のバリデーション
+            const consultationContents = document.querySelectorAll('textarea[id^="consultation-content-"]');
+            consultationContents.forEach(textarea => {
+                if (textarea.value.trim() === '') {
+                    textarea.classList.add('input-error');
+                    isValid = false;
+                }
+            });
+
+            // 支払い方法のバリデーション
+            if (paymentMethodSelect.value === '') {
+                paymentMethodSelect.classList.add('input-error');
+                isValid = false;
+            }
+
+            // 関係者のバリデーション (名前が入力されたら関係性も必須)
+            document.querySelectorAll('.relationship-entry').forEach(entry => {
+                const nameInput = entry.querySelector('.relationship-name');
+                const typeSelect = entry.querySelector('.relationship-type');
+                if (nameInput && typeSelect) {
+                    if (nameInput.value.trim() !== '' && typeSelect.value === '') {
+                        typeSelect.classList.add('input-error');
+                        isValid = false;
+                    }
+                }
+            });
+
+            if (!isValid) {
+                errorMessageDiv.textContent = '必須項目を入力してください。';
+                errorMessageDiv.classList.remove('hidden');
+                // 最初に見つかったエラー要素までスクロール
+                const firstErrorElement = document.querySelector('.input-error');
+                if (firstErrorElement) {
+                    firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            return isValid;
+        }
+
+        // 見積もりを計算し表示する
+        function calculateEstimate() {
+            let totalAmount = 0;
+            let consultationCount = 0;
+            let relationshipDetails = [];
+            let optionDetails = [];
+
+            // 相談内容の計算
+            const consultationCards = document.querySelectorAll('.consultation-card');
+            consultationCount = consultationCards.length;
+
+            if (consultationCount > 0) {
+                totalAmount += PRICES.baseReading; // 基本料金 (1件の相談を含む)
+                if (consultationCount > 1) {
+                    totalAmount += (consultationCount - 1) * PRICES.additionalConsultation;
+                }
+            }
+
+            // 関係者霊視接続料の計算
+            consultationCards.forEach(card => {
+                const relationshipEntries = card.querySelectorAll('.relationship-entry');
+                relationshipEntries.forEach(entry => {
+                    const type = entry.querySelector('.relationship-type').value;
+                    const name = entry.querySelector('.relationship-name').value.trim();
+                    if (name !== '' && type !== '') {
+                        totalAmount += PRICES.relationship[type];
+                        relationshipDetails.push(`${name}　${PRICES.relationship[type].toLocaleString()}円`);
+                    }
+                });
+            });
+
+            // オプションの計算
+            if (selectedOptions.handwriting) {
+                totalAmount += PRICES.options.handwriting;
+                optionDetails.push(`筆跡診断${PRICES.options.handwriting.toLocaleString()}円`);
+            }
+            if (selectedOptions.auraMap) {
+                totalAmount += PRICES.options.auraMap;
+                optionDetails.push(`お顔オーラカラーマップ${PRICES.options.auraMap.toLocaleString()}円`);
+            }
+            if (selectedOptions.lightDiscount) {
+                totalAmount += PRICES.options.lightDiscount;
+                optionDetails.push(`ライト割引${PRICES.options.lightDiscount.toLocaleString()}円`);
+            }
+
+            // クーポン割引の適用
+            const couponValue = couponSelect.value;
+            if (couponValue === 'intro-discount') {
+                totalAmount -= 500;
+            } else if (couponValue.endsWith('-percent')) {
+                const percentage = parseInt(couponValue.split('-')[0]) / 100;
+                totalAmount -= totalAmount * percentage;
+            }
+
+            // 見積もり出力文字列の生成
+            let estimateText = `【リーディングお見積り】\n\n`;
+            estimateText += `${consultationCount}件：${PRICES.baseReading.toLocaleString()} 円\n`;
+            if (consultationCount > 1) {
+                estimateText += `追加相談料：${(consultationCount - 1) * PRICES.additionalConsultation.toLocaleString()}円\n`;
+            }
+
+            if (relationshipDetails.length > 0) {
+                estimateText += `関係者霊視接続料：\n${relationshipDetails.join('\n')}\n`;
+            }
+
+            if (optionDetails.length > 0) {
+                estimateText += `\n（オプション）\n${optionDetails.join('\n')}\n`;
+            }
+
+            estimateText += `\n--------------------------------\n`;
+            estimateText += `合計金額：${Math.max(0, Math.round(totalAmount)).toLocaleString()}円\n`; // 合計がマイナスにならないように
+            estimateText += `--------------------------------\n\n`;
+
+            estimateText += `【ご提出いただくもの】\n`;
+            estimateText += `目元の写真\n`;
+            estimateText += `手書きのお名前\n`;
+            estimateText += `手書きの相談のタイトル\n`;
+
+            estimateOutput.textContent = estimateText;
+        }
+
+        // 相談カードの追加
+        let consultationCardIdCounter = 1;
+        function addConsultationCard() {
+            consultationCardIdCounter++;
+            const template = document.getElementById('consultation-card-template');
+            const newCard = template.content.firstElementChild.cloneNode(true);
+
+            newCard.dataset.consultationId = consultationCardIdCounter;
+            newCard.querySelector('label').setAttribute('for', `consultation-content-${consultationCardIdCounter}`);
+            newCard.querySelector('textarea').id = `consultation-content-${consultationCardIdCounter}`;
+            newCard.querySelector('textarea').addEventListener('input', calculateEstimate);
+
+            // 関係者追加ボタンとクリアボタンのイベントリスナーを設定
+            newCard.querySelector('.btn-add-option').addEventListener('click', (e) => addRelationship(e.target));
+            newCard.querySelector('.remove-consultation-btn').addEventListener('click', () => removeConsultationCard(newCard));
+
+            // 新しいカードの関係性入力フィールドにもイベントリスナーを設定
+            const newRelationshipType = newCard.querySelector('.relationship-type');
+            const newRelationshipName = newCard.querySelector('.relationship-name');
+            newRelationshipType.addEventListener('change', calculateEstimate);
+            newRelationshipName.addEventListener('input', calculateEstimate);
+
+            consultationCardsContainer.appendChild(newCard);
+            newCard.classList.add('fade-in'); // Add animation class
+            calculateEstimate();
+        }
+
+        // 相談カードの削除
+        function removeConsultationCard(cardElement) {
+            cardElement.classList.add('fade-out');
+            cardElement.addEventListener('transitionend', () => {
+                cardElement.remove();
+                calculateEstimate();
+            }, { once: true });
+        }
+
+        // 関係者の追加
+        function addRelationship(buttonElement) {
+            const card = buttonElement.closest('.consultation-card');
+            const relationshipsContainer = card.querySelector('.relationships-container');
+            const currentRelationshipCount = relationshipsContainer.querySelectorAll('.relationship-entry').length;
+
+            if (currentRelationshipCount >= 5) {
+                // 最大5名まで
+                alert('関係者は最大5名まで追加できます。'); // Replace with custom modal if needed
+                return;
+            }
+
+            const template = document.getElementById('relationship-entry-template');
+            const newEntry = template.content.firstElementChild.cloneNode(true);
+
+            // イベントリスナーを設定
+            newEntry.querySelector('.relationship-type').addEventListener('change', calculateEstimate);
+            newEntry.querySelector('.relationship-name').addEventListener('input', calculateEstimate);
+            newEntry.querySelector('.remove-relationship-btn').addEventListener('click', () => removeRelationship(newEntry));
+
+            relationshipsContainer.appendChild(newEntry);
+            newEntry.classList.add('fade-in'); // Add animation class
+            updateRelationshipCount(card);
+            calculateEstimate();
+        }
+
+        // 関係者の削除
+        function removeRelationship(entryElement) {
+            const card = entryElement.closest('.consultation-card');
+            entryElement.classList.add('fade-out');
+            entryElement.addEventListener('transitionend', () => {
+                entryElement.remove();
+                updateRelationshipCount(card);
+                calculateEstimate();
+            }, { once: true });
+        }
+
+        // 関係者数の更新
+        function updateRelationshipCount(card) {
+            const countSpan = card.querySelector('.relationship-count');
+            const currentCount = card.querySelectorAll('.relationship-entry').length;
+            countSpan.textContent = currentCount;
+        }
+
+        // 備考欄をクリアする関数
+        function clearRemarks() {
+            remarksTextarea.value = '';
+            clearRemarksBtn.classList.add('hidden'); // クリアしたらボタンを非表示にする
+            calculateEstimate();
+        }
+
+        // 備考クリアボタンの表示/非表示を切り替える関数
+        function toggleRemarksClearButton() {
+            if (remarksTextarea.value.trim() !== '') {
+                clearRemarksBtn.classList.remove('hidden');
+            } else {
+                clearRemarksBtn.classList.add('hidden');
+            }
+        }
+
+        // 見積もり内容をクリップボードにコピー
+        function copyEstimate() {
+            const estimateText = estimateOutput.textContent;
+            const textarea = document.createElement('textarea');
+            textarea.value = estimateText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('お見積り内容をコピーしました！'); // Replace with custom modal
+            } catch (err) {
+                console.error('コピーに失敗しました', err);
+                alert('コピーに失敗しました。手動でコピーしてください。'); // Replace with custom modal
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // 全ての入力フィールドとセレクトボックスにイベントリスナーを追加して、変更があったら見積もりを再計算
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('input', calculateEstimate);
+            element.addEventListener('change', calculateEstimate); // For select elements
+        });
+
+    </script>
+</body>
+</html>
