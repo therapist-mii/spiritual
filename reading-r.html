@@ -4,717 +4,593 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>リーディングお見積り＆ご予約</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
-
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* カスタムスタイル */
         body {
             font-family: 'Noto Serif JP', serif;
             color: #776163;
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-            transition: background-image 0.5s ease-in-out;
+            background-color: #f7f3ed;
+            line-height: 1.6;
         }
-
-        /* PC用背景画像 */
-        @media (min-width: 768px) {
-            body {
-                background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei.jpg');
-            }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
         }
-
-        /* スマホ用背景画像 */
-        @media (max-width: 767px) {
-            body {
-                background-image: url('https://github.com/therapist-mii/spiritual/raw/main/images/haikei-sumaho.jpg');
-            }
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            color: #554446;
         }
-
-        /* 必須マーク */
-        .required-mark {
-            color: #ff0000;
-            margin-left: 0.25rem;
+        .text-brown {
+            color: #776163;
         }
-        
-        /* カスタムボタンのスタイル */
-        .btn {
-            transition: all 0.3s ease;
-            border-radius: 9999px;
+        .btn-base {
             padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            cursor: pointer;
+            border-radius: 9999px;
+            font-weight: 700;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
         }
-
         .btn-primary {
             background-color: #E4C1B5;
             color: white;
         }
         .btn-primary:hover {
             background-color: #ad9196;
+            color: white;
         }
-        
-        .btn-first-timer {
+        .btn-first-time {
             background-color: #e4b5b9;
             color: white;
         }
-        .btn-first-timer:hover {
+        .btn-first-time:hover {
             background-color: #ad9196;
+            color: white;
         }
-        
-        .btn-clear-form {
+        .btn-clear {
             background-color: #EAE6E1;
             color: #cbb6b6;
-            border: 1px solid #cbb6b6;
         }
-        .btn-clear-form:hover {
+        .btn-clear:hover {
             background-color: #cbb6b6;
             color: #EAE6E1;
         }
-        
-        .btn-option {
-            background-color: #f7f3f0;
-            color: #7a736a;
-            border: 1px solid #E4C1B5;
+        .btn-clear-x {
+            background-color: #7a736a;
+            color: white;
         }
-        .btn-option.active {
+        .btn-clear-x:hover {
             background-color: #E4C1B5;
             color: white;
-            border-color: #E4C1B5;
         }
-        
-        /* フォーム要素のスタイル */
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #E4C1B5;
-            border-radius: 0.5rem;
-            background-color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #ad9196;
-            box-shadow: 0 0 0 3px rgba(173, 145, 150, 0.2);
-        }
-        .form-input.error {
+        .border-error {
             border-color: #ff0000;
-            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
         }
-
-        /* アニメーション */
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            animation: slideUp 0.5s ease-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
         @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        
-        /* 相談カードのクリアボタン */
-        .clear-card-btn {
-            background-color: #7a736a;
-            color: white;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            position: absolute;
-            top: -10px;
-            right: -10px;
+            align-items: center;
+            z-index: 1000;
         }
-        .clear-card-btn:hover {
-            background-color: #E4C1B5;
-        }
-        
-        /* 関係者クリアボタン */
-        .clear-person-btn {
-            color: #EAE6E1;
-            transition: color 0.3s ease;
-        }
-        .clear-person-btn:hover {
-            color: #cbb6b6;
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-[#EAE6E1]">
 
-    <div id="app" class="max-w-4xl mx-auto p-4 md:p-8">
-
-        <!-- ヘッダー -->
-        <header class="text-center mb-8 md:mb-12 fade-in">
-            <a href="https://spiritual-therapist-mii.studio.site/">
-                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="w-48 mx-auto">
-            </a>
-        </header>
-
-        <!-- メインコンテンツ -->
-        <main>
-            <div class="bg-white/80 backdrop-blur-sm p-6 md:p-10 rounded-2xl shadow-lg fade-in" style="animation-delay: 0.2s;">
-                <h1 class="text-2xl md:text-3xl font-bold text-center mb-2">リーディングお見積り＆ご予約</h1>
-                <p class="text-center text-sm mb-8">必要事項を記入してください。一番下に見積もりが出ます。</p>
-
-                <form id="estimation-form" class="space-y-8">
-
-                    <!-- 相談内容セクション -->
-                    <div id="consultation-cards-container">
-                        <!-- 最初の相談カード -->
-                        <div class="consultation-card bg-white/70 p-6 rounded-xl border border-gray-200 space-y-6" data-card-index="0">
-                            <div>
-                                <label for="consultation-0" class="font-semibold block mb-2">ご相談内容<span class="required-mark">*</span></label>
-                                <p class="text-xs text-gray-500 mb-2">相談内容の要点のみご記入ください。詳細はLINEにてお知らせください。</p>
-                                <textarea id="consultation-0" name="consultation-0" rows="4" class="form-input" placeholder="例：守護霊様からのメッセージをお願いします"></textarea>
-                            </div>
-                            <div>
-                                <label class="font-semibold block mb-2">ご相談内容に関係する方</label>
-                                <p class="text-xs text-gray-500 mb-2">人間関係のご相談など、鑑定結果に言及する必要のある方のお名前（ニックネーム可）。最大5名まで</p>
-                                <div class="persons-container space-y-3" data-card-index="0">
-                                    <!-- 関係者入力欄がここに追加されます -->
-                                </div>
-                                <div class="flex justify-between items-center mt-4">
-                                    <button type="button" class="add-person-btn btn btn-sm bg-[#EAE6E1] text-[#7a736a] hover:bg-[#cbb6b6] hover:text-white text-sm px-4 py-1" data-card-index="0">関係者を追加</button>
-                                    <span class="person-count text-sm font-medium" data-card-index="0">人数: 0/5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <button type="button" id="add-consultation-btn" class="btn btn-primary">相談を追加</button>
-                    </div>
-
-                    <!-- オプション -->
-                    <div class="space-y-6">
-                        <h2 class="text-xl font-semibold text-center border-b-2 border-dotted border-[#E4C1B5] pb-2">オプション</h2>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-white/70 p-6 rounded-xl border border-gray-200 text-center">
-                                <h3 class="font-semibold mb-2">筆跡診断</h3>
-                                <p class="text-xs text-gray-500 mb-4">文字の癖から思考傾向や内面のブロックを診断します。<br>6,000円</p>
-                                <button type="button" class="option-btn btn btn-option text-sm" data-option="handwriting">追加する</button>
-                            </div>
-                            <div class="bg-white/70 p-6 rounded-xl border border-gray-200 text-center">
-                                <h3 class="font-semibold mb-2">お顔オーラカラーマップ</h3>
-                                <p class="text-xs text-gray-500 mb-4">お顔に現れるエネルギー傾向をカラーマップで可視化します。<br>4,000円</p>
-                                <button type="button" class="option-btn btn btn-option text-sm" data-option="aura">追加する</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- お支払いについて -->
-                    <div class="space-y-6">
-                         <h2 class="text-xl font-semibold text-center border-b-2 border-dotted border-[#E4C1B5] pb-2">お支払いについて</h2>
-                        <div class="bg-white/70 p-6 rounded-xl border border-gray-200 space-y-6">
-                             <div>
-                                <label for="coupon" class="font-semibold block mb-2">クーポン</label>
-                                <p class="text-xs text-gray-500 mb-2">クーポンをお持ちの方は選択してください。</p>
-                                <select id="coupon" name="coupon" class="form-input">
-                                    <option value="0">選択してください</option>
-                                    <option value="0">クーポン無し</option>
-                                    <option value="0.05">5％OFFクーポン</option>
-                                    <option value="0.10">10％OFFクーポン</option>
-                                    <option value="0.15">15％OFFクーポン</option>
-                                    <option value="0.20">20％OFFクーポン</option>
-                                    <option value="0.25">25％OFFクーポン</option>
-                                    <option value="0.30">30％OFFクーポン</option>
-                                </select>
-                            </div>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div class="text-center">
-                                    <h3 class="font-semibold mb-2">紹介割引</h3>
-                                    <p class="text-xs text-gray-500 mb-4">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可<br>紹介割引：−500円</p>
-                                    <button type="button" class="option-btn btn btn-option text-sm" data-option="referral">追加する</button>
-                                </div>
-                                <div class="text-center">
-                                    <h3 class="font-semibold mb-2">ライト割引</h3>
-                                    <p class="text-xs text-gray-500 mb-4">A4用紙1枚程度の量の鑑定書のみ...5,000円引き。納品後のLINEは、お気持ちだけいただき、基本的にこちらからのご返信は控えさせていただきます。</p>
-                                    <button type="button" class="option-btn btn btn-option text-sm" data-option="light">追加する</button>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="payment-method" class="font-semibold block mb-2">お支払い方法<span class="required-mark">*</span></label>
-                                <select id="payment-method" name="payment-method" class="form-input">
-                                    <option value="">選択してください</option>
-                                    <option value="bank">銀行振込</option>
-                                    <option value="paypay">Paypay</option>
-                                    <option value="paypal">Paypal</option>
-                                    <option value="credit">クレジットカード</option>
-                                    <option value="konbini">コンビニ払い（手数料220円）</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 備考 -->
-                    <div>
-                        <label for="remarks" class="font-semibold block mb-2">備考</label>
-                        <p class="text-xs text-gray-500 mb-2">ご希望・ご質問があればご記入ください</p>
-                        <textarea id="remarks" name="remarks" rows="4" class="form-input"></textarea>
-                    </div>
-
-                    <!-- ご確認事項 -->
-                    <div class="bg-white/70 p-6 rounded-xl border border-gray-200 text-sm space-y-4">
-                        <h2 class="text-lg font-semibold text-center">ご確認事項</h2>
-                        <div class="grid md:grid-cols-2 gap-4 text-xs md:text-sm">
-                            <div class="p-4 bg-gray-50 rounded-lg">
-                                <h3 class="font-bold mb-2">セッションについて</h3>
-                                <p><strong>セッション形式：</strong> 遠隔</p>
-                                <p><strong>ご予約：</strong> 日にち指定のみ（時間指定不可）</p>
-                            </div>
-                            <div class="p-4 bg-gray-50 rounded-lg">
-                                <h3 class="font-bold mb-2">納品日・営業時間</h3>
-                                <p><strong>納品日：</strong>セッション日より5営業日</p>
-                                <p><strong>営業時間：</strong> 9：00～17：00</p>
-                                <p><strong>休日：</strong>土日祝日、他指定日</p>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-gray-50 rounded-lg">
-                            <h3 class="font-bold mb-2">セッション後の追加料金について</h3>
-                            <p>納品後に、追加の相談がある場合、追加料金が発生いたします。<br>ご相談１件：3,000円～</p>
-                        </div>
-                        <div class="p-4 bg-rose-50 rounded-lg">
-                            <h3 class="font-bold mb-2 text-rose-800">【ご提出いただくもの】</h3>
-                            <ul class="list-disc list-inside text-rose-700">
-                                <li>目元の写真</li>
-                                <li>手書きのお名前</li>
-                                <li>手書きの相談のタイトル</li>
-                            </ul>
-                            <div class="flex gap-4 mt-2">
-                                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/memoto.jpg" alt="目元の写真例" class="w-20 h-20 object-cover rounded-md">
-                                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/tegaki-r.jpg" alt="手書きの例" class="w-20 h-20 object-cover rounded-md">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 自動計算と表示 -->
-                    <div id="estimate-result-container" class="bg-white/90 p-6 md:p-8 rounded-xl border-2 border-dashed border-[#E4C1B5] space-y-2">
-                        <!-- 見積もり結果がここに表示されます -->
-                    </div>
-                    
-                    <!-- ページ下部機能ボタン -->
-                     <div class="text-center space-y-4 pt-6">
-                        <div class="bg-white/70 p-4 rounded-xl border border-gray-200 text-sm">
-                            <h3 class="font-bold mb-2">【LINEで予約する際の手順】</h3>
-                            <p>① お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。</p>
-                            <p>② 「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</p>
-                        </div>
-                        <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-                            <button type="button" id="clear-all-btn" class="btn btn-clear-form w-full md:w-auto">クリア</button>
-                            <button type="button" id="copy-btn" class="btn btn-primary w-full md:w-auto">お見積り内容をコピー</button>
-                            <button type="button" id="line-btn" class="btn btn-primary w-full md:w-auto bg-green-500 hover:bg-green-600">LINEに貼り付けて予約する</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </main>
-        
-        <!-- フッター -->
-        <footer class="mt-12 md:mt-16 text-center fade-in" style="animation-delay: 0.4s;">
-            <div class="bg-white/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-lg mb-6">
-                <h2 class="font-bold text-lg">はじめての方へ</h2>
-                <p class="text-sm my-4">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
-                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" class="btn btn-first-timer inline-block">はじめての方のフォーム</a>
-            </div>
-            <div class="text-sm space-x-6 mb-6">
-                <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-[#ad9196] transition-colors">Home</a>
-                <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-[#ad9196] transition-colors">メニュー一覧</a>
-            </div>
-            <a href="https://spiritual-therapist-mii.studio.site/">
-                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="w-40 mx-auto">
-            </a>
-        </footer>
-    </div>
-    
-    <!-- モーダル（通知用） -->
-    <div id="modal" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div id="modal-content" class="bg-white rounded-lg shadow-xl p-6 text-center max-w-sm w-full transform scale-95 transition-transform duration-300">
-            <p id="modal-message" class="mb-4"></p>
-            <button id="modal-close-btn" class="btn btn-primary">閉じる</button>
+    <!-- Modal for validation -->
+    <div id="validationModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-4">エラー</h3>
+            <p>必須項目をすべて入力してください。</p>
+            <button id="closeModalBtn" class="btn-base btn-primary mt-6">閉じる</button>
         </div>
     </div>
 
+    <!-- Header -->
+    <header class="py-4 px-4 bg-white shadow-md flex justify-center sticky top-0 z-50">
+        <a href="https://spiritual-therapist-mii.studio.site/">
+            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="w-auto h-12">
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-8">
+        <h1 class="text-3xl font-bold text-center mb-2">リーディングお見積り＆ご予約</h1>
+        <p class="text-center mb-8 text-brown">必要事項を記入してください。一番下に見積もりが出ます。</p>
+
+        <!-- Form Section -->
+        <form id="readingForm" class="space-y-8">
+
+            <!-- Consultation Cards Container -->
+            <div id="consultationCards" class="space-y-8">
+                <!-- Initial consultation card will be generated here by JS -->
+            </div>
+
+            <div class="text-center">
+                <button type="button" id="addConsultationBtn" class="btn-base btn-primary inline-flex items-center px-6 py-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    相談を追加
+                </button>
+            </div>
+
+            <!-- Options Section -->
+            <div class="card fade-in">
+                <h2 class="text-2xl font-bold mb-4">オプション</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Option: Handwriting Analysis -->
+                    <div class="p-4 border border-gray-200 rounded-lg flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg">筆跡診断</h3>
+                            <p class="text-sm text-brown my-2">文字の癖から思考傾向や内面のブロックを診断します。</p>
+                            <p class="text-lg font-bold">6,000円</p>
+                        </div>
+                        <button type="button" data-price="6000" data-name="筆跡診断" class="btn-base btn-primary mt-4 option-btn self-end">追加する</button>
+                    </div>
+                    <!-- Option: Face Aura Color Map -->
+                    <div class="p-4 border border-gray-200 rounded-lg flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg">お顔オーラカラーマップ</h3>
+                            <p class="text-sm text-brown my-2">お顔に現れるエネルギー傾向をカラーマップで可視化します。</p>
+                            <p class="text-lg font-bold">4,000円</p>
+                        </div>
+                        <button type="button" data-price="4000" data-name="お顔オーラカラーマップ" class="btn-base btn-primary mt-4 option-btn self-end">追加する</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment and Discount Section -->
+            <div class="card fade-in">
+                <h2 class="text-2xl font-bold mb-4">お支払いについて</h2>
+                <div class="space-y-6">
+                    <!-- Discount -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2">割引</h3>
+                        <!-- Coupon -->
+                        <div class="mb-4">
+                            <label for="coupon" class="block text-sm font-medium mb-1">クーポン</label>
+                            <p class="text-xs text-gray-500 mb-2">クーポンをお持ちの方は選択してください。</p>
+                            <select id="coupon" class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring focus:ring-[#E4C1B5] transition-all">
+                                <option value="0">選択してください</option>
+                                <option value="0">クーポン無し</option>
+                                <option value="0.05">5％OFFクーポン</option>
+                                <option value="0.10">10％OFFクーポン</option>
+                                <option value="0.15">15％OFFクーポン</option>
+                                <option value="0.20">20％OFFクーポン</option>
+                                <option value="0.25">25％OFFクーポン</option>
+                                <option value="0.30">30％OFFクーポン</option>
+                            </select>
+                        </div>
+                        <!-- Referral Discount -->
+                        <div class="mb-4 flex items-center justify-between p-4 border rounded-lg">
+                            <div class="mr-4">
+                                <h4 class="font-bold">紹介割引</h4>
+                                <p class="text-sm text-brown">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可 <br>紹介割引：−500円</p>
+                            </div>
+                            <button type="button" data-price="-500" data-name="紹介割引" class="btn-base btn-primary discount-btn self-center">追加する</button>
+                        </div>
+                        <!-- Lite Discount -->
+                        <div class="mb-4 flex items-center justify-between p-4 border rounded-lg">
+                            <div class="mr-4">
+                                <h4 class="font-bold">ライト割引</h4>
+                                <p class="text-sm text-brown">A4用紙1枚程度の量の鑑定書のみ...5,000円引き。納品後のLINEは、お気持ちだけいただき、基本的にこちらからのご返信は控えさせていただきます。</p>
+                            </div>
+                            <button type="button" data-price="-5000" data-name="ライト割引" class="btn-base btn-primary discount-btn self-center">追加する</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2">お支払い方法<span class="text-red-500">*</span></h3>
+                        <select id="paymentMethod" class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring focus:ring-[#E4C1B5] transition-all">
+                            <option value="">選択してください</option>
+                            <option value="銀行振込">銀行振込</option>
+                            <option value="Paypay">Paypay</option>
+                            <option value="Paypal">Paypal</option>
+                            <option value="クレジットカード">クレジットカード</option>
+                            <option value="コンビニ払い">コンビニ払い（手数料220円）</option>
+                        </select>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2">備考</h3>
+                        <p class="text-sm text-gray-500 mb-1">ご希望・ご質問があればご記入ください</p>
+                        <textarea id="remarks" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E4C1B5] transition-all"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmation Section -->
+            <div class="card fade-in">
+                <h2 class="text-2xl font-bold mb-4">ご確認事項</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-brown">
+                    <div>
+                        <h4 class="font-bold mb-1">セッションについて</h4>
+                        <p>セッション形式： 遠隔</p>
+                        <p>ご予約： 日にち指定のみ（時間指定不可）</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-1">納品日・営業時間</h4>
+                        <p>納品日：セッション日より5営業日</p>
+                        <p>営業時間： 9：00～17：00</p>
+                        <p>休日：土日祝日、他指定日</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h4 class="font-bold mb-1">セッション後の追加料金について</h4>
+                        <p>納品後に、追加の相談がある場合、追加料金が発生いたします。</p>
+                        <p>ご相談１件：3,000円～</p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h4 class="font-bold text-lg mb-4">【ご提出いただくもの】</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center items-start text-brown">
+                        <div>
+                            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/memoto.jpg" alt="目元の写真" class="w-full rounded-lg mb-2">
+                            <p class="text-sm">目元の写真</p>
+                        </div>
+                        <div>
+                            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/tegaki-r.jpg" alt="手書きのお名前" class="w-full rounded-lg mb-2">
+                            <p class="text-sm">手書きのお名前</p>
+                        </div>
+                        <div>
+                            <p class="text-sm">手書きの相談のタイトル</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Estimate Display -->
+            <div class="card fade-in">
+                <h2 class="text-2xl font-bold mb-4">リーディングお見積り</h2>
+                <pre id="estimateDisplay" class="p-4 bg-gray-100 rounded-lg text-sm overflow-auto"></pre>
+                <div class="border-t-2 border-dashed border-gray-300 my-4"></div>
+                <div class="flex justify-between items-center font-bold text-xl">
+                    <span>合計金額：</span>
+                    <span id="totalPrice">0 円</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+                <button type="button" id="clearFormBtn" class="btn-base btn-clear order-last sm:order-first px-6 py-3">クリア</button>
+                <button type="button" id="copyBtn" class="btn-base btn-primary px-6 py-3">コピー</button>
+                <button type="button" id="lineBtn" class="btn-base btn-primary px-6 py-3">LINEに貼り付けて予約する</button>
+            </div>
+            <p class="text-center text-sm text-brown mt-4">① お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。<br>② 「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</p>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-8 px-4">
+        <div class="container text-center">
+            <div class="bg-[#f7f3ed] rounded-lg p-6 mb-8 fade-in">
+                <h3 class="text-lg font-bold mb-2">はじめての方へ</h3>
+                <p class="text-sm text-brown mb-4">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
+                <a href="https://spiritual-therapist-mii.studio.site/form" class="btn-base btn-first-time">はじめての方のフォーム</a>
+            </div>
+
+            <nav class="flex justify-center space-x-6 text-sm text-brown font-bold mb-8">
+                <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-gray-500">Home</a>
+                <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-gray-500">メニュー一覧</a>
+            </nav>
+
+            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="w-auto h-20 mx-auto opacity-80">
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('estimation-form');
-            const consultationCardsContainer = document.getElementById('consultation-cards-container');
-            const addConsultationBtn = document.getElementById('add-consultation-btn');
-            const estimateResultContainer = document.getElementById('estimate-result-container');
-            
-            const clearAllBtn = document.getElementById('clear-all-btn');
-            const copyBtn = document.getElementById('copy-btn');
-            const lineBtn = document.getElementById('line-btn');
+            const consultationCardsContainer = document.getElementById('consultationCards');
+            const addConsultationBtn = document.getElementById('addConsultationBtn');
+            const estimateDisplay = document.getElementById('estimateDisplay');
+            const totalPriceDisplay = document.getElementById('totalPrice');
+            const clearFormBtn = document.getElementById('clearFormBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const lineBtn = document.getElementById('lineBtn');
+            const validationModal = document.getElementById('validationModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const requiredFields = ['consultationContent', 'paymentMethod'];
 
-            const modal = document.getElementById('modal');
-            const modalContent = document.getElementById('modal-content');
-            const modalMessage = document.getElementById('modal-message');
-            const modalCloseBtn = document.getElementById('modal-close-btn');
+            let consultationCount = 0;
 
-            let consultationCardIndex = 1;
+            const createConsultationCard = (isInitial = false) => {
+                consultationCount++;
+                const card = document.createElement('div');
+                card.className = 'card fade-in relative';
+                card.dataset.id = consultationCount;
 
-            const PRICES = {
-                base: 16000,
-                additionalConsultation: 3000,
-                person: {
-                    family: 1500,
-                    love: 5000,
-                    other: 3000,
-                },
-                option: {
-                    handwriting: 6000,
-                    aura: 4000,
-                },
-                discount: {
-                    referral: -500,
-                    light: -5000,
-                },
-                convenienceStoreFee: 220,
-            };
-
-            // --- モーダル表示/非表示 ---
-            const showModal = (message) => {
-                modalMessage.textContent = message;
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                modalContent.classList.remove('scale-95');
-            };
-            const hideModal = () => {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                modalContent.classList.add('scale-95');
-            };
-            modalCloseBtn.addEventListener('click', hideModal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    hideModal();
-                }
-            });
-
-            // --- 見積もり計算と表示更新 ---
-            const calculateAndDisplay = () => {
-                let total = PRICES.base;
-                let subtotal = PRICES.base;
-                const details = {
-                    consultations: [{ price: PRICES.base, persons: [] }],
-                    options: [],
-                    discounts: [],
-                    fee: 0,
-                };
-
-                // 相談件数
-                const consultationCards = document.querySelectorAll('.consultation-card');
-                consultationCards.forEach((card, index) => {
-                    if (index > 0) {
-                        total += PRICES.additionalConsultation;
-                        subtotal += PRICES.additionalConsultation;
-                        details.consultations.push({ price: PRICES.additionalConsultation, persons: [] });
-                    }
-
-                    // 関係者
-                    const personInputs = card.querySelectorAll('.person-item');
-                    personInputs.forEach(personItem => {
-                        const name = personItem.querySelector('input[type="text"]').value;
-                        const relationship = personItem.querySelector('select').value;
-                        if (name && relationship) {
-                            const price = PRICES.person[relationship];
-                            total += price;
-                            subtotal += price;
-                            details.consultations[index].persons.push({ name, relationship, price });
-                        }
+                if (!isInitial) {
+                    const clearBtn = document.createElement('button');
+                    clearBtn.className = 'btn-base btn-clear-x rounded-full p-2 absolute top-4 right-4 text-xs font-normal';
+                    clearBtn.innerHTML = '&times;';
+                    clearBtn.ariaLabel = 'この相談カードを削除';
+                    clearBtn.addEventListener('click', () => {
+                        card.remove();
+                        calculateTotal();
                     });
-                });
-
-                // オプション
-                document.querySelectorAll('.option-btn').forEach(btn => {
-                    if (btn.classList.contains('active')) {
-                        const optionType = btn.dataset.option;
-                        if (PRICES.option[optionType]) {
-                            const price = PRICES.option[optionType];
-                            total += price;
-                            subtotal += price;
-                            details.options.push({ name: btn.previousElementSibling.previousElementSibling.textContent, price });
-                        }
-                        if (PRICES.discount[optionType]) {
-                            const price = PRICES.discount[optionType];
-                            total += price;
-                            details.discounts.push({ name: btn.previousElementSibling.previousElementSibling.textContent, price });
-                        }
-                    }
-                });
-                
-                // クーポン割引
-                const couponValue = parseFloat(document.getElementById('coupon').value);
-                if (couponValue > 0) {
-                    const couponDiscount = Math.round(subtotal * couponValue);
-                    total -= couponDiscount;
-                    details.discounts.push({ name: `クーポン割引 (${couponValue * 100}%)`, price: -couponDiscount });
-                }
-                
-                // コンビニ払い手数料
-                if(document.getElementById('payment-method').value === 'konbini') {
-                    total += PRICES.convenienceStoreFee;
-                    details.fee = PRICES.convenienceStoreFee;
+                    card.appendChild(clearBtn);
                 }
 
-                // 表示更新
-                updateEstimateDisplay(total, details);
-            };
-
-            const updateEstimateDisplay = (total, details) => {
-                let html = `<h2 class="text-xl font-bold text-center mb-4">【リーディングお見積り】</h2>`;
-                
-                details.consultations.forEach((consult, index) => {
-                    html += `<p>${index + 1}件目：${consult.price.toLocaleString()} 円</p>`;
-                    if (consult.persons.length > 0) {
-                         html += `<div class="pl-4 text-sm">`;
-                         consult.persons.forEach(p => {
-                            html += `<p>関係者霊視接続料：${p.name} 様　${p.price.toLocaleString()}円</p>`;
-                         });
-                         html += `</div>`;
-                    }
-                });
-
-                if (details.options.length > 0) {
-                    html += `<p class="mt-2">（オプション）</p>`;
-                    details.options.forEach(opt => {
-                        html += `<p class="pl-4 text-sm">${opt.name}：${opt.price.toLocaleString()}円</p>`;
-                    });
-                }
-                
-                if (details.discounts.length > 0) {
-                     html += `<div class="mt-2">`;
-                    details.discounts.forEach(disc => {
-                        html += `<p class="text-green-600">${disc.name}：${disc.price.toLocaleString()}円</p>`;
-                    });
-                    html += `</div>`;
-                }
-                
-                if (details.fee > 0) {
-                    html += `<p class="mt-2 text-sm">コンビニ払い手数料：${details.fee.toLocaleString()}円</p>`;
-                }
-
-                html += `<hr class="my-4 border-dashed">`;
-                html += `<p class="text-xl font-bold text-center">合計金額： ${total.toLocaleString()} 円</p>`;
-                html += `<hr class="my-4 border-dashed">`;
-                html += `<div class="text-sm bg-rose-50 p-3 rounded-md">
-                            <h3 class="font-bold text-rose-800">【ご提出いただくもの】</h3>
-                            <ul class="list-disc list-inside text-rose-700">
-                                <li>目元の写真</li>
-                                <li>手書きのお名前</li>
-                                <li>手書きの相談のタイトル</li>
-                            </ul>
-                         </div>`;
-
-                estimateResultContainer.innerHTML = html;
-            };
-
-            // --- イベントリスナー設定 ---
-            form.addEventListener('input', calculateAndDisplay);
-            form.addEventListener('change', calculateAndDisplay);
-
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    btn.classList.toggle('active');
-                    btn.textContent = btn.classList.contains('active') ? '追加済み' : '追加する';
-                    calculateAndDisplay();
-                });
-            });
-
-            // --- 関係者追加/削除 ---
-            const addPersonField = (container, cardIndex) => {
-                const personItems = container.querySelectorAll('.person-item');
-                if (personItems.length >= 5) return;
-
-                const personId = `person-${cardIndex}-${personItems.length}`;
-                const div = document.createElement('div');
-                div.className = 'person-item flex items-center gap-2 bg-gray-50 p-2 rounded-md';
-                div.innerHTML = `
-                    <input type="text" placeholder="お名前" class="form-input text-sm flex-grow" id="${personId}-name">
-                    <select class="form-input text-sm w-40" id="${personId}-relation">
-                        <option value="">関係性*</option>
-                        <option value="family">家族</option>
-                        <option value="love">恋愛のお相手</option>
-                        <option value="other">その他の関係</option>
-                    </select>
-                    <button type="button" class="clear-person-btn text-gray-400 hover:text-red-500 text-xl font-bold p-1">&times;</button>
-                `;
-                container.appendChild(div);
-                updatePersonCount(cardIndex);
-            };
-
-            const updatePersonCount = (cardIndex) => {
-                const container = document.querySelector(`.persons-container[data-card-index="${cardIndex}"]`);
-                const countSpan = document.querySelector(`.person-count[data-card-index="${cardIndex}"]`);
-                if (container && countSpan) {
-                    const count = container.querySelectorAll('.person-item').length;
-                    countSpan.textContent = `人数: ${count}/5`;
-                }
-            };
-
-            consultationCardsContainer.addEventListener('click', (e) => {
-                // 関係者追加ボタン
-                if (e.target.classList.contains('add-person-btn')) {
-                    const cardIndex = e.target.dataset.cardIndex;
-                    const container = document.querySelector(`.persons-container[data-card-index="${cardIndex}"]`);
-                    addPersonField(container, cardIndex);
-                }
-                // 関係者削除ボタン
-                if (e.target.classList.contains('clear-person-btn')) {
-                    const cardIndex = e.target.closest('.consultation-card').dataset.cardIndex;
-                    e.target.closest('.person-item').remove();
-                    updatePersonCount(cardIndex);
-                    calculateAndDisplay();
-                }
-                // 相談カード削除ボタン
-                if (e.target.classList.contains('clear-card-btn')) {
-                    e.target.closest('.consultation-card').remove();
-                    calculateAndDisplay();
-                }
-            });
-
-            // --- 相談追加 ---
-            addConsultationBtn.addEventListener('click', () => {
-                const newCard = document.createElement('div');
-                newCard.className = 'consultation-card bg-white/70 p-6 rounded-xl border border-gray-200 space-y-6 mt-6 relative fade-in';
-                newCard.dataset.cardIndex = consultationCardIndex;
-                newCard.innerHTML = `
-                    <button type="button" class="clear-card-btn">&times;</button>
+                card.innerHTML += `
                     <div>
-                        <label for="consultation-${consultationCardIndex}" class="font-semibold block mb-2">ご相談内容（追加）<span class="required-mark">*</span></label>
-                        <textarea id="consultation-${consultationCardIndex}" name="consultation-${consultationCardIndex}" rows="4" class="form-input"></textarea>
+                        <h2 class="text-2xl font-bold mb-4">ご相談内容<span class="text-red-500">*</span></h2>
+                        <p class="text-sm text-gray-500 mb-1">相談内容の要点のみご記入ください。詳細はLINEにてお知らせください。</p>
+                        <textarea rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E4C1B5] transition-all consultation-content"></textarea>
                     </div>
-                    <div>
-                        <label class="font-semibold block mb-2">ご相談内容に関係する方</label>
-                        <div class="persons-container space-y-3" data-card-index="${consultationCardIndex}"></div>
-                        <div class="flex justify-between items-center mt-4">
-                            <button type="button" class="add-person-btn btn btn-sm bg-[#EAE6E1] text-[#7a736a] hover:bg-[#cbb6b6] hover:text-white text-sm px-4 py-1" data-card-index="${consultationCardIndex}">関係者を追加</button>
-                            <span class="person-count text-sm font-medium" data-card-index="${consultationCardIndex}">人数: 0/5</span>
+
+                    <div class="mt-6">
+                        <h3 class="text-lg font-bold mb-2">ご相談内容に関係する方</h3>
+                        <p class="text-sm text-gray-500 mb-2">人間関係のご相談など、鑑定結果に言及する必要のある方のお名前（ニックネーム可）。最大5名まで</p>
+                        <p class="text-sm text-gray-500 mb-4">人数: <span class="related-count">0</span>名</p>
+                        <div class="related-people-container space-y-4">
+                            <!-- Related person fields will be added here -->
+                        </div>
+                        <div class="flex justify-center mt-4">
+                            <button type="button" class="btn-base btn-primary add-related-person-btn">関係者を追加</button>
                         </div>
                     </div>
                 `;
-                consultationCardsContainer.appendChild(newCard);
-                consultationCardIndex++;
-                calculateAndDisplay();
-            });
 
-            // --- バリデーション ---
-            const validateForm = () => {
-                let isValid = true;
-                // 全ての入力欄のエラースタイルをリセット
-                document.querySelectorAll('.form-input.error').forEach(el => el.classList.remove('error'));
+                const relatedPeopleContainer = card.querySelector('.related-people-container');
+                const addRelatedPersonBtn = card.querySelector('.add-related-person-btn');
+                const relatedCountSpan = card.querySelector('.related-count');
 
-                // 相談内容
-                document.querySelectorAll('.consultation-card textarea').forEach(textarea => {
-                    if (!textarea.value.trim()) {
-                        textarea.classList.add('error');
-                        isValid = false;
+                const createRelatedPersonFields = () => {
+                    const count = relatedPeopleContainer.childElementCount;
+                    if (count >= 5) return;
+
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'grid grid-cols-2 gap-4 items-center fade-in';
+                    inputGroup.innerHTML = `
+                        <input type="text" placeholder="名前" class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring focus:ring-[#E4C1B5] transition-all related-name">
+                        <select class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring focus:ring-[#E4C1B5] transition-all related-relationship">
+                            <option value="">関係性</option>
+                            <option value="家族">家族</option>
+                            <option value="恋愛のお相手">恋愛のお相手</option>
+                            <option value="その他の関係">その他の関係</option>
+                        </select>
+                    `;
+                    relatedPeopleContainer.appendChild(inputGroup);
+                    relatedCountSpan.textContent = relatedPeopleContainer.childElementCount;
+
+                    inputGroup.querySelector('.related-name').addEventListener('input', calculateTotal);
+                    inputGroup.querySelector('.related-relationship').addEventListener('change', calculateTotal);
+                };
+
+                addRelatedPersonBtn.addEventListener('click', createRelatedPersonFields);
+
+                return card;
+            };
+
+            const populateInitialForm = () => {
+                consultationCardsContainer.innerHTML = '';
+                const initialCard = createConsultationCard(true);
+                consultationCardsContainer.appendChild(initialCard);
+                consultationCount = 1;
+            };
+
+            const calculateTotal = () => {
+                let total = 0;
+                let details = '';
+
+                // Base fee
+                const consultationCards = consultationCardsContainer.querySelectorAll('.card');
+                const initialConsultationCount = consultationCards.length;
+                details += `1件：16,000 円\n`;
+                total += 16000;
+
+                // Additional consultations
+                if (initialConsultationCount > 1) {
+                    const additionalFee = (initialConsultationCount - 1) * 3000;
+                    details += `追加相談料：${initialConsultationCount - 1}件 × 3,000円 = ${additionalFee.toLocaleString()}円\n`;
+                    total += additionalFee;
+                }
+
+                // Related persons
+                let relatedPeopleDetails = '';
+                let relatedPeopleFee = 0;
+                consultationCards.forEach(card => {
+                    const names = card.querySelectorAll('.related-name');
+                    const relationships = card.querySelectorAll('.related-relationship');
+                    names.forEach((nameInput, index) => {
+                        const name = nameInput.value.trim();
+                        const relationship = relationships[index].value;
+                        if (name && relationship) {
+                            let fee = 0;
+                            if (relationship === '家族') fee = 1500;
+                            else if (relationship === '恋愛のお相手') fee = 5000;
+                            else if (relationship === 'その他の関係') fee = 3000;
+                            relatedPeopleFee += fee;
+                            relatedPeopleDetails += `${name}　${fee.toLocaleString()}円\n`;
+                        }
+                    });
+                });
+                if (relatedPeopleDetails) {
+                    details += `\n関係者霊視接続料：\n${relatedPeopleDetails}`;
+                    total += relatedPeopleFee;
+                }
+
+                // Options
+                let optionsDetails = '';
+                const optionBtns = document.querySelectorAll('.option-btn');
+                optionBtns.forEach(btn => {
+                    if (btn.classList.contains('bg-[#ad9196]')) {
+                        const price = parseInt(btn.dataset.price);
+                        const name = btn.dataset.name;
+                        optionsDetails += `${name}${price.toLocaleString()}円\n`;
+                        total += price;
+                    }
+                });
+                if (optionsDetails) {
+                    details += `\n（オプション）\n${optionsDetails}`;
+                }
+
+                // Discounts
+                let discountDetails = '';
+                const discountBtns = document.querySelectorAll('.discount-btn');
+                discountBtns.forEach(btn => {
+                    if (btn.classList.contains('bg-[#ad9196]')) {
+                        const price = parseInt(btn.dataset.price);
+                        const name = btn.dataset.name;
+                        discountDetails += `${name}${price.toLocaleString()}円\n`;
+                        total += price;
                     }
                 });
 
-                // 関係者の関係性
-                document.querySelectorAll('.person-item').forEach(item => {
-                    const name = item.querySelector('input[type="text"]').value.trim();
-                    const relationSelect = item.querySelector('select');
-                    if (name && !relationSelect.value) {
-                        relationSelect.classList.add('error');
-                        isValid = false;
-                    }
-                });
-
-                // 支払い方法
-                const paymentMethod = document.getElementById('payment-method');
-                if (!paymentMethod.value) {
-                    paymentMethod.classList.add('error');
-                    isValid = false;
+                const couponSelect = document.getElementById('coupon');
+                const couponDiscount = total * parseFloat(couponSelect.value);
+                if (couponDiscount > 0) {
+                    const discountedTotal = total - couponDiscount;
+                    discountDetails += `クーポン割引-${Math.round(couponDiscount).toLocaleString()}円\n`;
+                    total = discountedTotal;
                 }
                 
+                if (discountDetails) {
+                    details += `\n${discountDetails}`;
+                }
+
+
+                estimateDisplay.textContent = `【リーディングお見積り】\n\n${details}\n--------------------------------\n合計金額：${total.toLocaleString()}円\n--------------------------------\n\n【ご提出いただくもの】\n目元の写真\n手書きのお名前\n手書きの相談のタイトル`;
+                totalPriceDisplay.textContent = `${total.toLocaleString()} 円`;
+            };
+
+            const validateForm = () => {
+                let isValid = true;
+                requiredFields.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (!element || element.value.trim() === '') {
+                        element.classList.add('border-error');
+                        isValid = false;
+                    } else {
+                        element.classList.remove('border-error');
+                    }
+                });
+                const consultationContents = document.querySelectorAll('.consultation-content');
+                consultationContents.forEach(ta => {
+                    if (ta.value.trim() === '') {
+                        ta.classList.add('border-error');
+                        isValid = false;
+                    } else {
+                        ta.classList.remove('border-error');
+                    }
+                });
                 return isValid;
             };
 
-            // --- 下部ボタンの機能 ---
-            clearAllBtn.addEventListener('click', () => {
-                form.reset();
-                // 動的に追加された要素を削除
-                document.querySelectorAll('.consultation-card:not(:first-child)').forEach(card => card.remove());
-                document.querySelectorAll('.persons-container').forEach(container => container.innerHTML = '');
-                document.querySelectorAll('.person-count').forEach((span, index) => {
-                    if (index === 0) span.textContent = '人数: 0/5';
-                });
-                // オプションボタンをリセット
-                document.querySelectorAll('.option-btn.active').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.textContent = '追加する';
-                });
-                // エラースタイルをリセット
-                document.querySelectorAll('.form-input.error').forEach(el => el.classList.remove('error'));
-                
-                consultationCardIndex = 1;
-                calculateAndDisplay();
+            // Event Listeners
+            addConsultationBtn.addEventListener('click', () => {
+                consultationCardsContainer.appendChild(createConsultationCard());
+                calculateTotal();
             });
 
-            const getEstimateText = () => {
-                return estimateResultContainer.innerText;
-            };
+            document.querySelectorAll('.consultation-content').forEach(ta => ta.addEventListener('input', calculateTotal));
+            document.querySelectorAll('.related-name, .related-relationship').forEach(el => el.addEventListener('input', calculateTotal));
+            document.getElementById('coupon').addEventListener('change', calculateTotal);
+            document.getElementById('paymentMethod').addEventListener('change', calculateTotal);
+
+            document.querySelectorAll('.option-btn, .discount-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const isActive = btn.classList.contains('bg-[#ad9196]');
+                    if (isActive) {
+                        btn.classList.remove('bg-[#ad9196]', 'text-white');
+                        btn.classList.add('bg-[#E4C1B5]', 'text-white');
+                        btn.textContent = '追加する';
+                    } else {
+                        btn.classList.remove('bg-[#E4C1B5]', 'text-white');
+                        btn.classList.add('bg-[#ad9196]', 'text-white');
+                        btn.textContent = '追加済み';
+                    }
+                    calculateTotal();
+                });
+            });
 
             copyBtn.addEventListener('click', () => {
-                if (!validateForm()) {
-                    showModal('必須項目(*)をすべて入力してください。');
-                    return;
+                if (validateForm()) {
+                    const textToCopy = estimateDisplay.textContent;
+                    if (document.execCommand('copy')) {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = 'コピーしました!';
+                        setTimeout(() => copyBtn.textContent = originalText, 2000);
+                    } else {
+                        // Fallback message for older browsers
+                        alert('コピーに失敗しました。お手数ですが手動でコピーしてください。');
+                    }
+                } else {
+                    validationModal.classList.remove('hidden');
                 }
-                const textToCopy = getEstimateText();
-                
-                // document.execCommand('copy') を使用
-                const textarea = document.createElement('textarea');
-                textarea.value = textToCopy;
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    showModal('お見積り内容をコピーしました！');
-                } catch (err) {
-                    showModal('コピーに失敗しました。');
-                    console.error('Copy failed', err);
-                }
-                document.body.removeChild(textarea);
             });
 
             lineBtn.addEventListener('click', () => {
-                 if (!validateForm()) {
-                    showModal('必須項目(*)をすべて入力してください。');
-                    return;
+                if (validateForm()) {
+                    window.location.href = 'https://line.me/ti/p/Kv76GQK_UI';
+                } else {
+                    validationModal.classList.remove('hidden');
                 }
-                const textToCopy = getEstimateText();
-                
-                const textarea = document.createElement('textarea');
-                textarea.value = textToCopy;
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    showModal('お見積り内容をコピーしました。LINEに貼り付けて送信してください。');
-                    setTimeout(() => {
-                       window.open('https://line.me/ti/p/Kv76GQK_UI', '_blank');
-                    }, 1500);
-                } catch (err) {
-                    showModal('コピーに失敗しました。');
-                    console.error('Copy failed', err);
-                }
-                document.body.removeChild(textarea);
             });
 
-            // 初期計算を実行
-            calculateAndDisplay();
+            closeModalBtn.addEventListener('click', () => {
+                validationModal.classList.add('hidden');
+            });
+            
+            clearFormBtn.addEventListener('click', () => {
+                document.getElementById('readingForm').reset();
+                populateInitialForm();
+                document.querySelectorAll('.option-btn, .discount-btn').forEach(btn => {
+                    btn.classList.remove('bg-[#ad9196]');
+                    btn.classList.add('bg-[#E4C1B5]');
+                    btn.textContent = '追加する';
+                });
+                document.querySelectorAll('.border-error').forEach(el => el.classList.remove('border-error'));
+                calculateTotal();
+            });
+
+            // Initial setup
+            populateInitialForm();
+            calculateTotal();
+
         });
     </script>
 </body>
