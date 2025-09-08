@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未来ナビお見積り＆ご予約</title>
+    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Noto Serif JP', serif;
+            color: #776163;
+            background-color: #ffffff;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 768px;
+        }
+
+        .btn-primary {
+            background-color: #E4C1B5;
+            color: #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #ad9196;
+            color: #ffffff;
+        }
+
+        .btn-clear {
+            background-color: #EAE6E1;
+            color: #cbb6b6;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-clear:hover {
+            background-color: #cbb6b6;
+            color: #EAE6E1;
+        }
+
+        .btn-x {
+            background-color: #7a736a;
+            color: #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-x:hover {
+            background-color: #E4C1B5;
+            color: #ffffff;
+        }
+
+        .btn-form-new {
+            background-color: #e4b5b9;
+            color: #776163;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-form-new:hover {
+            background-color: #ad9196;
+            color: #ffffff;
+        }
+
+        .error-message {
+            color: #ff0000;
+        }
+
+        .input-error {
+            border-color: #ff0000 !important;
+        }
+
+        .bg-subtle {
+            background-color: rgba(234, 230, 225, 0.4);
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white p-4 sm:p-8 md:p-12 fade-in">
+    <!-- Header -->
+    <header class="flex flex-col items-center justify-center text-center mb-8">
+        <a href="https://spiritual-therapist-mii.studio.site/">
+            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="Spiritual Therapist Mii Logo" class="w-48 mb-4">
+        </a>
+        <h1 class="text-3xl font-bold">未来ナビお見積り＆ご予約</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 bg-subtle rounded-3xl shadow-lg">
+        <section class="mb-8">
+            <p class="text-center text-lg mb-2">必要事項を記入してください。</p>
+            <p class="text-center text-lg">一番下に見積もりが出ます。</p>
+        </section>
+
+        <!-- Plan Selection -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">プラン選択<span class="text-red-600 ml-1">*</span></h2>
+            <div id="plan-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button type="button" data-plan="1-month" data-price="8000" class="btn-primary py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform">1ヶ月プラン：8,000円</button>
+                <button type="button" data-plan="3-month" data-price="20000" class="btn-primary py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform">3ヶ月プラン：20,000円</button>
+            </div>
+            <p class="text-sm mt-4 leading-relaxed">
+                ※未来ナビは、これからの流れをお伝えする案内です。ご質問や個別のご相談にはお応えしておりませんので、深くお話を伺うリーディングをご検討ください。
+            </p>
+        </section>
+
+        <!-- Discounts -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">割引</h2>
+            <!-- Coupon Discount -->
+            <div class="mb-4">
+                <label for="coupon-select" class="block text-md mb-2">クーポン</label>
+                <div class="relative flex items-center">
+                    <select id="coupon-select" class="w-full p-3 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-ad9196 appearance-none pr-8">
+                        <option value="0">選択してください</option>
+                        <option value="0.05">5％OFFクーポン</option>
+                        <option value="0.10">10％OFFクーポン</option>
+                        <option value="0.15">15％OFFクーポン</option>
+                        <option value="0.20">20％OFFクーポン</option>
+                        <option value="0.25">25％OFFクーポン</option>
+                        <option value="0.30">30％OFFクーポン</option>
+                    </select>
+                    <button type="button" class="btn-x absolute right-2 w-7 h-7 rounded-full flex items-center justify-center" onclick="clearSelect('coupon-select')">×</button>
+                </div>
+            </div>
+
+            <!-- Referral Discount -->
+            <div class="mb-4">
+                <h3 class="text-md mb-2">紹介割引</h3>
+                <p class="text-sm">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可</p>
+                <div class="flex items-center mt-2">
+                    <input type="checkbox" id="referral-checkbox" class="h-5 w-5 rounded text-E4C1B5 focus:ring-E4C1B5 border-gray-300">
+                    <label for="referral-checkbox" class="ml-2 text-md">適用する (−500円)</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Method -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">お支払い方法<span class="text-red-600 ml-1">*</span></h2>
+            <select id="payment-method-select" class="w-full p-3 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-ad9196 appearance-none">
+                <option value="">選択してください</option>
+                <option value="銀行振込">銀行振込</option>
+                <option value="Paypay">Paypay</option>
+                <option value="Paypal">Paypal</option>
+                <option value="クレジットカード">クレジットカード</option>
+                <option value="コンビニ払い">コンビニ払い（手数料220円）</option>
+            </select>
+        </section>
+
+        <!-- Remarks -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">備考</h2>
+            <div class="relative">
+                <textarea id="memo-field" rows="4" placeholder="ご希望・ご質問があればご記入ください" class="w-full p-4 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-ad9196"></textarea>
+                <button type="button" class="btn-x absolute bottom-2 right-2 w-7 h-7 rounded-full flex items-center justify-center" onclick="clearTextarea('memo-field')">×</button>
+            </div>
+        </section>
+
+        <!-- Confirmation Section -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold mb-4">ご確認事項</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold">セッションについて</h3>
+                    <ul class="list-disc ml-5 text-sm">
+                        <li>セッション形式： 遠隔</li>
+                        <li>ご予約： 日にち指定のみ（時間指定不可）</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold">納品日・営業時間</h3>
+                    <ul class="list-disc ml-5 text-sm">
+                        <li>納品日：セッション日より5営業日</li>
+                        <li>営業時間： 9：00～17：00</li>
+                        <li>休日：土日祝日、他指定日</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-bold mt-8 mb-4">ご提出いただくもの</h3>
+            <p>※以下の情報をご用意ください。スムーズなリーディングのために必要となります。</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-4">
+                <div>
+                    <h4 class="text-md font-bold mb-2">目元の写真</h4>
+                    <img src="https://github.com/therapist-mii/spiritual/raw/main/images/memoto.jpg" alt="目元の写真の参考例" class="w-full h-auto rounded-xl shadow-md">
+                </div>
+                <div>
+                    <h4 class="text-md font-bold mb-2">手書きのお名前</h4>
+                    <img src="https://github.com/therapist-mii/spiritual/raw/main/images/name.jpg" alt="手書きのお名前の参考例" class="w-full h-auto rounded-xl shadow-md">
+                </div>
+            </div>
+        </section>
+
+        <!-- Estimate Output -->
+        <section class="bg-white p-6 rounded-2xl shadow-inner my-8">
+            <h2 class="text-xl font-bold mb-4">お見積もり</h2>
+            <div id="estimate-output">
+                <!-- Estimate content will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Action Buttons & LINE Instructions -->
+        <section class="mb-8">
+            <p id="error-message" class="error-message text-center mb-4 hidden">必須項目を入力してください。</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="copy-btn" class="btn-primary py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform">お見積もり内容をコピー</button>
+                <a id="line-btn" href="https://line.me/ti/p/Kv76GQK_UI" target="_blank" class="btn-primary py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform text-center whitespace-nowrap">LINEに貼り付けて予約する</a>
+            </div>
+
+            <h3 class="text-lg font-bold mt-8 mb-2">【LINEで予約する際の手順】</h3>
+            <ol class="list-decimal ml-5 text-sm leading-relaxed">
+                <li>お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。</li>
+                <li>「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
+            </ol>
+        </section>
+
+        <!-- Navigation -->
+        <section class="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="https://spiritual-therapist-mii.studio.site/form" class="btn-form-new py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform whitespace-nowrap">はじめての方のフォーム</a>
+            <a href="https://spiritual-therapist-mii.studio.site/" class="btn-clear py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform whitespace-nowrap">Home</a>
+            <a href="https://spiritual-therapist-mii.studio.site/menu" class="btn-clear py-3 px-6 rounded-full text-lg shadow-md hover:scale-105 transition-transform whitespace-nowrap">メニュー一覧</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center">
+        <a href="https://spiritual-therapist-mii.studio.site/">
+            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="Spiritual Therapist Mii Logo" class="w-64 mx-auto block opacity-80">
+        </a>
+    </footer>
+
+    <script>
+        // DOM要素の取得
+        const planContainer = document.getElementById('plan-container');
+        const couponSelect = document.getElementById('coupon-select');
+        const referralCheckbox = document.getElementById('referral-checkbox');
+        const paymentMethodSelect = document.getElementById('payment-method-select');
+        const memoField = document.getElementById('memo-field');
+        const estimateOutput = document.getElementById('estimate-output');
+        const copyBtn = document.getElementById('copy-btn');
+        const lineBtn = document.getElementById('line-btn');
+        const errorMessage = document.getElementById('error-message');
+
+        let selectedPlan = null;
+        let selectedPrice = 0;
+
+        // 見積もりを更新する関数
+        const updateEstimate = () => {
+            const planName = selectedPlan ? selectedPlan.textContent.split('：')[0].trim() : '';
+            const planPrice = selectedPrice;
+            const couponDiscountRate = parseFloat(couponSelect.value);
+            const referralDiscount = referralCheckbox.checked ? 500 : 0;
+            const paymentMethod = paymentMethodSelect.value;
+            const hasConvenienceFee = paymentMethod === 'コンビニ払い';
+            const memoContent = memoField.value;
+
+            // 割引額の計算
+            const couponDiscount = planPrice > 0 ? planPrice * couponDiscountRate : 0;
+            const finalPrice = planPrice - couponDiscount - referralDiscount;
+
+            // 見積もり内容の生成
+            let estimateContent = `【未来ナビお見積り】\n\n`;
+            if (planName) {
+                estimateContent += `${planName}：${planPrice.toLocaleString()}円\n\n`;
+            }
+            
+            // 割引内容を個別に表示
+            if (couponDiscount > 0) {
+                estimateContent += `クーポン割引：−${couponDiscount.toLocaleString()}円\n`;
+            }
+            if (referralDiscount > 0) {
+                estimateContent += `ご紹介割引：−${referralDiscount.toLocaleString()}円\n`;
+            }
+
+            estimateContent += `--------------------------------\n`;
+            estimateContent += `合計金額：${finalPrice.toLocaleString()}円\n`;
+            estimateContent += `--------------------------------\n\n`;
+
+            if (hasConvenienceFee) {
+                estimateContent += `※コンビニ払い手数料：220円（お客様がコンビニで支払う金額）\n\n`;
+            }
+
+            if (memoContent) {
+                estimateContent += `備考：\n${memoContent}\n\n`;
+            }
+
+            estimateContent += `【ご提出いただくもの】\n`;
+            estimateContent += `目元の写真\n`;
+            estimateContent += `手書きのお名前\n`;
+
+            // HTMLに出力
+            estimateOutput.innerHTML = `
+                <pre class="whitespace-pre-wrap leading-normal text-sm sm:text-base">${estimateContent}</pre>
+            `;
+        };
+
+        // フォームのバリデーション関数
+        const validateForm = () => {
+            let isValid = true;
+            const requiredFields = [
+                { element: planContainer, type: 'plan' },
+                { element: paymentMethodSelect, type: 'select' }
+            ];
+
+            // エラー表示をリセット
+            errorMessage.classList.add('hidden');
+            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+            planContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('input-error'));
+
+            for (const field of requiredFields) {
+                if (field.type === 'plan' && !selectedPlan) {
+                    planContainer.querySelectorAll('button').forEach(btn => btn.classList.add('input-error'));
+                    isValid = false;
+                } else if (field.type === 'select' && !field.element.value) {
+                    field.element.classList.add('input-error');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                errorMessage.classList.remove('hidden');
+                // 未入力の最初の要素までスクロール
+                const firstErrorElement = document.querySelector('.input-error');
+                if (firstErrorElement) {
+                    firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            return isValid;
+        };
+
+        // イベントリスナー
+        planContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                planContainer.querySelectorAll('button').forEach(btn => {
+                    btn.style.backgroundColor = '';
+                    btn.style.color = '';
+                });
+                e.target.style.backgroundColor = '#ad9196'; // Active state color
+                selectedPlan = e.target;
+                selectedPrice = parseInt(e.target.dataset.price);
+                updateEstimate();
+            }
+        });
+
+        couponSelect.addEventListener('change', updateEstimate);
+        referralCheckbox.addEventListener('change', updateEstimate);
+        paymentMethodSelect.addEventListener('change', updateEstimate);
+        memoField.addEventListener('input', updateEstimate);
+
+        copyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (validateForm()) {
+                const textarea = document.createElement('textarea');
+                textarea.value = estimateOutput.querySelector('pre').textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('お見積もり内容をコピーしました。');
+            }
+        });
+
+        lineBtn.addEventListener('click', (e) => {
+            if (!validateForm()) {
+                e.preventDefault();
+            }
+        });
+
+        // クリアボタンの関数
+        const clearSelect = (id) => {
+            const selectElement = document.getElementById(id);
+            selectElement.selectedIndex = 0;
+            updateEstimate();
+        };
+        const clearTextarea = (id) => {
+            const textareaElement = document.getElementById(id);
+            textareaElement.value = '';
+            updateEstimate();
+        };
+
+        // 初回ロード時
+        window.addEventListener('load', updateEstimate);
+    </script>
+</body>
+</html>
