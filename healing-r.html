@@ -1,374 +1,624 @@
-Gemini
-
-2.5 Pro
-
-アップグレード
-
-
-
-
-
-Gemini との会話
-あなたはWEB制作のプロフェッショナルです。
-
-PCでも使用するが、スマホでの使用を優先的に考えデザインして。
-
-全体デザイン
-
-フォント: 日本語はGoogle Fontsの「Noto Serif JP」を使用。
-
-配色: 指定の色をセンス良く配置します。
-
-エラー: #ff0000
-
-ボタン: #E4C1B5 (通常)、#ad9196 (ホバー時)、白 (ホバー時テキスト)
-
-初めての方フォームボタン: #e4b5b9 (通常)、#ad9196 (ホバー時)、白 (ホバー時テキスト)
-
-クリアボタン: #7a736a (通常)、白 (テキスト)、#E4C1B5 (ホバー時)
-
-クリアボタン（×マーク）テキスト: #EAE6E1 (通常)、#cbb6b6 (ホバー時)
-
-テキストカラー: #776163
-
-ファビコン: https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png
-
-モーション: 神秘的な世界観を演出するため、UIの動きに滑らかなモーション（フェードイン、スライドアップなど）を適度に取り入れます。過度なアニメーションは避け、心地よいユーザー体験を心がけます。
-
-説明文は必ず記載
-
-プルダウンメニューはフレームを付ける
-
-
-
-ページ構成と機能
-
-1. ヘッダー
-
-ページ上部にロゴを配置します。
-
-ロゴ画像: https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png
-
-ロゴに加工（フレームやシャドウなど）は加えず、サイズもそのまま使用します。
-
-ロゴをクリックすると、https://spiritual-therapist-mii.studio.site/ に遷移するリンクを設定します。
-
-2. メインコンテンツ（お見積りフォーム）
-
-ページタイトル ヒーリングお見積り＆ご予約 を見やすく中央に配置。
-
-
-
-フォーム項目と料金設定
-
-フォーム要素（input, select, textarea）は、 (form-input) を適用する。
-
-必須項目 (*) には赤文字 (#ff0000) でアスタリスクを表記し、未入力の場合には赤線 (border-color: #ff0000;) でエラーを知らせる。
-
-ヒーリング基本料金5,000円
-
-報告書選択（必須項目）
-
-「報告タイプを選択してください*」という見出しの下に、以下の項目をラジオボタンで設置する。
-
-選択肢の横に料金と説明文を併記する。
-
-「お体のご相談」を選択した場合、追加の相談件数を入力するテキストボックスを表示する。
-
-項目と料金:
-
-報告不要: 0円
-
-ミニ報告: 2,000円
-
-1部位鑑定書: 5,000円
-
-ライト鑑定書: 12,000円
-
-鑑定書: 15,000円
-
-オーラアート: 15,000円
-
-鑑定書＋オーラアート: 20,000円
-
-お体のご相談: 16,000円 （ご相談1件追加ごとに3,000円）
-
-お支払いについて
-
-割引、お支払い方法をセクションとしてまとめる。
-
-割引
-
-クーポン:
-
-説明文: クーポンをお持ちの方は選択してください。
-
-入力欄: プルダウン
-
-選択肢: 選択してください、クーポン無し、5％OFFクーポン、10％OFFクーポン、15％OFFクーポン、20％OFFクーポン、25％OFFクーポン、30％OFFクーポン
-
-紹介割引:
-
-説明文: ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可 紹介割引：−500円
-
-機能: 「追加する」ボタンを設置。再度押すと選択解除可能
-
-お支払い方法（必須項目）:
-
-プルダウンメニューで選択できるようにする。
-
-項目: 選択してください、銀行振込、Paypay、Paypal、クレジットカード、コンビニ払い（手数料220円）。
-
-コンビニ払い選択時は、合計金額に手数料を加算する。
-
-備考（任意項目）
-
-テキストボックスを設置する。
-
-ご確認事項
-
-セッションについて
-
-
-
-セッション形式： 遠隔
-
-ご予約： 日にち指定のみ（時間指定不可）
-
-
-
-納品日・営業時間
-
-
-
-納品日：セッション日より5営業日
-
-営業時間： 9：00～17：00
-
-休日：土日祝日、他指定日
-
-
-
-
-
-
-
-セッション後の追加料金について
-
-
-
-納品後に、追加の相談がある場合、追加料金が発生いたします。
-
-ご相談１件：3,000円～
-
-
-
-【ご提出いただくもの】
-
-目元の写真
-
-手書きのお名前
-
-手書きの相談のタイトル
-
-https://github.com/therapist-mii/spiritual/raw/main/images/memoto.jpg
-
-https://github.com/therapist-mii/spiritual/raw/main/images/tegaki-r.jpg
-
-
-
-3. 自動計算とお見積もり内容出力
-
-フォーム入力に合わせて、リアルタイムで合計金額を計算する。
-
-
-
-出力例:
-
-【ヒーリングお見積り】
-
-
-
-ヒーリング：5,000 円
-
-報告書タイプ名： 円
-
-割引（クーポン）：-〇〇円
-
-割引（紹介割引）：-〇〇円
-
-お支払い方法（手数料）：〇〇円
-
-
-
---------------------------------
-
-合計金額：〇〇〇 円
-
---------------------------------
-
-
-
-
-
-【ご提出いただくもの】
-
-目元の写真
-
-手書きのお名前
-
-
-
-ページ下部機能ボタン
-
-クリアボタン:
-
-ボタンを設置。押すと、フォームの入力内容をすべて消去します。
-
-スタイル: #EAE6E1 (背景)、#cbb6b6 (テキスト)、#cbb6b6 (ホバー時)、#EAE6E1 (ホバー時テキスト)
-
-コピーボタン:
-
-ボタンを設置。押すと、自動計算されたお見積り内容をテキストとしてクリップボードにコピーします。
-
-LINEに貼り付けて予約するボタン:
-
-ボタンを設置。押すと、LINEアプリが起動し、指定のURL (https://line.me/ti/p/Kv76GQK_UI) に遷移します。
-
-バリデーション（入力チェック）
-
-「コピー」ボタン、または「LINEに貼り付けて予約する」ボタンが押された際、必須項目に不備があれば、以下の挙動を実装します。
-
-必須項目をすべて入力するよう、ポップアップまたはアラートでメッセージを表示します。
-
-不備がある項目の入力欄の枠を、エラーカラー（#ff0000）で赤く表示します。
-
-入力チェックをパスした場合のみ、次のアクション（コピー・LINE起動）に進みます。
-
-
-
-【LINEで予約する際の手順】
-
-
-
-① お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。
-
-② 「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。
-
-
-
-
-
-フッター
-
-「はじめての方へ」セクション:
-
-
-
-はじめての方へ
-
-はじめての方は、以下のフォームにご記入お願いいたします。
-
-リピーター様も未入力の方はご記入お願いいたします。
-
-
-
-テキスト情報と、「はじめての方のフォーム」ボタンを配置。
-
-ボタンのスタイル: #e4b5b9 (通常)、#ad9196 (ホバー時)、白 (ホバー時テキスト)
-
-リンク先: https://spiritual-therapist-mii.studio.site/form
-
-メニューリンク:
-
-Home: https://spiritual-therapist-mii.studio.site/
-
-メニュー一覧: https://spiritual-therapist-mii.studio.site/menu
-
-ロゴ:
-
-フッターにもロゴを配置します。
-
-ロゴ画像: https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png
-
-シャドウ無し、拡大しない程度に大きく配置。
-
-リンク先: https://spiritual-therapist-mii.studio.site/
-
-
-
-
-思考プロセスを表示
-はい、承知いたしました。
-スマートフォンでの使いやすさを最優先に、神秘的で心地よい操作性を実現するヒーリングお見積り＆ご予約フォームを作成します。ご指定いただいたデザインと機能要件をすべて盛り込みました。
-
-こちらが作成したお見積りフォームのファイルです。
-ヒーリングお見積り＆ご予約フォーム
-9月8日 11:13
-
-このファイルについて
-
-1ファイル完結: HTML、CSS、JavaScriptの全てが1つのファイルに含まれているため、このファイルだけで動作します。
-
-スマートフォン優先デザイン: スマートフォンの画面でも見やすく、操作しやすいようにレイアウトを調整しています。PCなどの大きな画面では、それに合わせてレイアウトが広がります。
-
-要件の完全実装: ご依頼いただいたデザイン（配色、フォント、レイアウト）、機能（リアルタイム自動計算、バリデーション、コピー機能、LINE連携など）はすべて実装済みです。
-
-心地よいモーション: ページ読み込み時や要素の表示に、ご希望の「神秘的な世界観」を演出するための滑らかなアニメーションを取り入れています。
-
-わかりやすいUI: エラー発生時は、どの項目に問題があるか分かりやすいように枠線を赤くし、専用のポップアップ画面でお知らせします。
-
-ご確認と次のステップ
-
-このファイルをダウンロードし、ブラウザで開いて動作をご確認ください。
-もし修正や調整が必要な点がございましたら、お気軽にお申し付けください。
-
-
-
-
-
-見積に以下を表示させて
-
-【ご提出いただくもの】
-
-目元の写真
-
-手書きのお名前
-
-手書きの相談のタイトル（ご相談がある場合）
-
-
-
-
-思考プロセスを表示
-はい、承知いたしました。
-お見積り内容に表示される「ご提出いただくもの」のテキストと表示ロジックを修正します。
-
-Canvasの内容を以下のように更新しました。
-
-
-
-
-
-
-
-
-
-
-🍌 画像
-
-
-Gemini は不正確な情報を表示することがあるため、生成された回答を再確認するようにしてください。
-
-ヒーリングお見積り＆ご予約フォーム
-
-
-
-コード
-プレビュー
-
-共有
-
-1234567891011121314151617181920212223242526272829303132333435363738
-<!DOCTYPE html><html lang="ja"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>ヒーリングお見積り＆ご予約フォーム</title>    <script src="https://cdn.tailwindcss.com"></script>    <link rel="preconnect" href="https://fonts.googleapis.com">    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png" type="image/png">    <style>        /* カスタムスタイル */        :root {            --error-color: #ff0000;            --btn-normal: #E4C1B5;            --btn-hover: #ad9196;            --btn-first-normal: #e4b5b9;            --btn-clear-normal: #7a736a;            --btn-clear-text-normal: #EAE6E1;            --btn-clear-text-hover: #cbb6b6;            --text-color: #776163;        }        body {            font-family: 'Noto Serif JP', serif;            color: var(--text-color);            background-color: #fdfaf7; /* 背景色を少し柔らかく */        }        .form-input {            width: 100%;            padding: 10px;            border: 1px solid #d1c7c7;            border-radius: 8px;            background-color: #fff;            color: var(--text-color);            transition: border-color 0.3s, box-shadow 0.3s;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ヒーリングお見積り＆ご予約フォーム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png" type="image/png">
+    <style>
+        /* カスタムスタイル */
+        :root {
+            --error-color: #ff0000;
+            --btn-normal: #E4C1B5;
+            --btn-hover: #ad9196;
+            --btn-first-normal: #e4b5b9;
+            --btn-clear-normal: #7a736a;
+            --btn-clear-text-normal: #EAE6E1;
+            --btn-clear-text-hover: #cbb6b6;
+            --text-color: #776163;
+        }
+
+        body {
+            font-family: 'Noto Serif JP', serif;
+            color: var(--text-color);
+            background-color: #fdfaf7; /* 背景色を少し柔らかく */
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1c7c7;
+            border-radius: 8px;
+            background-color: #fff;
+            color: var(--text-color);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--btn-normal);
+            box-shadow: 0 0 0 2px rgba(228, 193, 181, 0.3);
+        }
+        .form-input.error {
+            border-color: var(--error-color) !important;
+        }
+
+        /* カスタムボタンスタイル */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 9999px; /* pill shape */
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: var(--btn-normal);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-secondary {
+            background-color: var(--btn-first-normal);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: var(--btn-hover);
+             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-clear {
+            background-color: var(--btn-clear-normal);
+            color: white;
+        }
+        .btn-clear:hover {
+            background-color: var(--btn-normal);
+        }
+        .btn-copy-clear {
+             background-color: var(--btn-clear-text-normal);
+             color: var(--btn-clear-text-hover);
+             border: 1px solid var(--btn-clear-text-hover);
+        }
+        .btn-copy-clear:hover {
+            background-color: var(--btn-clear-text-hover);
+            color: var(--btn-clear-text-normal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* ラジオボタンとチェックボックスのカスタムスタイル */
+        .custom-radio input[type="radio"] {
+            display: none;
+        }
+        .custom-radio label {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        .custom-radio label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--btn-normal);
+            border-radius: 50%;
+            background: #fff;
+            transition: all 0.3s;
+        }
+        .custom-radio input[type="radio"]:checked + label:before {
+            background-color: var(--btn-normal);
+            border-color: var(--btn-normal);
+        }
+        .custom-radio input[type="radio"]:checked + label:after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        .custom-radio label:hover {
+            color: var(--btn-hover);
+        }
+
+        /* プルダウンメニューのフレーム */
+        select.form-input {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23776163%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.8em;
+        }
+
+        /* モーション */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .form-section {
+            opacity: 0;
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        /* アスタリスクの色 */
+        .required-star {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        /* 水平線スタイル */
+        hr.custom-hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--text-color), rgba(0, 0, 0, 0));
+        }
+
+        /* モーダル */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-[#fdfaf7]">
+
+    <!-- ヘッダー -->
+    <header class="py-4 px-6 fade-in">
+        <div class="container mx-auto text-center">
+            <a href="https://spiritual-therapist-mii.studio.site/" target="_blank" rel="noopener noreferrer">
+                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="w-48 mx-auto">
+            </a>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container mx-auto p-4 md:p-8 max-w-3xl">
+        <h1 class="text-2xl md:text-3xl font-bold text-center mb-8 slide-up" style="animation-delay: 0.1s;">ヒーリングお見積り＆ご予約</h1>
+
+        <form id="estimate-form" class="space-y-8">
+
+            <!-- ヒーリング基本料金 -->
+            <div class="form-section bg-white p-6 rounded-lg shadow-md" style="animation-delay: 0.2s;">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">ヒーリング基本料金</h2>
+                    <p class="text-xl font-bold">5,000<span class="text-sm">円</span></p>
+                </div>
+            </div>
+
+            <!-- 報告書選択 -->
+            <div id="report-section" class="form-section bg-white p-6 rounded-lg shadow-md" style="animation-delay: 0.3s;">
+                <h2 class="text-lg font-semibold mb-4">報告タイプを選択してください<span class="required-star">*</span></h2>
+                <div class="space-y-4">
+                    <!-- ラジオボタンの項目 -->
+                    <div class="custom-radio"><input type="radio" id="report0" name="report_type" value="0" data-name="報告不要"><label for="report0" class="w-full"><div><p class="font-semibold">報告不要</p><p class="text-sm">説明: ヒーリングエネルギーのみをお送りします。</p></div><span class="ml-auto font-bold">0円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report1" name="report_type" value="2000" data-name="ミニ報告"><label for="report1" class="w-full"><div><p class="font-semibold">ミニ報告</p><p class="text-sm">説明: 簡単なヒーリングのご報告をいたします。</p></div><span class="ml-auto font-bold">2,000円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report2" name="report_type" value="5000" data-name="1部位鑑定書"><label for="report2" class="w-full"><div><p class="font-semibold">1部位鑑定書</p><p class="text-sm">説明: 気になる1部位を重点的に鑑定します。</p></div><span class="ml-auto font-bold">5,000円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report3" name="report_type" value="12000" data-name="ライト鑑定書"><label for="report3" class="w-full"><div><p class="font-semibold">ライト鑑定書</p><p class="text-sm">説明: 全体を簡易的に鑑定し、レポートを作成します。</p></div><span class="ml-auto font-bold">12,000円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report4" name="report_type" value="15000" data-name="鑑定書"><label for="report4" class="w-full"><div><p class="font-semibold">鑑定書</p><p class="text-sm">説明: 詳細な鑑定を行い、本格的な鑑定書を作成します。</p></div><span class="ml-auto font-bold">15,000円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report5" name="report_type" value="15000" data-name="オーラアート"><label for="report5" class="w-full"><div><p class="font-semibold">オーラアート</p><p class="text-sm">説明: あなたのオーラをアートにしてお届けします。</p></div><span class="ml-auto font-bold">15,000円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report6" name="report_type" value="20000" data-name="鑑定書＋オーラアート"><label for="report6" class="w-full"><div><p class="font-semibold">鑑定書＋オーラアート</p><p class="text-sm">説明: 鑑定書とオーラアートのセットです。</p></div><span class="ml-auto font-bold">20,000円</span></label></div>
+                    <div class="custom-radio"><input type="radio" id="report7" name="report_type" value="16000" data-name="お体のご相談"><label for="report7" class="w-full"><div><p class="font-semibold">お体のご相談</p><p class="text-sm">説明: お体の不調についてご相談に応じます。（ご相談1件追加ごとに3,000円）</p></div><span class="ml-auto font-bold">16,000円</span></label></div>
+                </div>
+                <!-- 追加相談件数 -->
+                <div id="additional-consult-wrapper" class="hidden mt-4">
+                    <label for="additional-consult" class="block mb-2 font-medium">追加の相談件数</label>
+                    <input type="number" id="additional-consult" name="additional_consult" class="form-input" min="0" value="0" placeholder="0">
+                </div>
+            </div>
+
+            <!-- お支払いについて -->
+            <div class="form-section bg-white p-6 rounded-lg shadow-md" style="animation-delay: 0.4s;">
+                <h2 class="text-lg font-semibold mb-4">お支払いについて</h2>
+                <div class="space-y-6">
+                    <!-- 割引 -->
+                    <div>
+                        <h3 class="font-medium mb-2">割引</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="coupon" class="block mb-1">クーポン</label>
+                                <p class="text-sm mb-2">クーポンをお持ちの方は選択してください。</p>
+                                <select id="coupon" name="coupon" class="form-input">
+                                    <option value="0">選択してください</option>
+                                    <option value="0">クーポン無し</option>
+                                    <option value="0.05">5％OFFクーポン</option>
+                                    <option value="0.1">10％OFFクーポン</option>
+                                    <option value="0.15">15％OFFクーポン</option>
+                                    <option value="0.2">20％OFFクーポン</option>
+                                    <option value="0.25">25％OFFクーポン</option>
+                                    <option value="0.3">30％OFFクーポン</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block mb-1">紹介割引</label>
+                                <p class="text-sm mb-2">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可 紹介割引：−500円</p>
+                                <button type="button" id="intro-discount-btn" class="btn btn-copy-clear text-sm">追加する</button>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- お支払い方法 -->
+                    <div id="payment-section">
+                        <label for="payment-method" class="block mb-1">お支払い方法<span class="required-star">*</span></label>
+                         <select id="payment-method" name="payment_method" class="form-input">
+                            <option value="">選択してください</option>
+                            <option value="0">銀行振込</option>
+                            <option value="0">Paypay</option>
+                            <option value="0">Paypal</option>
+                            <option value="0">クレジットカード</option>
+                            <option value="220">コンビニ払い（手数料220円）</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 備考 -->
+            <div class="form-section bg-white p-6 rounded-lg shadow-md" style="animation-delay: 0.5s;">
+                <label for="notes" class="block text-lg font-semibold mb-2">備考（任意）</label>
+                <textarea id="notes" name="notes" class="form-input" rows="4"></textarea>
+            </div>
+            
+            <!-- ご確認事項 -->
+            <div class="form-section bg-white p-6 rounded-lg shadow-md space-y-6" style="animation-delay: 0.6s;">
+                <h2 class="text-lg font-semibold text-center">ご確認事項</h2>
+                <div>
+                    <h3 class="font-medium mb-2 border-b-2 border-dotted border-[var(--btn-normal)] pb-1">セッションについて</h3>
+                    <p><strong>セッション形式：</strong> 遠隔</p>
+                    <p><strong>ご予約：</strong> 日にち指定のみ（時間指定不可）</p>
+                </div>
+                <div>
+                    <h3 class="font-medium mb-2 border-b-2 border-dotted border-[var(--btn-normal)] pb-1">納品日・営業時間</h3>
+                    <p><strong>納品日：</strong>セッション日より5営業日</p>
+                    <p><strong>営業時間：</strong> 9：00～17：00</p>
+                    <p><strong>休日：</strong>土日祝日、他指定日</p>
+                </div>
+                 <div>
+                    <h3 class="font-medium mb-2 border-b-2 border-dotted border-[var(--btn-normal)] pb-1">セッション後の追加料金について</h3>
+                    <p>納品後に、追加の相談がある場合、追加料金が発生いたします。<br>ご相談１件：3,000円～</p>
+                </div>
+                 <div>
+                    <h3 class="font-medium mb-2 border-b-2 border-dotted border-[var(--btn-normal)] pb-1">【ご提出いただくもの】</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>目元の写真</li>
+                        <li>手書きのお名前</li>
+                        <li>手書きの相談のタイトル</li>
+                    </ul>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-4 justify-center">
+                        <img src="https://github.com/therapist-mii/spiritual/raw/main/images/memoto.jpg" alt="目元の写真例" class="w-full sm:w-1/2 rounded-lg shadow-sm">
+                        <img src="https://github.com/therapist-mii/spiritual/raw/main/images/tegaki-r.jpg" alt="手書きの例" class="w-full sm:w-1/2 rounded-lg shadow-sm">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- 自動計算とお見積もり内容出力 -->
+        <div id="estimate-result-wrapper" class="form-section mt-8 bg-white p-6 rounded-lg shadow-lg" style="animation-delay: 0.7s;">
+            <h2 class="text-xl font-bold text-center mb-4">お見積り内容</h2>
+            <pre id="estimate-output" class="whitespace-pre-wrap text-left bg-gray-50 p-4 rounded-md overflow-x-auto"></pre>
+            <div class="text-center mt-6">
+                 <button type="button" id="clear-form-btn-bottom" class="btn btn-copy-clear text-sm">
+                    <span class="text-lg align-middle">&times;</span> クリア
+                 </button>
+            </div>
+        </div>
+        
+        <!-- 機能ボタン -->
+        <div class="form-section mt-8 space-y-4 text-center" style="animation-delay: 0.8s;">
+             <div class="p-4 bg-rose-50 border border-rose-200 rounded-lg text-sm">
+                <h3 class="font-bold mb-2">【LINEで予約する際の手順】</h3>
+                <p>① お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。</p>
+                <p>② 「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <button type="button" id="copy-btn" class="btn btn-primary w-full">お見積り内容をコピー</button>
+                <button type="button" id="line-btn" class="btn btn-primary w-full bg-green-500 hover:bg-green-600">LINEに貼り付けて予約する</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="bg-white mt-16 pt-10 pb-6 fade-in">
+        <div class="container mx-auto px-6 text-center">
+            
+            <!-- はじめての方へ -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-2">はじめての方へ</h2>
+                <p class="mb-4 max-w-md mx-auto">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
+                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">はじめての方のフォーム</a>
+            </div>
+
+            <!-- メニューリンク -->
+            <nav class="flex justify-center gap-6 mb-8">
+                <a href="https://spiritual-therapist-mii.studio.site/" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--btn-hover)] transition-colors">Home</a>
+                <a href="https://spiritual-therapist-mii.studio.site/menu" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--btn-hover)] transition-colors">メニュー一覧</a>
+            </nav>
+
+            <!-- ロゴ -->
+            <a href="https://spiritual-therapist-mii.studio.site/" target="_blank" rel="noopener noreferrer">
+                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="w-56 mx-auto">
+            </a>
+        </div>
+    </footer>
+
+    <!-- モーダルウィンドウ -->
+    <div id="error-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--error-color);">入力エラー</h3>
+            <p id="error-message" class="mb-6"></p>
+            <button id="close-modal-btn" class="btn btn-primary">閉じる</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 要素の取得
+            const form = document.getElementById('estimate-form');
+            const reportSection = document.getElementById('report-section');
+            const paymentSection = document.getElementById('payment-section');
+            const additionalConsultWrapper = document.getElementById('additional-consult-wrapper');
+            const additionalConsultInput = document.getElementById('additional-consult');
+            const couponSelect = document.getElementById('coupon');
+            const introDiscountBtn = document.getElementById('intro-discount-btn');
+            const paymentMethodSelect = document.getElementById('payment-method');
+            const estimateOutput = document.getElementById('estimate-output');
+            
+            const copyBtn = document.getElementById('copy-btn');
+            const lineBtn = document.getElementById('line-btn');
+            const clearBtnBottom = document.getElementById('clear-form-btn-bottom');
+            
+            const errorModal = document.getElementById('error-modal');
+            const errorMessage = document.getElementById('error-message');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            let introDiscountApplied = false;
+
+            // --- 計算ロジック ---
+            function calculateEstimate() {
+                const basePrice = 5000;
+                let totalPrice = basePrice;
+                
+                // --- 詳細テキスト生成用変数 ---
+                let reportName = '未選択';
+                let reportPrice = 0;
+                let additionalConsultPrice = 0;
+                let couponDiscount = 0;
+                const introDiscount = introDiscountApplied ? 500 : 0;
+                let paymentFee = 0;
+                
+                // 1. 報告書
+                const selectedReport = document.querySelector('input[name="report_type"]:checked');
+                if (selectedReport) {
+                    reportPrice = parseInt(selectedReport.value);
+                    reportName = selectedReport.getAttribute('data-name');
+                    totalPrice += reportPrice;
+                    
+                    // 「お体のご相談」が選択された場合
+                    if (selectedReport.id === 'report7') {
+                        additionalConsultWrapper.classList.remove('hidden');
+                        const additionalCount = parseInt(additionalConsultInput.value) || 0;
+                        if (additionalCount > 0) {
+                            additionalConsultPrice = additionalCount * 3000;
+                            totalPrice += additionalConsultPrice;
+                        }
+                    } else {
+                        additionalConsultWrapper.classList.add('hidden');
+                        additionalConsultInput.value = 0;
+                    }
+                }
+
+                // 2. 割引 (小計を計算してから)
+                let subTotalForDiscount = basePrice + reportPrice + additionalConsultPrice;
+
+                // クーポン割引
+                const couponRate = parseFloat(couponSelect.value);
+                if (couponRate > 0) {
+                    couponDiscount = Math.floor(subTotalForDiscount * couponRate);
+                    totalPrice -= couponDiscount;
+                }
+                
+                // 紹介割引
+                if (introDiscountApplied) {
+                    totalPrice -= introDiscount;
+                }
+                
+                // 3. 支払い方法手数料
+                paymentFee = parseInt(paymentMethodSelect.value) || 0;
+                totalPrice += paymentFee;
+
+                // --- お見積り内容をテキストで出力 ---
+                let outputText = "【ヒーリングお見積り】\n\n";
+                outputText += `ヒーリング：${basePrice.toLocaleString()} 円\n`;
+                if(selectedReport){
+                   outputText += `${reportName}：${reportPrice.toLocaleString()} 円\n`;
+                }
+                if(additionalConsultPrice > 0){
+                   outputText += `追加ご相談(${additionalConsultInput.value}件)：${additionalConsultPrice.toLocaleString()} 円\n`;
+                }
+                if(couponDiscount > 0){
+                    const percent = couponRate * 100;
+                    outputText += `割引（${percent}％OFFクーポン）：-${couponDiscount.toLocaleString()} 円\n`;
+                }
+                if(introDiscount > 0){
+                    outputText += `割引（紹介割引）：-${introDiscount.toLocaleString()} 円\n`;
+                }
+                 if(paymentFee > 0){
+                    outputText += `お支払い方法（手数料）：${paymentFee.toLocaleString()} 円\n`;
+                }
+
+                outputText += "\n--------------------------------\n";
+                outputText += `合計金額：${totalPrice.toLocaleString()} 円\n`;
+                outputText += "--------------------------------\n";
+
+                const selectedPaymentText = paymentMethodSelect.options[paymentMethodSelect.selectedIndex].text;
+                if(paymentMethodSelect.value !== ""){
+                     outputText += `\nお支払い方法：${selectedPaymentText}\n`;
+                }
+
+                if (document.getElementById('notes').value) {
+                    outputText += `\n【備考】\n${document.getElementById('notes').value}\n`;
+                }
+                
+                // ご提出いただくものの条件分岐
+                 if (selectedReport) {
+                    const reportId = selectedReport.id;
+                    // 鑑定書やアートなど、何らかの成果物がある場合に提出物を表示
+                    if (['report2', 'report3', 'report4', 'report5', 'report6', 'report7'].includes(reportId)) {
+                        outputText += "\n【ご提出いただくもの】\n";
+                        outputText += "・目元の写真\n";
+                        outputText += "・手書きのお名前\n";
+                        outputText += "・手書きの相談のタイトル（ご相談がある場合）\n";
+                    }
+                }
+                
+                estimateOutput.textContent = outputText;
+            }
+
+            // --- フォームの入力内容をクリア ---
+            function clearForm() {
+                form.reset();
+                introDiscountApplied = false;
+                introDiscountBtn.textContent = '追加する';
+                introDiscountBtn.classList.remove('bg-red-200');
+                additionalConsultWrapper.classList.add('hidden');
+                // エラー表示もクリア
+                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+                calculateEstimate();
+            }
+            
+            // --- バリデーション ---
+            function validateForm() {
+                let errors = [];
+                // エラークラスを一旦リセット
+                reportSection.querySelector('h2').classList.remove('text-[var(--error-color)]');
+                paymentMethodSelect.classList.remove('error');
+
+                // 報告書タイプのチェック
+                const reportChecked = document.querySelector('input[name="report_type"]:checked');
+                if (!reportChecked) {
+                    errors.push('報告タイプを選択してください。');
+                    reportSection.querySelector('h2').classList.add('text-[var(--error-color)]');
+                }
+                
+                // お支払い方法のチェック
+                if (paymentMethodSelect.value === '') {
+                    errors.push('お支払い方法を選択してください。');
+                    paymentMethodSelect.classList.add('error');
+                }
+
+                if (errors.length > 0) {
+                    errorMessage.innerHTML = errors.join('<br>');
+                    errorModal.classList.add('active');
+                    return false;
+                }
+                return true;
+            }
+
+            // --- イベントリスナー設定 ---
+            form.addEventListener('change', calculateEstimate);
+            form.addEventListener('input', calculateEstimate);
+
+            introDiscountBtn.addEventListener('click', function() {
+                introDiscountApplied = !introDiscountApplied;
+                if (introDiscountApplied) {
+                    this.textContent = '選択済み（解除する）';
+                    this.classList.add('bg-red-200');
+                } else {
+                    this.textContent = '追加する';
+                    this.classList.remove('bg-red-200');
+                }
+                calculateEstimate();
+            });
+
+            clearBtnBottom.addEventListener('click', clearForm);
+
+            copyBtn.addEventListener('click', function() {
+                if (!validateForm()) return;
+
+                // 非表示のtextareaを作成してコピー
+                const textarea = document.createElement('textarea');
+                textarea.textContent = estimateOutput.textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('お見積り内容をコピーしました。');
+                } catch (err) {
+                    alert('コピーに失敗しました。');
+                }
+                document.body.removeChild(textarea);
+            });
+            
+            lineBtn.addEventListener('click', function() {
+                if (!validateForm()) return;
+                window.open('https://line.me/ti/p/Kv76GQK_UI', '_blank');
+            });
+            
+            closeModalBtn.addEventListener('click', () => errorModal.classList.remove('active'));
+            errorModal.addEventListener('click', (e) => {
+                if (e.target === errorModal) {
+                    errorModal.classList.remove('active');
+                }
+            });
+
+            // 初期計算
+            calculateEstimate();
+        });
+    </script>
+</body>
+</html>
 
