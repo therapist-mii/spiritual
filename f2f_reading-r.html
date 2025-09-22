@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>対面リーディングお見積り＆ご予約</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    <style>
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: #FBF9F7;
+            color: #776163;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* カスタムスタイル */
+        .form-input, .form-textarea, .form-select {
+            background-color: #FFFFFF;
+            border: 1px solid #E4C1B5;
+            border-radius: 8px;
+            padding: 10px 12px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #ad9196;
+            box-shadow: 0 0 0 2px rgba(173, 145, 150, 0.2);
+        }
+        .form-input.error, .form-textarea.error, .form-select.error {
+            border-color: #ff0000;
+            box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+        }
+        .required-star {
+            color: #ff0000;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #E4C1B5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #ad9196;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #e4b5b9;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #ad9196;
+            color: white;
+        }
+        .btn-clear {
+            background-color: #EAE6E1;
+            color: #7a736a;
+            border: 1px solid #cbb6b6;
+        }
+        .btn-clear:hover {
+            background-color: #cbb6b6;
+            color: #EAE6E1;
+        }
+        .btn-add {
+            background-color: #E4C1B5;
+            color: white;
+            padding: 8px 16px;
+        }
+        .btn-add:hover {
+            background-color: #ad9196;
+        }
+        .btn-remove {
+            background-color: #7a736a;
+            color: #EAE6E1;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        .btn-remove:hover {
+            background-color: #ad9196;
+            color: #cbb6b6;
+        }
+        /* アニメーション */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        /* チェックボックスとラジオボタンのカスタムスタイル */
+        .custom-checkbox:checked, .custom-radio:checked {
+            background-color: #E4C1B5;
+            border-color: #ad9196;
+        }
+        .custom-checkbox:checked:hover, .custom-radio:checked:hover {
+            background-color: #ad9196;
+        }
+
+        /* メッセージモーダル */
+        #message-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #message-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #FBF9F7;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        }
+    </style>
+</head>
+<body class="bg-[#FBF9F7]">
+
+    <!-- ヘッダー -->
+    <header class="py-6 px-4 bg-[#FBF9F7] sticky top-0 z-50 shadow-sm fade-in">
+        <div class="max-w-4xl mx-auto flex justify-center items-center">
+            <a href="https://spiritual-therapist-mii.studio.site/" target="_blank">
+                <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="h-16 w-auto">
+            </a>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-3xl mx-auto p-4 md:p-8">
+        <div class="bg-white/50 p-6 md:p-10 rounded-2xl shadow-lg border border-[#E4C1B5]/30">
+            <div class="text-center mb-8 slide-up" style="animation-delay: 0.1s;">
+                <h1 class="text-2xl md:text-3xl font-bold text-[#776163] mb-2">対面リーディングお見積り＆ご予約</h1>
+                <p class="text-sm md:text-base">必要事項を記入してください。一番下に見積もりが出ます。</p>
+            </div>
+
+            <form id="booking-form" class="space-y-8">
+
+                <!-- ご来店者名 -->
+                <div class="slide-up" style="animation-delay: 0.2s;">
+                    <label for="customer-name" class="block text-lg font-medium mb-2">ご来店者名</label>
+                    <input type="text" id="customer-name" class="form-input" placeholder="お名前">
+                </div>
+
+                <!-- ご相談内容 -->
+                <div class="slide-up" style="animation-delay: 0.3s;">
+                    <label for="consultation-details" class="block text-lg font-medium mb-2">ご相談内容 <span class="required-star">*</span></label>
+                    <p class="text-xs mb-2">相談内容の要点のみご記入ください。当日の時間短縮のため、詳細は事前にLINEにてお知らせください。</p>
+                    <textarea id="consultation-details" rows="4" class="form-textarea" placeholder="例：転職についてアドバイスが欲しい"></textarea>
+                </div>
+
+                <!-- 会場のご希望 -->
+                <div class="slide-up" style="animation-delay: 0.4s;">
+                    <label class="block text-lg font-medium mb-2">会場のご希望 <span class="required-star">*</span></label>
+                    <div id="venue-options" class="flex flex-col sm:flex-row gap-4">
+                        <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                            <input type="radio" name="venue" value="成田市" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]">
+                            <span>成田市</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                            <input type="radio" name="venue" value="東金市" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]">
+                            <span>東金市</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                            <input type="radio" name="venue" value="どちらでも良い" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]">
+                            <span>どちらでも良い</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- ご予約希望日 -->
+                <div class="slide-up" style="animation-delay: 0.5s;">
+                    <label class="block text-lg font-medium mb-2">ご予約希望日 <span class="required-star">*</span></label>
+                    <p class="text-xs mb-3">ご予約希望日をご選択ください。５つ程度選んでいただけるとスムーズです。</p>
+                    <div id="date-options" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        <!-- 日付はJavaScriptで動的に生成 -->
+                    </div>
+                </div>
+
+                <!-- お見積り項目 -->
+                <div class="slide-up" style="animation-delay: 0.6s;">
+                    <h2 class="text-xl font-bold text-center mb-6 border-b-2 border-dotted border-[#E4C1B5] pb-2">お見積り項目</h2>
+                    <div class="space-y-6">
+                        <!-- 時間 -->
+                        <div>
+                            <label class="block text-lg font-medium mb-2">時間 <span class="required-star">*</span></label>
+                            <div id="duration-options" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                                    <input type="radio" name="duration" value="30000" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]" data-text="60分"><span>60分</span>
+                                </label>
+                                <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                                    <input type="radio" name="duration" value="45000" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]" data-text="90分"><span>90分</span>
+                                </label>
+                                <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                                    <input type="radio" name="duration" value="60000" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]" data-text="120分"><span>120分</span>
+                                </label>
+                                   <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                                    <input type="radio" name="duration" value="75000" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]" data-text="150分"><span>150分</span>
+                                </label>
+                                <label class="flex items-center space-x-2 p-3 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer">
+                                    <input type="radio" name="duration" value="90000" class="custom-radio form-radio h-5 w-5 text-[#E4C1B5] focus:ring-[#ad9196]" data-text="180分"><span>180分</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 遠隔霊視 -->
+                        <div>
+                            <label class="block text-lg font-medium mb-2">遠隔霊視 (8,000円/1名)</label>
+                            <div id="remote-viewing-list" class="space-y-2"></div>
+                            <div class="mt-2">
+                                <input type="text" id="remote-viewer-name" class="form-input inline-block w-auto mr-2" placeholder="お名前">
+                                <button type="button" id="add-remote-viewer" class="btn btn-add">追加</button>
+                            </div>
+                        </div>
+
+                        <!-- 土日祝日料金 -->
+                          <div>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="weekend-fee" value="3000" class="custom-checkbox form-checkbox h-5 w-5 text-[#E4C1B5] rounded focus:ring-[#ad9196]">
+                                <span>土日祝日料金 (+3,000円)</span>
+                            </label>
+                        </div>
+                        
+                        <!-- 割引 -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-medium">割引</h3>
+                             <!-- クーポン -->
+                            <div>
+                                <label for="coupon" class="block text-sm font-medium mb-1">クーポン</label>
+                                <p class="text-xs mb-2">クーポンをお持ちの方は選択してください。</p>
+                                <select id="coupon" class="form-select">
+                                    <option value="0">選択してください</option>
+                                    <option value="0">クーポン無し</option>
+                                    <option value="5">5％OFFクーポン</option>
+                                    <option value="10">10％OFFクーポン</option>
+                                    <option value="15">15％OFFクーポン</option>
+                                    <option value="20">20％OFFクーポン</option>
+                                    <option value="25">25％OFFクーポン</option>
+                                    <option value="30">30％OFFクーポン</option>
+                                </select>
+                            </div>
+                            <!-- 紹介割引 -->
+                            <div>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="referral-discount" value="500" class="custom-checkbox form-checkbox h-5 w-5 text-[#E4C1B5] rounded focus:ring-[#ad9196]">
+                                    <span>紹介割引を利用する (-500円)</span>
+                                </label>
+                                <p class="text-xs mt-1 mb-2">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可。</p>
+                                <div id="referrer-name-container" class="hidden mt-2">
+                                    <label for="referrer-name" class="block text-sm font-medium mb-1">紹介者のお名前</label>
+                                    <input type="text" id="referrer-name" class="form-input" placeholder="ご紹介者様のお名前">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- お支払い方法 -->
+                <div class="slide-up" style="animation-delay: 0.7s;">
+                    <label for="payment-method" class="block text-lg font-medium mb-2">お支払い方法 <span class="required-star">*</span></label>
+                    <select id="payment-method" class="form-select">
+                        <option value="">選択してください</option>
+                        <option value="銀行振込">銀行振込</option>
+                        <option value="Paypay">Paypay</option>
+                        <option value="Paypal">Paypal</option>
+                        <option value="クレジットカード">クレジットカード</option>
+                        <option value="コンビニ払い（手数料220円）">コンビニ払い（手数料220円）</option>
+                    </select>
+                </div>
+
+                <!-- 備考 -->
+                <div class="slide-up" style="animation-delay: 0.8s;">
+                    <label for="remarks" class="block text-lg font-medium mb-2">備考</label>
+                    <p class="text-xs mb-2">ご希望・ご質問があればご記入ください。</p>
+                    <textarea id="remarks" rows="4" class="form-textarea"></textarea>
+                </div>
+            </form>
+
+             <!-- 自動計算と表示 -->
+            <div id="estimate-result-container" class="mt-12 slide-up" style="animation-delay: 0.9s;">
+                <div class="bg-[#FBF9F7] p-6 rounded-lg border-2 border-dashed border-[#E4C1B5]">
+                    <pre id="estimate-result" class="whitespace-pre-wrap break-words text-base leading-relaxed"></pre>
+                </div>
+            </div>
+
+            <!-- ページ下部機能ボタン -->
+            <div class="mt-10 space-y-4 text-center slide-up" style="animation-delay: 1s;">
+                 <p class="text-sm font-bold">【LINEで予約する際の手順】</p>
+                <ol class="text-xs text-left max-w-md mx-auto list-decimal list-inside bg-white/50 p-4 rounded-lg">
+                    <li>お見積り内容にご了承いただけましたら、コピーボタンを押し、お見積り内容をコピーしてください。</li>
+                    <li>「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
+                </ol>
+
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+                    <button type="button" id="copy-button" class="btn btn-primary w-full sm:w-auto">お見積りをコピー</button>
+                    <a id="line-button" href="https://line.me/ti/p/Kv76GQK_UI" target="_blank" class="btn btn-secondary w-full sm:w-auto">LINEに貼り付けて予約する</a>
+                </div>
+                <div class="pt-4">
+                    <button type="button" id="clear-button" class="btn btn-clear">入力内容をクリア</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="mt-16 py-12 bg-white/50 border-t border-[#E4C1B5]/30">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            
+            <!-- はじめての方へ -->
+            <div class="mb-10 p-6 bg-[#f0e2de] rounded-xl slide-up" style="animation-delay: 0.2s;">
+                <h3 class="text-xl font-bold mb-2">はじめての方へ</h3>
+                <p class="mb-4 text-sm">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
+                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" class="btn btn-secondary inline-block">はじめての方のフォーム</a>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                 <!-- ロゴ -->
+                <div class="slide-up" style="animation-delay: 0.3s;">
+                     <a href="https://spiritual-therapist-mii.studio.site/" target="_blank">
+                        <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="ロゴ" class="h-24 w-auto mx-auto">
+                    </a>
+                </div>
+                <!-- リンク -->
+                <nav class="flex gap-6 justify-center font-medium slide-up" style="animation-delay: 0.4s;">
+                    <a href="https://spiritual-therapist-mii.studio.site/" target="_blank" class="hover:text-[#ad9196] transition-colors">Home</a>
+                    <a href="https://spiritual-therapist-mii.studio.site/reading" target="_blank" class="hover:text-[#ad9196] transition-colors">リーディング詳細</a>
+                </nav>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- メッセージモーダル -->
+    <div id="message-modal">
+        <div class="modal-content">
+            <p id="modal-message" class="text-lg mb-6"></p>
+            <button id="modal-close" class="btn btn-primary">閉じる</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 予約希望日の動的生成
+            const availableDates = [
+                
+
+'10/6(月)',
+'10/10(金)',
+'10/21(火)',
+'10/22(水)',
+'10/23(木)',
+'10/24(金)',
+'10/29(水)',
+'10/30(木)',
+'10/31(金)',
+'11/7(金)',
+'11/10(月)',
+'11/11(火)',
+'11/12(水)',
+'11/17(月)',
+'11/18(火)',
+'11/19(水)',
+'11/20(木)',
+'11/21(金)',
+'11/24(月)',
+'11/25(火)',
+'11/26(水)',
+'11/28(金)',
+
+
+            ];
+            const datesContainer = document.getElementById('date-options');
+            availableDates.forEach(date => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center space-x-2 p-2 bg-white rounded-lg border border-transparent hover:border-[#E4C1B5] transition cursor-pointer text-sm';
+                label.innerHTML = `
+                    <input type="checkbox" name="preferred_date" value="${date}" class="custom-checkbox form-checkbox h-4 w-4 text-[#E4C1B5] rounded focus:ring-[#ad9196]">
+                    <span>${date}</span>
+                `;
+                datesContainer.appendChild(label);
+            });
+
+            const form = document.getElementById('booking-form');
+            const allInputs = form.querySelectorAll('input, textarea, select');
+            const remoteViewingList = document.getElementById('remote-viewing-list');
+            const addRemoteViewerBtn = document.getElementById('add-remote-viewer');
+            const remoteViewerNameInput = document.getElementById('remote-viewer-name');
+            const referralCheckbox = document.getElementById('referral-discount');
+            const referrerNameContainer = document.getElementById('referrer-name-container');
+            const estimateResult = document.getElementById('estimate-result');
+            
+            const clearButton = document.getElementById('clear-button');
+            const copyButton = document.getElementById('copy-button');
+            const lineButton = document.getElementById('line-button');
+
+            const modal = document.getElementById('message-modal');
+            const modalMessage = document.getElementById('modal-message');
+            const modalClose = document.getElementById('modal-close');
+
+            // --- 関数定義 ---
+
+            const showModal = (message) => {
+                modalMessage.textContent = message;
+                modal.classList.add('show');
+            };
+            
+            const hideModal = () => {
+                modal.classList.remove('show');
+            };
+
+            const calculateAndDisplayEstimate = () => {
+                // 基本料金
+                const durationElement = document.querySelector('input[name="duration"]:checked');
+                const basePrice = durationElement ? parseInt(durationElement.value, 10) : 0;
+                const durationText = durationElement ? durationElement.dataset.text : '';
+
+                // 遠隔霊視
+                const remoteViewers = remoteViewingList.querySelectorAll('.remote-viewer-item');
+                const remoteViewingFee = remoteViewers.length * 8000;
+
+                // 土日祝日
+                const weekendFee = document.getElementById('weekend-fee').checked ? 3000 : 0;
+
+                // 割引前合計
+                const subtotal = basePrice + remoteViewingFee + weekendFee;
+
+                // クーポン割引
+                const couponValue = parseInt(document.getElementById('coupon').value, 10);
+                const couponDiscount = Math.round(subtotal * (couponValue / 100));
+
+                // 紹介割引
+                const referralDiscount = referralCheckbox.checked ? 500 : 0;
+
+                // 合計
+                const total = subtotal - couponDiscount - referralDiscount;
+
+                // 表示テキストの生成
+                let resultText = '【リーディングお見積り】\n';
+                resultText += `ご来店者名: ${document.getElementById('customer-name').value || '（お名前未入力）'}\n\n`;
+
+                if (basePrice > 0) {
+                    resultText += `${durationText}\t${basePrice.toLocaleString()}円\n`;
+                }
+                if (remoteViewers.length > 0) {
+                    resultText += '遠隔霊視料:\n';
+                    remoteViewers.forEach(item => {
+                        const name = item.querySelector('span').textContent;
+                        resultText += `  ${name}様\t8,000円\n`;
+                    });
+                }
+                if (weekendFee > 0) {
+                    resultText += `土日祝日料金\t3,000円\n`;
+                }
+                if (couponDiscount > 0) {
+                     resultText += `クーポン割引\t-${couponDiscount.toLocaleString()}円\n`;
+                }
+                if (referralDiscount > 0) {
+                    const referrerName = document.getElementById('referrer-name').value;
+                    const referrerText = referrerName ? `(${referrerName}様より)` : '';
+                    resultText += `紹介割引 ${referrerText}\t-500円\n`;
+                }
+
+                resultText += '--------------------------------\n';
+                resultText += `合計金額： ${total.toLocaleString()}円\n`;
+                resultText += '--------------------------------\n\n';
+
+                const consultationDetails = document.getElementById('consultation-details').value;
+                resultText += `ご相談内容:\n${consultationDetails || '（未入力）'}\n\n`;
+
+                const venue = document.querySelector('input[name="venue"]:checked');
+                resultText += `希望会場: ${venue ? venue.value : '（未選択）'}\n\n`;
+
+                const preferredDates = Array.from(document.querySelectorAll('input[name="preferred_date"]:checked')).map(cb => cb.value);
+                resultText += `希望日:\n${preferredDates.length > 0 ? preferredDates.join('\n') : '（未選択）'}\n\n`;
+                
+                const paymentMethod = document.getElementById('payment-method').value;
+                resultText += `お支払方法: ${paymentMethod || '（未選択）'}\n\n`;
+
+                const remarks = document.getElementById('remarks').value;
+                if (remarks) {
+                    resultText += `備考:\n${remarks}\n`;
+                }
+
+                estimateResult.textContent = resultText;
+            };
+
+            const validateForm = () => {
+                let isValid = true;
+                const requiredFields = [
+                    { id: 'consultation-details', containerId: 'consultation-details', name: 'ご相談内容' },
+                    { type: 'radio', name: 'venue', containerId: 'venue-options', displayName: '会場のご希望' },
+                    { type: 'radio', name: 'duration', containerId: 'duration-options', displayName: '時間' },
+                    { type: 'checkbox', name: 'preferred_date', containerId: 'date-options', displayName: 'ご予約希望日', min: 1 }, // minを1に変更
+                    { id: 'payment-method', containerId: 'payment-method', name: 'お支払い方法' },
+                ];
+                
+                // Reset all errors first
+                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+
+                for (const field of requiredFields) {
+                    let fieldValid = true;
+                    let elementToMark;
+
+                    if (field.type === 'radio') {
+                        if (!document.querySelector(`input[name="${field.name}"]:checked`)) {
+                            fieldValid = false;
+                        }
+                        elementToMark = document.getElementById(field.containerId);
+                    } else if (field.type === 'checkbox') {
+                         const checkedCount = document.querySelectorAll(`input[name="${field.name}"]:checked`).length;
+                         if (checkedCount < field.min) {
+                            fieldValid = false;
+                         }
+                         elementToMark = document.getElementById(field.containerId);
+                    } else {
+                        const element = document.getElementById(field.id);
+                        if (!element.value.trim()) {
+                            fieldValid = false;
+                        }
+                        elementToMark = element;
+                    }
+
+                    if (!fieldValid) {
+                        isValid = false;
+                        if (elementToMark) {
+                            elementToMark.classList.add('error');
+                        }
+                    }
+                }
+
+                return isValid;
+            };
+
+            // --- イベントリスナー ---
+
+            allInputs.forEach(input => {
+                input.addEventListener('input', calculateAndDisplayEstimate);
+                input.addEventListener('change', calculateAndDisplayEstimate);
+            });
+
+            addRemoteViewerBtn.addEventListener('click', () => {
+                const name = remoteViewerNameInput.value.trim();
+                if (name) {
+                    const viewerId = `viewer-${Date.now()}`;
+                    const div = document.createElement('div');
+                    div.className = 'remote-viewer-item flex items-center justify-between bg-white p-2 rounded';
+                    div.innerHTML = `
+                        <span>${name}</span>
+                        <button type="button" class="btn btn-remove" data-remove="${viewerId}">×</button>
+                    `;
+                    div.id = viewerId;
+                    remoteViewingList.appendChild(div);
+                    remoteViewerNameInput.value = '';
+                    calculateAndDisplayEstimate();
+                }
+            });
+
+            remoteViewingList.addEventListener('click', (e) => {
+                if (e.target.dataset.remove) {
+                    document.getElementById(e.target.dataset.remove).remove();
+                    calculateAndDisplayEstimate();
+                }
+            });
+
+            referralCheckbox.addEventListener('change', () => {
+                referrerNameContainer.classList.toggle('hidden', !referralCheckbox.checked);
+                calculateAndDisplayEstimate();
+            });
+
+            clearButton.addEventListener('click', () => {
+                form.reset();
+                remoteViewingList.innerHTML = '';
+                referrerNameContainer.classList.add('hidden');
+                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+                calculateAndDisplayEstimate();
+            });
+
+            copyButton.addEventListener('click', () => {
+                if (!validateForm()) {
+                    showModal('必須項目をすべて入力・選択してください。');
+                    return;
+                }
+                const textToCopy = estimateResult.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showModal('お見積り内容をコピーしました。');
+                }).catch(err => {
+                    console.error('コピーに失敗しました', err);
+                    showModal('コピーに失敗しました。');
+                });
+            });
+
+            lineButton.addEventListener('click', (e) => {
+                 if (!validateForm()) {
+                    e.preventDefault();
+                    showModal('LINEで送信する前に、必須項目をすべて入力・選択してください。');
+                }
+            });
+
+            modalClose.addEventListener('click', hideModal);
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) {
+                    hideModal();
+                }
+            });
+            
+            // 初期表示
+            calculateAndDisplayEstimate();
+        });
+    </script>
+</body>
+</html>
