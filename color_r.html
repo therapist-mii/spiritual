@@ -3,349 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カラーコードセレクター＆パレット</title>
-    <!-- Tailwind CSS CDNを読み込み -->
+    <title>カラーコードパレット＆ピッカー</title>
+    <!-- Tailwind CSS をロード -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* スクロールバーのデザインを調整（任意） */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* slate-300 */
+            border-radius: 4px;
+        }
+        
         /* カスタムスタイル */
-        body {
-            font-family: "Inter", sans-serif;
-            background-color: #f7f9fb;
+        .color-card {
+            width: 100%;
+            padding-top: 100%; /* アスペクト比 1:1 を維持 */
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+            border: 2px solid transparent;
+            position: relative;
         }
-        /* スクロールバーを隠す（メインパレットの要件を満たすため、カードを可能な限り表示） */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+
+        .color-card.selected {
+            border: 4px solid #3498db; /* 青い境界線で選択状態を示す */
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+            transform: scale(1.05);
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+
+        .color-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
-        /* 選択されたカードがドラッグされている時のスタイル */
+
+        /* 選択済みパレットのカードスタイル */
+        .palette-card {
+            width: 5rem; /* 80px */
+            height: 5rem; /* 80px */
+            cursor: grab;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            flex-shrink: 0; /* 縮小を防ぐ */
+        }
+        
+        .palette-card:active {
+            cursor: grabbing;
+        }
+
+        /* ドラッグ要素の透明度調整 */
         .dragging {
             opacity: 0.5;
-            transform: scale(0.95);
         }
-        /* コピー成功時のフィードバック用スタイル */
-        .toast {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            opacity: 0;
-            transform: translateY(20px);
+
+        /* 選択済みパレットのコンテナを水平スクロール可能にする */
+        #selected-palette {
+            overflow-x: auto;
+            white-space: nowrap;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
+
+        /* 選択状態を解除するボタン */
+        .remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 1.25rem;
+            height: 1.25rem;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            opacity: 0; /* デフォルトでは非表示 */
+            transition: opacity 0.2s;
         }
-        /* 選択パレット内のカードにカーソルを合わせたときのスタイル */
-        .selected-color-card:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 10;
+
+        .palette-card:hover .remove-btn {
+            opacity: 1; /* ホバー時に表示 */
         }
-        /* 各カラーカードの基本スタイル */
-        .color-card {
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.1s;
-        }
-        .color-card:active {
-            transform: scale(0.95);
-        }
+
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="bg-gray-50 min-h-screen font-sans antialiased text-gray-800">
 
-    <div class="max-w-7xl mx-auto">
-        <!-- ヘッダーと説明 -->
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">🎨 カラーパレットメーカー</h1>
-        <p class="text-gray-600 mb-6">下のカラーカードをクリックして選択パレットに追加してください。選択パレット内の色はドラッグで並べ替え可能です。</p>
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-6">カラーピッカー & パレット</h1>
+        <p class="text-center text-lg text-gray-600 mb-8">お好きな色を選び、パレット上で順番を並べ替えてください。</p>
 
-        <!-- 選択パレットエリア -->
-        <div id="selectedPalette" class="bg-white p-4 rounded-xl shadow-lg border border-gray-200 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">選択されたカラーコード (<span id="selectedCount">0</span>色)</h2>
+        <!-- 選択済みカラーパレットエリア -->
+        <div class="bg-white shadow-xl rounded-xl p-4 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">選択中のカラーパレット</h2>
+                <div class="flex space-x-2">
+                    <button id="copy-button" class="flex items-center px-4 py-2 bg-blue-600 text-white font-medium text-sm rounded-lg hover:bg-blue-700 transition duration-150 shadow-md disabled:opacity-50" disabled>
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5v2m0 0h8m-8 0H6M18 5h2M12 5v2m0 0h4m-4 0v2m0 0v4m0 4v2"></path></svg>
+                        コードをコピー
+                    </button>
+                    <button id="clear-button" class="flex items-center px-4 py-2 bg-red-500 text-white font-medium text-sm rounded-lg hover:bg-red-600 transition duration-150 shadow-md disabled:opacity-50" disabled>
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        クリア
+                    </button>
+                </div>
+            </div>
             
-            <!-- 操作ボタン -->
-            <div class="flex flex-wrap gap-4 mb-4">
-                <button id="copyButton" class="flex items-center justify-center px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 active:scale-95 disabled:opacity-50">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
-                        <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h6a2 2 0 00-2-2H5z" />
-                    </svg>
-                    選んだカラーコードをコピー
-                </button>
-                <button id="clearButton" class="flex items-center justify-center px-4 py-2 bg-red-500 text-white font-medium rounded-lg shadow-md hover:bg-red-600 transition duration-150 active:scale-95 disabled:opacity-50">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                    すべてクリア
-                </button>
-            </div>
-
-            <!-- 選択されたカラーコードの表示エリア -->
-            <div id="selectedColorsContainer" class="min-h-[100px] border border-dashed border-gray-300 rounded-lg p-3 flex flex-wrap gap-3 items-start content-start bg-gray-50">
-                <p id="emptyMessage" class="text-gray-500 italic">ここにカラーカードをドラッグまたはクリックして追加してください。</p>
+            <!-- 選択済みカラーパレットコンテナ -->
+            <div id="selected-palette" class="flex space-x-3 p-2 bg-gray-100 rounded-lg min-h-[6.5rem] items-center">
+                <p id="palette-placeholder" class="text-gray-400 italic text-center w-full">色カードを選択してパレットに追加してください。</p>
             </div>
         </div>
 
-        <!-- 全カラーカード一覧 (メインパレット) -->
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">カラーカード一覧 (クリックで選択)</h2>
-        <div id="mainPalette" class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-14 gap-2 no-scrollbar">
-            <!-- JavaScriptによってカラーカードがここに挿入されます -->
+        <!-- コピー成功メッセージ (非表示) -->
+        <div id="copy-message" class="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-xl transition-opacity duration-300 opacity-0 z-50">
+            コードがコピーされました！
+        </div>
+
+        <h2 class="text-2xl font-semibold mb-4 border-b pb-2">カラーコード一覧</h2>
+
+        <!-- カラーカード一覧グリッド -->
+        <div id="color-picker" class="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-15 gap-2">
+            <!-- カラーカードはJavaScriptでここに挿入されます -->
         </div>
     </div>
-
-    <!-- トーストメッセージ (コピー成功時などに表示) -->
-    <div id="toast" class="toast fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-xl text-sm font-medium z-50">
-        コピーが成功しました！
-    </div>
-
 
     <script>
-        // ユーザーから提供された色コード（重複を削除し、一意のリストを作成）
-        const ALL_COLOR_CODES_INPUT = [
-            "#FF0000", "#C0392B", "#E57373", "#E76F51", "#EF5350", "#F44336", "#FFE4E1", "#FFB6C1", "#FF8A80", 
-            "#6B4226", "#8B5E3C", "#A0522D", "#C49E7D", "#D35400", "#E67E22", "#F39C12", "#FF9800", "#FFCC80", 
-            "#F4A261", "#F9A825", "#FDD835", "#E9C46A", "#DCE775", "#EC407A", "#E91E63", "#F48FB1", "#F8BBD0", 
-            "#FFF0F5", "#E6E6FA", "#CE93D8", "#BA68C8", "#9B59B6", "#8E44AD", "#8E24AA", "#6A1B9A", "#6B5B95", 
-            "#5A4E7D", "#4B3F72", "#3F3F74", "#415A77", "#457B9D", "#778DA9", "#2196F3", "#1976D2", "#64B5F6", 
-            "#3498DB", "#2980B9", "#1D3557", "#264653", "#2C3E50", "#2B2D42", "#1B263B", "#000080", "#4DD0E1", 
-            "#B2EBF2", "#A8DADC", "#88BFBF", "#1ABC9C", "#16A085", "#00A968", "#43A047", "#4CAF50", "#66BB6A", 
-            "#81C784", "#AEEA00", "#E0E1DD", "#BDC3C7", "#BBDEFB", "#95A5A6", "#6D6D6D", "#3A3A3A", "#ECEFF1", 
-            "#ECF0F1", "#F5F5F5", "#FFFAFA", "#FFFFF0", "#FFFFFF"
+        // 後でカラーコードを書き換えやすいように、ここに定義します。
+        const COLOR_CODES = [
+            '#FF0000', '#C0392B', '#E57373', '#E76F51', '#EF5350', '#F44336', '#FFE4E1', '#FFB6C1', '#FF8A80', 
+            '#6B4226', '#8B5E3C', '#A0522D', '#C49E7D', '#D35400', '#E67E22', '#F39C12', '#FF9800', '#FFCC80', 
+            '#F4A261', '#F9A825', '#FDD835', '#E9C46A', '#DCE775', '#EC407A', '#E91E63', '#F48FB1', '#F8BBD0', 
+            '#FFF0F5', '#E6E6FA', '#CE93D8', '#BA68C8', '#9B59B6', '#8E44AD', '#8E24AA', '#6A1B9A', '#6B5B95', 
+            '#5A4E7D', '#4B3F72', '#3F3F74', '#415A77', '#457B9D', '#778DA9', '#2196F3', '#1976D2', '#64B5F6', 
+            '#3498DB', '#2980B9', '#1D3557', '#264653', '#2C3E50', '#2B2D42', '#1B263B', '#000080', '#4DD0E1', 
+            '#B2EBF2', '#A8DADC', '#88BFBF', '#1ABC9C', '#16A085', '#00A968', '#43A047', '#4CAF50', '#66BB6A', 
+            '#81C784', '#AEEA00', '#E0E1DD', '#BDC3C7', '#BBDEFB', '#95A5A6', '#6D6D6D', '#3A3A3A', '#ECF0F1', 
+            '#F5F5F5', '#FFFAFA', '#FFFFF0', '#FFFFFF'
         ];
-        
-        // 重複を除去し、一意なカラーコードのリストを作成
-        const UNIQUE_COLOR_CODES = [...new Set(ALL_COLOR_CODES_INPUT)];
 
-        const mainPalette = document.getElementById('mainPalette');
-        const selectedPaletteContainer = document.getElementById('selectedColorsContainer');
-        const copyButton = document.getElementById('copyButton');
-        const clearButton = document.getElementById('clearButton');
-        const selectedCountSpan = document.getElementById('selectedCount');
-        const emptyMessage = document.getElementById('emptyMessage');
-        const toast = document.getElementById('toast');
+        const colorPicker = document.getElementById('color-picker');
+        const selectedPalette = document.getElementById('selected-palette');
+        const copyButton = document.getElementById('copy-button');
+        const clearButton = document.getElementById('clear-button');
+        const palettePlaceholder = document.getElementById('palette-placeholder');
+        const copyMessage = document.getElementById('copy-message');
 
-        let selectedColors = []; // 選択されたカラーコードを保持する配列
-        let draggedItem = null; // ドラッグ中の要素
+        // 選択されたカラーコードを保持する配列
+        let selectedCodes = [];
 
-        /**
-         * 選択されたカラーコードの配列を更新し、UIを再描画します。
-         */
-        function updateSelectedColorsUI() {
-            selectedPaletteContainer.innerHTML = '';
+        // ------------------------------------------------
+        // 初期化処理: カラーカード一覧の描画
+        // ------------------------------------------------
+        function initializeColorPicker() {
+            COLOR_CODES.forEach(code => {
+                const card = document.createElement('div');
+                card.className = 'color-card rounded-lg';
+                card.style.backgroundColor = code;
+                card.setAttribute('data-color', code);
+                card.onclick = () => toggleColorSelection(code, card);
+                colorPicker.appendChild(card);
+            });
+        }
+
+        // ------------------------------------------------
+        // カラー選択/解除のトグル処理
+        // ------------------------------------------------
+        function toggleColorSelection(code, card) {
+            const index = selectedCodes.indexOf(code);
             
-            if (selectedColors.length === 0) {
-                emptyMessage.style.display = 'block';
-                selectedPaletteContainer.appendChild(emptyMessage);
+            if (index === -1) {
+                // 選択に追加
+                selectedCodes.push(code);
+                card.classList.add('selected');
+                renderSelectedPalette();
+            } else {
+                // 選択から削除
+                selectedCodes.splice(index, 1);
+                card.classList.remove('selected');
+                renderSelectedPalette();
+            }
+        }
+
+        // ------------------------------------------------
+        // 選択されたパレットの描画
+        // ------------------------------------------------
+        function renderSelectedPalette() {
+            selectedPalette.innerHTML = ''; // 一旦クリア
+
+            if (selectedCodes.length === 0) {
+                palettePlaceholder.style.display = 'block';
+                selectedPalette.appendChild(palettePlaceholder);
                 copyButton.disabled = true;
                 clearButton.disabled = true;
-            } else {
-                emptyMessage.style.display = 'none';
-                copyButton.disabled = false;
-                clearButton.disabled = false;
-                
-                selectedColors.forEach(color => {
-                    const card = createSelectedColorCard(color);
-                    selectedPaletteContainer.appendChild(card);
-                });
+                return;
             }
-            selectedCountSpan.textContent = selectedColors.length;
-        }
 
-        /**
-         * トーストメッセージを表示します。
-         * @param {string} message - 表示するメッセージ
-         */
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
-        }
+            palettePlaceholder.style.display = 'none';
+            copyButton.disabled = false;
+            clearButton.disabled = false;
 
-        // --- メインパレットの作成 ---
-
-        /**
-         * メインパレット用のカラーカード要素を作成します。
-         * @param {string} colorCode - カラーコード（例: #FF0000）
-         * @returns {HTMLElement} カラーカード要素
-         */
-        function createMainColorCard(colorCode) {
-            const card = document.createElement('div');
-            card.className = 'color-card aspect-square rounded-lg shadow-sm hover:shadow-md hover:ring-2 hover:ring-indigo-500 transition duration-150 ease-in-out';
-            card.style.backgroundColor = colorCode;
-            card.setAttribute('data-color', colorCode);
-            card.title = colorCode + ' (クリックで選択)';
-            
-            // クリックで選択パレットに追加
-            card.addEventListener('click', () => {
-                if (!selectedColors.includes(colorCode)) {
-                    selectedColors.push(colorCode);
-                    updateSelectedColorsUI();
-                } else {
-                    showToast('すでに選択されています: ' + colorCode);
-                }
-            });
-            
-            return card;
-        }
-
-        /**
-         * メインパレットを初期化します。
-         */
-        function initializeMainPalette() {
-            UNIQUE_COLOR_CODES.forEach(color => {
-                const card = createMainColorCard(color);
-                mainPalette.appendChild(card);
+            selectedCodes.forEach(code => {
+                const card = createPaletteCard(code);
+                selectedPalette.appendChild(card);
             });
         }
         
-        // --- 選択パレット (ドラッグ＆ドロップ) の作成 ---
-
-        /**
-         * 選択パレット用のカラーカード要素を作成します。（ドラッグ可能）
-         * @param {string} colorCode - カラーコード
-         * @returns {HTMLElement} カラーカード要素
-         */
-        function createSelectedColorCard(colorCode) {
+        // 選択されたパレットカードのDOM要素を作成
+        function createPaletteCard(code) {
             const card = document.createElement('div');
-            card.className = 'selected-color-card w-12 h-12 rounded-full shadow-lg cursor-move transition duration-200 ease-in-out relative flex items-center justify-center text-xs font-bold ring-2 ring-offset-2 ring-gray-100';
-            card.style.backgroundColor = colorCode;
-            card.setAttribute('data-color', colorCode);
-            card.title = colorCode + ' (ドラッグで並べ替え、クリックで削除)';
-            card.draggable = true;
+            card.className = 'palette-card rounded-lg';
+            card.style.backgroundColor = code;
+            card.setAttribute('data-color', code);
+            card.setAttribute('draggable', true);
             
-            // カードの色に応じてテキスト色を設定
-            // 簡易的な輝度チェック
-            const hex = colorCode.substring(1);
-            const r = parseInt(hex.substring(0, 2), 16);
-            const g = parseInt(hex.substring(2, 4), 16);
-            const b = parseInt(hex.substring(4, 6), 16);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            card.style.color = brightness > 180 ? '#000' : '#FFF';
-            card.textContent = colorCode; // カラーコード名はパレット上に記載しない要件でしたが、並べ替えを容易にするため、選択パレット（ミニパレット）内では表示します。
-            
-            // クリックで選択パレットから削除
-            card.addEventListener('click', () => {
-                const index = selectedColors.indexOf(colorCode);
-                if (index > -1) {
-                    selectedColors.splice(index, 1);
-                    updateSelectedColorsUI();
-                }
-            });
+            // 削除ボタン
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation(); // ドラッグ開始を防ぐ
+                removeColorFromPalette(code);
+            };
+            card.appendChild(removeBtn);
 
-            // ドラッグ開始
-            card.addEventListener('dragstart', (e) => {
-                draggedItem = card;
-                e.dataTransfer.effectAllowed = 'move';
-                setTimeout(() => card.classList.add('dragging'), 0);
-            });
+            // ドラッグイベントリスナーを設定
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragover', handleDragOver);
+            card.addEventListener('drop', handleDrop);
+            card.addEventListener('dragend', handleDragEnd);
 
-            // ドラッグ終了
-            card.addEventListener('dragend', () => {
-                draggedItem.classList.remove('dragging');
-                draggedItem = null;
-            });
-            
-            // ドラッグオーバー (ドロップ可能な場所を示す)
-            card.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                const container = selectedPaletteContainer;
-                const siblings = Array.from(container.children).filter(el => el.id !== 'emptyMessage');
-                
-                // ドラッグ中の要素がなければ何もしない
-                if (!draggedItem || draggedItem === card) return;
-
-                // カーソルの位置と要素の中心を比較して、前か後ろかを判定
-                const rect = card.getBoundingClientRect();
-                const center = (rect.left + rect.right) / 2;
-                const insertBefore = e.clientX < center;
-
-                // 挿入位置を計算
-                const draggedIndex = siblings.indexOf(draggedItem);
-                const targetIndex = siblings.indexOf(card);
-
-                if (draggedIndex < targetIndex && insertBefore) {
-                    container.insertBefore(draggedItem, card);
-                } else if (draggedIndex > targetIndex && !insertBefore) {
-                    container.insertBefore(draggedItem, card.nextSibling);
-                } else if (draggedIndex > targetIndex && insertBefore) {
-                    container.insertBefore(draggedItem, card);
-                } else if (draggedIndex < targetIndex && !insertBefore) {
-                    container.insertBefore(draggedItem, card.nextSibling);
-                }
-            });
-            
             return card;
         }
 
-        // --- ボタン処理 ---
+        // ------------------------------------------------
+        // 削除処理
+        // ------------------------------------------------
+        function removeColorFromPalette(code) {
+            const index = selectedCodes.indexOf(code);
+            if (index > -1) {
+                // 1. パレットリストから削除
+                selectedCodes.splice(index, 1);
+
+                // 2. ピッカーカードの選択状態を解除
+                const pickerCard = document.querySelector(`.color-card[data-color="${code}"]`);
+                if (pickerCard) {
+                    pickerCard.classList.remove('selected');
+                }
+
+                // 3. パレットを再描画
+                renderSelectedPalette();
+            }
+        }
+
+        // ------------------------------------------------
+        // ドラッグ＆ドロップ処理
+        // ------------------------------------------------
+        let dragSourceEl = null;
+
+        function handleDragStart(e) {
+            dragSourceEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-color'));
+            
+            // 少し遅延させてからdraggingクラスを追加
+            setTimeout(() => {
+                dragSourceEl.classList.add('dragging');
+            }, 0); 
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // dropを許可するために必要
+            e.dataTransfer.dropEffect = 'move';
+            
+            // ホバーエフェクトを追加する（見た目のフィードバック）
+            if (this !== dragSourceEl && this.classList.contains('palette-card')) {
+                this.style.transform = 'scale(1.1)';
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            
+            if (this !== dragSourceEl && this.classList.contains('palette-card')) {
+                const dragColor = dragSourceEl.getAttribute('data-color');
+                const dropColor = this.getAttribute('data-color');
+
+                // 1. 配列内のインデックスを取得
+                const dragIndex = selectedCodes.indexOf(dragColor);
+                const dropIndex = selectedCodes.indexOf(dropColor);
+
+                if (dragIndex !== -1 && dropIndex !== -1) {
+                    // 2. 配列内の要素を入れ替える
+                    selectedCodes.splice(dragIndex, 1); // 元の要素を削除
+                    selectedCodes.splice(dropIndex, 0, dragColor); // 目的の場所に挿入
+
+                    // 3. パレットを再描画
+                    renderSelectedPalette();
+                }
+            }
+            
+            // すべてのカードのホバーエフェクトをリセット
+            document.querySelectorAll('.palette-card').forEach(card => card.style.transform = 'scale(1)');
+        }
+
+        function handleDragEnd(e) {
+            // draggingクラスを削除
+            if (dragSourceEl) {
+                dragSourceEl.classList.remove('dragging');
+                dragSourceEl = null;
+            }
+            // すべてのカードのホバーエフェクトをリセット
+            document.querySelectorAll('.palette-card').forEach(card => card.style.transform = 'scale(1)');
+        }
+
+
+        // ------------------------------------------------
+        // ボタン処理
+        // ------------------------------------------------
 
         // コピーボタンの処理
-        copyButton.addEventListener('click', () => {
-            if (selectedColors.length === 0) return;
-            
-            // 現在の表示順序に基づいてカラーコードを取得
-            const currentOrder = Array.from(selectedPaletteContainer.children)
-                .filter(el => el.id !== 'emptyMessage')
-                .map(card => card.getAttribute('data-color'));
-                
-            const textToCopy = currentOrder.join(', ');
+        copyButton.addEventListener('click', async () => {
+            if (selectedCodes.length === 0) return;
 
-            // document.execCommand('copy') を使用 (iframe環境での互換性のため)
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = textToCopy;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            
+            const codesString = selectedCodes.join(', ');
+
             try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast('コピー成功: ' + textToCopy);
-                } else {
-                    showToast('コピーに失敗しました。');
-                }
-            } catch (err) {
-                console.error('コピーエラー:', err);
-                showToast('コピーエラーが発生しました。');
-            } finally {
+                // navigator.clipboard.writeText() は iframe では制限がある可能性があるため、
+                // document.execCommand('copy') を使用します。
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = codesString;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                document.execCommand('copy');
                 document.body.removeChild(tempTextArea);
-                // コピー後、内部の selectedColors 配列をDOMの順序に同期させる
-                selectedColors = currentOrder;
+
+                // コピー成功メッセージ表示
+                copyMessage.classList.remove('opacity-0');
+                copyMessage.classList.add('opacity-100');
+                setTimeout(() => {
+                    copyMessage.classList.remove('opacity-100');
+                    copyMessage.classList.add('opacity-0');
+                }, 2000);
+
+            } catch (err) {
+                console.error('コピーに失敗しました:', err);
+                // ユーザーに失敗を通知するカスタムメッセージを追加できます
             }
         });
 
         // クリアボタンの処理
         clearButton.addEventListener('click', () => {
-            selectedColors = [];
-            updateSelectedColorsUI();
-            showToast('選択パレットをクリアしました。');
-        });
+            // 1. 選択済み配列をクリア
+            selectedCodes = [];
+            
+            // 2. ピッカーカードの選択状態をすべて解除
+            document.querySelectorAll('.color-card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
 
-        // --- 初期化処理 ---
-        
-        // 選択パレットエリア自体へのドロップイベント (空のパレットにドロップする場合などに対応)
-        selectedPaletteContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            // ドラッグ操作後、内部の配列をDOMの順序に同期させる
-            selectedColors = Array.from(selectedPaletteContainer.children)
-                .filter(el => el.id !== 'emptyMessage')
-                .map(card => card.getAttribute('data-color'));
-        });
-        
-        selectedPaletteContainer.addEventListener('dragenter', (e) => {
-            e.preventDefault();
-        });
-        
-        selectedPaletteContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
+            // 3. パレットを再描画（空にする）
+            renderSelectedPalette();
         });
 
 
-        window.onload = () => {
-            initializeMainPalette();
-            updateSelectedColorsUI(); // 初期状態のUIをレンダリング
-        };
+        // ------------------------------------------------
+        // 起動
+        // ------------------------------------------------
+        // ページロード時にカラーカード一覧を初期化
+        window.onload = initializeColorPicker;
     </script>
 </body>
 </html>
