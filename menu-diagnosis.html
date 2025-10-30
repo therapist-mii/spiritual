@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おすすめメニュー診断</title>
+    <!-- Google Fonts: Noto Serif JP (明朝体) の読み込み -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ファビコンの設定 -->
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    
+    <style>
+        /* CSSカスタムプロパティ (色の定義) */
+        :root {
+            --color-main-dark: #544C40; /* 濃い茶/チャコール */
+            --color-accent-soft: #E4C1B5; /* ローズベージュ */
+            --color-light-background: #EAE6E1; /* 非常に薄いベージュ */
+            --color-shadow-base: #ede1e1; /* 薄いピンクベージュ */
+            --color-white: #ffffff;
+            --font-serif: 'Noto Serif JP', serif;
+        }
+
+        /* ---------------------------------- */
+        /* 基本スタイルとリセット */
+        /* ---------------------------------- */
+        body {
+            font-family: var(--font-serif);
+            color: var(--color-main-dark);
+            background-color: var(--color-white);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--color-main-dark);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--color-accent-soft);
+        }
+
+        /* ---------------------------------- */
+        /* ヘッダーとロゴ */
+        /* ---------------------------------- */
+        .header {
+            width: 100%;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        .logo-link {
+            display: inline-block;
+        }
+
+        .logo {
+            max-width: 150px; /* スマホでの表示を考慮 */
+            height: auto;
+            display: block;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.2s forwards;
+        }
+
+        @media (min-width: 768px) {
+            .logo {
+                max-width: 250px;
+            }
+        }
+
+        /* ---------------------------------- */
+        /* メインコンテナ (診断部分) */
+        /* ---------------------------------- */
+        .main-container {
+            flex-grow: 1;
+            width: 90%;
+            max-width: 700px;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 導入文 */
+        .intro-text {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1.2s ease-out 0.4s forwards;
+        }
+
+        .intro-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .intro-text p {
+            font-size: 1rem;
+            color: var(--color-main-dark);
+        }
+        
+        /* 診断カード */
+        .diagnosis-card {
+            width: 100%;
+            background-color: var(--color-light-background);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px var(--color-shadow-base);
+            text-align: center;
+            transition: all 0.5s ease-in-out;
+            min-height: 350px; /* ある程度の高さを確保 */
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlide 1s ease-out 0.6s forwards;
+        }
+
+        /* 質問と結果のスタイル */
+        .question-text, .result-menu-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--color-main-dark);
+        }
+
+        /* 選択肢リスト */
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* 選択肢ボタン */
+        .option-button {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background-color: var(--color-white);
+            color: var(--color-main-dark);
+            border: 2px solid var(--color-accent-soft);
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            text-align: left;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .option-button:hover {
+            background-color: var(--color-accent-soft);
+            color: var(--color-white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-button:active {
+            transform: translateY(0);
+        }
+
+        /* ---------------------------------- */
+        /* 結果表示スタイル */
+        /* ---------------------------------- */
+        #result-content {
+            text-align: center;
+        }
+
+        .result-menu-title {
+            font-size: 1.8rem;
+            color: var(--color-accent-soft);
+            text-shadow: 1px 1px 3px var(--color-shadow-base);
+            margin-top: 0;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            margin: 1.5rem 0;
+            padding: 0 1rem;
+            border-left: 4px solid var(--color-accent-soft);
+            text-align: left;
+        }
+
+        .result-link-button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--color-main-dark);
+            color: var(--color-white);
+            border-radius: 25px;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* 神秘的な動き */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-link-button:hover {
+            background-color: var(--color-accent-soft);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px) scale(1.02);
+        }
+        
+        /* 診断をリセットするボタン */
+        .reset-button {
+            margin-top: 2rem;
+            background: none;
+            border: none;
+            color: var(--color-accent-soft);
+            font-family: var(--font-serif);
+            cursor: pointer;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .reset-button:hover {
+            opacity: 1;
+        }
+
+
+        /* ---------------------------------- */
+        /* フッター */
+        /* ---------------------------------- */
+        .footer {
+            width: 100%;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid var(--color-shadow-base);
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background-color: var(--color-light-background);
+            color: var(--color-main-dark);
+            border: 1px solid var(--color-shadow-base);
+            border-radius: 8px;
+            font-weight: 400;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: var(--color-accent-soft);
+            color: var(--color-white);
+            transform: scale(1.05);
+        }
+
+
+        /* ---------------------------------- */
+        /* アニメーション */
+        /* ---------------------------------- */
+
+        /* 全体フェードイン */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* カードのフェードイン＆スライドアップ */
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* コンテンツ切り替え時のフェードアニメーション */
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .fade-in {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="https://spiritual-therapist-mii.studio.site/" class="logo-link" target="_blank" rel="noopener noreferrer">
+            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/rogo-250.png" alt="Mii Spiritual Therapist Logo" class="logo">
+        </a>
+    </header>
+
+    <div class="main-container">
+        <div class="intro-text">
+            <h1>今の自分に合ったセッションが分かる診断</h1>
+            <p>いくつかの質問に答えるだけで、今のあなたの状態に最適なスピリチュアルメニューをご提案します。</p>
+        </div>
+
+        <div id="diagnosis-card" class="diagnosis-card">
+            <!-- 質問または結果が表示される場所 -->
+            <div id="content-area">
+                <!-- 初期コンテンツはJSでロードされる -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <a href="https://spiritual-therapist-mii.studio.site/" class="home-button" target="_blank" rel="noopener noreferrer">
+            HOMEへ戻る
+        </a>
+    </footer>
+
+    <script>
+        // ----------------------------------
+        // 診断データ
+        // ----------------------------------
+        const questions = {
+            1: {
+                text: "Q1. 今、一番近い感覚はどれですか？",
+                options: [
+                    { text: "A. 悩み事がある、モヤモヤする…迷いがある", next: 2, menu: null },
+                    { text: "B. なぜかだるい、考えがまとまらない", next: "result", menu: "ヒーリング" },
+                    { text: "C. ちょっとだけ聞きたい・軽く試してみたい", next: "result", menu: "カラーカード" }
+                ]
+            },
+            2: {
+                text: "Q2. そのモヤモヤはどんな感じ？",
+                options: [
+                    { text: "A. 少し先の未来を知り、前もって対策をしたい", next: "result", menu: "未来ナビ" },
+                    { text: "B. 自分の本音を知りたい", next: 3, menu: null }
+                ]
+            },
+            3: {
+                text: "Q3. 本音を「感じたい」？「言葉で聞きたい」？",
+                options: [
+                    { text: "A. 感じたい", next: "result", menu: "アートセラピー" },
+                    { text: "B. 言葉で聞きたい", next: "result", menu: "リーディング" },
+                    { text: "C. 深く話したい・空間の力も使いたい", next: "result", menu: "対面リーディング" }
+                ]
+            }
+        };
+
+        const results = {
+            "ヒーリング": {
+                title: "ヒーリング",
+                description: "心身の疲れを深く癒し、エネルギーを整えます。だるさや集中力の欠如は、エネルギーバランスの乱れかもしれません。穏やかな波動の中で本来の自分を取り戻しましょう。",
+                linkKey: "ヒーリング"
+            },
+            "カラーカード": {
+                title: "カラーカード",
+                description: "今のあなたの状態を色で読み解きます。軽い気持ちで試せる短いセッションで、あなたの潜在意識からのメッセージを気軽に受け取ってみましょう。",
+                linkKey: "カラーカード"
+            },
+            "未来ナビ": {
+                title: "未来ナビ",
+                description: "未来の可能性を深く探り、最適な道筋を見つけます。漠然とした不安ではなく、具体的な行動指針が欲しいあなたにおすすめです。未来を主体的に創造するためのサポートです。",
+                linkKey: "未来ナビ"
+            },
+            "アートセラピー": {
+                title: "アートセラピー",
+                description: "絵や色を通して無意識の感情を表現し、自己理解を深めます。言葉にするのが難しい本音を、五感で感じ取りたいあなたに最適な、内面を探求するセッションです。",
+                linkKey: "アートセラピー"
+            },
+            "リーディング": {
+                title: "リーディング",
+                description: "今のあなたに必要なメッセージや、潜在的な課題を「言葉」として明確に受け取ります。具体的なアドバイスや洞察を通じて、現実的な一歩を踏み出すお手伝いをします。",
+                linkKey: "リーディング"
+            },
+            "対面リーディング": {
+                title: "対面リーディング",
+                description: "プライベートな空間で、深く、多角的にあなたの本質を読み解きます。空間のエネルギーと、じっくりと対話する時間を使って、心の底からの変容を促します。",
+                linkKey: "対面リーディング"
+            }
+        };
+
+        const menuLinks = {
+            "HOME": "https://spiritual-therapist-mii.studio.site/",
+            "メニュー": "https://spiritual-therapist-mii.studio.site/menu",
+            "リーディング": "https://spiritual-therapist-mii.studio.site/reading",
+            "未来ナビ": "https://spiritual-therapist-mii.studio.site/mirai-navi",
+            "アートセラピー": "https://spiritual-therapist-mii.studio.site/art-therapy",
+            "カラーカード": "https://spiritual-therapist-mii.studio.site/color-card",
+            "カラーセラピー": "https://spiritual-therapist-mii.studio.site/color-therapy",
+            "ヒーリング": "https://spiritual-therapist-mii.studio.site/healing",
+            "対面リーディング": "https://spiritual-therapist-mii.studio.site/f2f_reading"
+        };
+
+
+        // ----------------------------------
+        // 診断ロジック
+        // ----------------------------------
+        let currentQuestion = 1; // 現在の質問番号をトラッキング
+        const contentArea = document.getElementById('content-area');
+        const diagnosisCard = document.getElementById('diagnosis-card');
+        
+        // 質問の表示
+        function displayQuestion(qNum) {
+            const q = questions[qNum];
+            if (!q) return;
+
+            // アニメーション用にコンテンツをフェードアウト
+            contentArea.classList.add('fade-out');
+
+            setTimeout(() => {
+                let html = `<div class="question-text">${q.text}</div>`;
+                html += `<ul class="options-list">`;
+                
+                q.options.forEach((option, index) => {
+                    // next, menu, index を data属性として格納
+                    const nextStep = option.next;
+                    const resultMenu = option.menu || '';
+                    
+                    html += `<li>
+                                <button class="option-button" 
+                                        data-next="${nextStep}" 
+                                        data-menu="${resultMenu}"
+                                        data-index="${index}"
+                                        onclick="handleAnswer(this)">
+                                    ${option.text}
+                                </button>
+                             </li>`;
+                });
+                
+                html += `</ul>`;
+                
+                // 新しいコンテンツを設定し、フェードイン
+                contentArea.innerHTML = html;
+                contentArea.classList.remove('fade-out');
+                contentArea.classList.add('fade-in');
+            }, 300); // フェードアウトの時間に合わせる
+        }
+
+        // 回答の処理
+        function handleAnswer(button) {
+            // アニメーション用にコンテンツをフェードアウト
+            contentArea.classList.remove('fade-in');
+            contentArea.classList.add('fade-out');
+
+            const nextStep = button.getAttribute('data-next');
+            const resultMenu = button.getAttribute('data-menu');
+            
+            // ボタンがクリックされたら、0.4秒後に次のステップへ
+            setTimeout(() => {
+                if (nextStep === "result") {
+                    displayResult(resultMenu);
+                } else {
+                    currentQuestion = parseInt(nextStep, 10);
+                    displayQuestion(currentQuestion);
+                }
+            }, 400); 
+        }
+
+        // 結果の表示
+        function displayResult(menuName) {
+            const resultData = results[menuName];
+            if (!resultData) return;
+
+            let html = `
+                <div id="result-content">
+                    <div class="question-text">あなたにおすすめのメニューは...</div>
+                    <h2 class="result-menu-title">${resultData.title}</h2>
+                    <p class="result-description">${resultData.description}</p>
+                    <a href="${menuLinks[resultData.linkKey]}" 
+                       class="result-link-button" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        メニュー詳細を見る
+                    </a>
+                    <button class="reset-button" onclick="resetDiagnosis()">
+                        もう一度診断する
+                    </button>
+                </div>
+            `;
+            
+            contentArea.innerHTML = html;
+            contentArea.classList.remove('fade-out');
+            contentArea.classList.add('fade-in');
+        }
+        
+        // 診断のリセット
+        function resetDiagnosis() {
+             contentArea.classList.remove('fade-in');
+             contentArea.classList.add('fade-out');
+             
+             setTimeout(() => {
+                currentQuestion = 1;
+                displayQuestion(currentQuestion);
+             }, 400);
+        }
+
+        // ページロード時の初期化
+        window.onload = () => {
+            displayQuestion(currentQuestion);
+        };
+
+    </script>
+</body>
+</html>
