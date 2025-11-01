@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スピリチュアルセラピスト 未依</title>
+    <!-- ファビコンの指定 -->
+    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    
+    <!-- Google Fonts: Noto Serif JPの読み込み -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSSの読み込み -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* カスタム設定 */
+        :root {
+            /* 指定された文字色 */
+            --text-color: #7a736a;
+        }
+
+        /* Tailwindカスタム設定の適用 */
+        html {
+            /* Noto Serif JPをデフォルトフォントとして設定 */
+            font-family: 'Noto Serif JP', serif;
+            color: var(--text-color);
+            background-color: #f7f7f7; /* 背景をわずかにオフホワイトに */
+        }
+        
+        /* ふわっと表示されるアニメーションの定義 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* アニメーションの適用クラス */
+        .fade-in-content {
+            animation: fadeIn 2.0s ease-out forwards;
+            opacity: 0; /* 初期状態では非表示 */
+        }
+        
+        /* リンクの色の設定 */
+        .footer-link {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #5d5750; /* ホバー時に少し濃くする */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 sm:p-10">
+    <!-- メインコンテンツコンテナ -->
+    <div class="fade-in-content max-w-xl mx-auto space-y-8 p-8 md:p-12 bg-white shadow-xl rounded-xl border border-gray-100">
+        
+        <!-- メッセージセクション -->
+        <div class="text-lg leading-relaxed space-y-6 text-center">
+            
+            <p>私を見つけてくださり、ありがとうございます。</p>
+
+            <p>
+                私に見える世界は、少し変わっています。
+                少し先の未来や、可能性、エネルギーの流れなど、こうしたらもっと良くなるということは、たいていの人は気付くことができないのです。
+                私は、それを伝える役目をしています。
+            </p>
+
+            <p>
+                欲しいものを与えるのではなく、気づきのキッカケの場とし、心を開放するためのお手伝いや、自分で見つけられない素敵なモノを見つけるためのお手伝い。
+                そして、最適なタイミングで行動するためのお手伝いをしています。
+                辛く苦しみ悲しい日々を送っていた方もいるかもしれません。
+                このご縁が、誰かの心を明るく照らし、大きく飛躍させるきっかけであることを願います。
+            </p>
+
+            <p class="font-bold">
+                1人でも多くのお客様が自分を輝かせ、もっと自分を好きでいられますように。
+            </p>
+        </div>
+
+        <!-- 署名セクション -->
+        <div class="text-right pt-6 border-t border-gray-200">
+            <p class="text-xl font-semibold">スピリチュアルセラピスト 未依</p>
+        </div>
+    </div>
+
+    <!-- フッターリンクセクション -->
+    <footer class="mt-12 w-full max-w-xl text-center">
+        <a 
+            href="https://spiritual-therapist-mii.studio.site/" 
+            class="footer-link text-base font-medium border-b border-current pb-0.5 hover:border-transparent transition-colors duration-300"
+            aria-label="HOME (外部サイトへ移動)"
+        >
+            HOME
+        </a>
+    </footer>
+
+</body>
+</html>
