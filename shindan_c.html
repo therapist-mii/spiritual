@@ -28,6 +28,9 @@
             font-family: 'Noto Serif JP', serif;
             background-color: var(--color-light-bg);
             color: var(--color-primary);
+            /* ヘッダーと固定ボタンの分のスペースを確保 */
+            padding-top: 5rem; /* ヘッダーの高さ */
+            padding-bottom: 7rem; /* 固定ボタンの高さ */
         }
         .header-bg {
             background-color: var(--color-primary);
@@ -41,14 +44,16 @@
         .btn-primary {
             background-color: var(--color-accent);
             color: var(--color-primary);
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.1s;
         }
         .btn-primary:hover:not(:disabled) {
             background-color: #d8b2a3; /* 少し濃い色 */
+            transform: translateY(-2px);
         }
         .btn-primary:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none !important;
         }
         .color-box {
             width: 100%;
@@ -57,13 +62,14 @@
             border: 3px solid transparent;
             transition: border-color 0.2s, transform 0.1s;
         }
-        .color-box:hover {
+        .color-box:hover:not(.selected) {
             transform: scale(1.05);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
         .color-box.selected {
             border-color: var(--color-primary);
             box-shadow: 0 0 0 5px var(--color-accent);
-            transform: scale(1.05);
+            transform: scale(1.08); /* 選択時により大きく */
         }
         .section-title {
             border-left: 8px solid var(--color-accent);
@@ -74,12 +80,35 @@
              border-left: 5px solid var(--color-accent);
              background-color: var(--color-light-accent);
         }
+        /* モバイル固定ボタンエリア */
+        #fixed-buttons-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+        }
+        @media (min-width: 640px) {
+            /* デスクトップ表示では固定を解除し、元の位置に戻すためのパディング調整 */
+            body {
+                padding-top: 0; 
+                padding-bottom: 0;
+            }
+            #fixed-buttons-area {
+                position: static;
+                padding: 1rem 0;
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <!-- ヘッダー -->
-    <header class="header-bg shadow-md sticky top-0 z-10">
+    <!-- ヘッダー (画面上部に固定) -->
+    <header class="header-bg shadow-md fixed top-0 left-0 w-full z-10">
         <div class="max-w-4xl mx-auto px-4 py-4">
             <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-wider">
                 色彩心理からのおすすめメニュー診断
@@ -92,37 +121,41 @@
 
         <!-- 診断セクション -->
         <section id="diagnosis-section" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-6">
-            <h2 class="text-3xl font-bold section-title">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title">
                 ステップ1: 色を3色選ぶ
             </h2>
-            <p class="text-base sm:text-lg">
-                気になる色を直感で3色選んでください。選んだ色をもう一度クリックすると解除できます。
+            <p class="text-sm sm:text-lg">
+                気になる色を直感で3色選んでください。選んだ色をもう一度タップすると解除できます。
             </p>
 
             <!-- 選択された色表示エリア -->
-            <div id="selected-colors-container" class="min-h-16 flex flex-wrap items-center gap-4 p-4 rounded-lg shadow-inner" style="background-color: var(--color-light-accent);">
-                <p id="selection-prompt" class="text-gray-500 italic">色を3色選択してください...</p>
-            </div>
-
-            <!-- 操作ボタン -->
-            <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                <button id="diagnose-button" class="btn-primary font-bold py-3 px-8 rounded-full shadow-md" disabled>
-                    メニュー診断する
-                </button>
-                <button id="re-diagnose-button" class="btn-primary font-bold py-3 px-8 rounded-full shadow-md" style="background-color: #ccc; color: #666;">
-                    再診断する
-                </button>
+            <div id="selected-colors-container" class="min-h-16 flex flex-wrap items-center gap-2 p-3 rounded-lg shadow-inner" style="background-color: var(--color-light-accent);">
+                <p id="selection-prompt" class="text-gray-500 italic text-sm sm:text-base">色を3色選択してください...</p>
             </div>
 
             <!-- 色パレット -->
-            <div id="color-palette" class="grid grid-cols-6 sm:grid-cols-9 gap-2 sm:gap-3 pt-6">
+            <!-- モバイルでは4列、デスクトップでは9列に調整し、タップしやすくする -->
+            <div id="color-palette" class="grid grid-cols-4 sm:grid-cols-9 gap-2 sm:gap-3 pt-4">
                 <!-- JavaScriptによってカラーボックスがここに挿入されます -->
             </div>
         </section>
+        
+        <!-- モバイル固定ボタンエリア (smサイズ以上では非固定化し、通常の流れに配置) -->
+        <div id="fixed-buttons-area" class="sm:static sm:p-0 sm:shadow-none sm:bg-transparent">
+            <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-center gap-4">
+                <button id="diagnose-button" class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg text-lg" disabled>
+                    メニュー診断する
+                </button>
+                <button id="re-diagnose-button" class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg text-lg" style="background-color: #ccc; color: #666;">
+                    再診断する
+                </button>
+            </div>
+        </div>
+
 
         <!-- 診断結果セクション -->
-        <section id="result-area" class="hidden bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-6">
-            <h2 class="text-3xl font-bold section-title">
+        <section id="result-area" class="hidden bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-8">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title">
                 ステップ2: 診断結果
             </h2>
             <div id="results-container" class="space-y-8">
@@ -133,10 +166,10 @@
     </main>
 
     <!-- フッター -->
-    <footer class="mt-16 py-8" style="background-color: var(--color-primary);">
+    <footer class="py-8 mt-4" style="background-color: var(--color-primary);">
         <div class="max-w-4xl mx-auto px-4 text-center">
-            <p class="text-white text-sm mb-4">© 2024 by Therapist Mii. All rights reserved.</p>
-            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
+            <p class="text-white text-xs sm:text-sm mb-4">© 2024 by Therapist Mii. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs sm:text-sm">
                 <a href="https://spiritual-therapist-mii.studio.site/" class="text-white hover:text-gray-300 transition-colors">HOME</a>
                 <a href="https://spiritual-therapist-mii.studio.site/menu" class="text-white hover:text-gray-300 transition-colors">メニュー一覧</a>
                 <a href="https://spiritual-therapist-mii.studio.site/reading" class="text-white hover:text-gray-300 transition-colors">リーディング</a>
@@ -243,7 +276,7 @@
             colorPalette.innerHTML = '';
             COLOR_DATA.forEach((color, index) => {
                 const colorBox = document.createElement('div');
-                colorBox.className = 'color-box rounded-lg shadow-md relative';
+                colorBox.className = 'color-box rounded-xl shadow-md relative'; // rounded-lgからxlに変更
                 colorBox.style.backgroundColor = color.code;
                 colorBox.dataset.code = color.code;
                 colorBox.dataset.index = index;
@@ -343,13 +376,14 @@
 
             selectedColors.forEach(code => {
                 const colorTag = document.createElement('div');
-                colorTag.className = 'flex items-center rounded-full p-2 pr-3 shadow-md font-bold cursor-pointer transition-transform hover:scale-105';
+                // モバイルでのタップしやすさを考慮し、paddingとフォントサイズを調整
+                colorTag.className = 'flex items-center rounded-full p-2 pr-3 shadow-md font-bold cursor-pointer text-sm sm:text-base transition-transform hover:scale-105';
                 colorTag.style.backgroundColor = isLightColor(code) ? '#f0f0f0' : '#333';
                 colorTag.style.color = isLightColor(code) ? '#333' : '#fff';
                 colorTag.style.border = `3px solid ${code}`;
                 colorTag.dataset.code = code;
                 colorTag.innerHTML = `
-                    <div class="w-6 h-6 rounded-full mr-2" style="background-color: ${code}; border: 1px solid rgba(0,0,0,0.1);"></div>
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full mr-2" style="background-color: ${code}; border: 1px solid rgba(0,0,0,0.1);"></div>
                     選択済み (${selectedColors.indexOf(code) + 1})
                 `;
                 colorTag.addEventListener('click', () => toggleColorSelection(code)); // クリックで解除
@@ -370,7 +404,8 @@
             const selectedData = selectedColors.map(code => COLOR_DATA.find(d => d.code === code));
             
             // 1. 総合メッセージの生成（3色のメッセージを一つにまとめて結合）
-            const allMessagesText = selectedData.map(data => `「${data.message}」`).join(' ');
+            // 句点(。)で区切りを意識的に入れ、自然な流れの文章にする
+            const allMessagesText = selectedData.map(data => data.message.replace(/。$/, '')).join('。 ') + '。';
 
             // 2. おすすめメニューの決定（最多出現メニューを選ぶ）
             const menuCounts = {};
@@ -408,31 +443,31 @@
             recommendationCard.className = 'p-6 rounded-xl shadow-2xl space-y-6 bg-accent';
             recommendationCard.style.backgroundColor = 'var(--color-accent)';
             recommendationCard.innerHTML = `
-                <h3 class="text-3xl font-bold text-primary text-center">
+                <h3 class="text-xl sm:text-3xl font-bold text-primary text-center">
                     あなたへのおすすめメニュー
                 </h3>
-                <div class="bg-white p-6 rounded-lg shadow-inner space-y-4">
-                    <h4 class="text-2xl font-bold text-primary text-center pb-2 border-b" style="border-color: var(--color-light-accent);">
+                <div class="bg-white p-5 sm:p-6 rounded-lg shadow-inner space-y-4">
+                    <h4 class="text-xl sm:text-2xl font-bold text-primary text-center pb-2 border-b" style="border-color: var(--color-light-accent);">
                         ✨ 【1番おすすめなメニュー】 ✨
                     </h4>
-                    <p class="text-3xl font-extrabold text-center text-primary">${bestMenu}</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-center text-primary">${bestMenu}</p>
                     
-                    <h5 class="text-xl font-bold text-primary mt-6">おすすめ理由:</h5>
-                    <p class="text-lg leading-relaxed">${bestMenuData.reason}</p>
+                    <h5 class="text-lg sm:text-xl font-bold text-primary mt-6">おすすめ理由:</h5>
+                    <p class="text-sm sm:text-lg leading-relaxed">${bestMenuData.reason}</p>
                 </div>
 
-                <!-- ボタンエリア -->
-                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-2">
-                    <a href="${MENU_LINKS[bestMenu].detail}" target="_blank" class="btn-primary text-center font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105" style="background-color: var(--color-primary); color: white;">
+                <!-- ボタンエリア: モバイルで縦並びを強制 -->
+                <div class="flex flex-col justify-center gap-3 sm:gap-4 pt-2">
+                    <a href="${MENU_LINKS[bestMenu].detail}" target="_blank" class="btn-primary text-center font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 text-lg" style="background-color: var(--color-primary); color: white;">
                         メニュー詳細を見る
                     </a>
-                    <a href="${MENU_LINKS[bestMenu].reserve}" target="_blank" class="btn-primary text-center font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105" style="background-color: #ffffe6; border: 2px solid var(--color-primary);">
+                    <a href="${MENU_LINKS[bestMenu].reserve}" target="_blank" class="btn-primary text-center font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 text-lg" style="background-color: #ffffe6; border: 2px solid var(--color-primary); color: var(--color-primary);">
                         予約する
                     </a>
                 </div>
                 <!-- HOMEボタン -->
                 <div class="flex justify-center pt-4">
-                    <a href="https://spiritual-therapist-mii.studio.site/" class="text-sm text-primary underline hover:opacity-75 transition-opacity">
+                    <a href="https://spiritual-therapist-mii.studio.site/" class="text-xs sm:text-sm text-primary underline hover:opacity-75 transition-opacity">
                         HOMEに戻る
                     </a>
                 </div>
@@ -443,19 +478,19 @@
             const messageCard = document.createElement('div');
             messageCard.className = 'message-card p-6 rounded-xl shadow-lg space-y-4';
             messageCard.innerHTML = `
-                <h3 class="text-2xl font-bold border-b pb-2 text-primary" style="border-color: var(--color-accent);">
+                <h3 class="text-xl sm:text-2xl font-bold border-b pb-2 text-primary" style="border-color: var(--color-accent);">
                     選ばれた3色からの総合的なメッセージ
                 </h3>
-                <div class="text-base leading-relaxed">
-                    <p class="text-lg font-medium">${allMessagesText}</p>
-                    <p class="pt-4 font-bold text-primary text-base">これらのメッセージは、あなたの今の心の状態を映し出しています。</p>
+                <div class="text-sm sm:text-base leading-relaxed">
+                    <p class="text-base sm:text-lg font-medium">${allMessagesText}</p>
+                    <p class="pt-4 font-bold text-primary text-sm sm:text-base">これらのメッセージは、あなたの今の心の状態を映し出しています。</p>
                 </div>
             `;
             resultsContainer.appendChild(messageCard);
             
             // 結果エリアへスクロール
-            const diagnosisSection = document.getElementById('result-area');
-            diagnosisSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const resultSection = document.getElementById('result-area');
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         /**
