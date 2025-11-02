@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おすすめメニュー診断 | Therapist Mii</title>
+    <!-- ファビコン設定 -->
+    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Noto Serif JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* カスタムカラーの定義 */
+        :root {
+            --color-primary: #544C40; /* ダークブラウン/テキスト */
+            --color-light-accent: #ede1e1; /* 薄いピンクベージュ */
+            --color-medium-accent: #E4C1B5; /* 中程度の暖色ベージュ */
+            --color-light-bg: #EAE6E1; /* 非常に薄いベージュ/背景 */
+        }
+        /* フォントの適用 */
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: var(--color-light-bg);
+            color: var(--color-primary);
+        }
+        /* ボタンとボックスの基本スタイル */
+        .quiz-box {
+            background-color: var(--color-light-accent);
+            border-color: var(--color-primary);
+        }
+        .answer-button {
+            background-color: white;
+            color: var(--color-primary);
+            border: 1px solid var(--color-medium-accent);
+            transition: background-color 0.15s;
+        }
+        .answer-button:hover {
+            background-color: var(--color-medium-accent);
+        }
+        .primary-button {
+            background-color: var(--color-primary);
+            color: white;
+            transition: opacity 0.15s;
+        }
+        .primary-button:hover {
+            opacity: 0.9;
+        }
+        .secondary-button {
+            background-color: var(--color-medium-accent);
+            color: var(--color-primary);
+            transition: opacity 0.15s;
+        }
+        .secondary-button:hover {
+            opacity: 0.9;
+        }
+        /* メインコンテナの幅制限と中央揃え */
+        #app {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="p-4 sm:p-6 min-h-screen">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold border-b-2 pb-2 border-current">おすすめメニュー診断</h1>
+    </header>
+
+    <!-- 診断コンテンツエリア -->
+    <div id="content" class="quiz-box rounded-lg shadow-xl p-4 sm:p-6">
+        <!-- コンテンツはJSによってここに挿入されます -->
+        <p class="text-center text-lg">診断を開始します...</p>
+    </div>
+
+    <!-- 制御ボタンエリア -->
+    <div id="controls" class="mt-8 flex justify-between space-x-2">
+        <button id="back-button" class="secondary-button rounded-full py-2 px-4 text-sm font-semibold opacity-0 pointer-events-none" onclick="goBack()">
+            戻る
+        </button>
+        <button id="restart-button" class="secondary-button rounded-full py-2 px-4 text-sm font-semibold" onclick="initQuiz()">
+            はじめからやり直す
+        </button>
+    </div>
+
+    <!-- メッセージボックス（アラートの代替） -->
+    <div id="message-box" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-11/12 text-center">
+            <p id="message-text" class="text-lg font-medium mb-4"></p>
+            <button class="primary-button rounded-full py-2 px-4" onclick="document.getElementById('message-box').classList.add('hidden');">閉じる</button>
+        </div>
+    </div>
+
+    <!-- フッターナビゲーション -->
+    <footer class="mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
+        <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 mb-4">
+            <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-current">HOME</a>
+            <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-current">メニュー一覧</a>
+            <a href="https://spiritual-therapist-mii.studio.site/reading" class="hover:text-current">リーディング</a>
+            <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="hover:text-current">未来ナビ</a>
+            <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="hover:text-current">アートセラピー</a>
+            <a href="https://spiritual-therapist-mii.studio.site/color-card" class="hover:text-current">カラーカード</a>
+            <a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-current">ヒーリング</a>
+            <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="hover:text-current">対面リーディング</a>
+        </div>
+        <p class="text-xs mt-4 mb-8">© 2024 by Therapist Mii. All rights reserved.</p>
+    </footer>
+</div>
+
+<script>
+    // ----------------------------------------
+    // データ定義
+    // ----------------------------------------
+
+    // 診断結果データ（理由、メッセージ、URL）
+    const RESULTS = {
+        'リーディング': {
+            reason: '本質的なメッセージや人生の方向性を深く知りたいというあなたの探求心に合致しています。魂の望みに気づき、自分らしさを取り戻すための羅針盤となるでしょう。',
+            messages: [
+                '魂の望みを深く理解し、人生の大きな流れに乗るヒントがここにあります。',
+                '守護霊様からの具体的な導きを受け取り、あなたの人生の道筋を明るく照らします。'
+            ],
+            detailUrl: 'https://spiritual-therapist-mii.studio.site/reading',
+            reserveUrl: 'https://spiritual-therapist-mii.studio.site/reading-r'
+        },
+        '未来ナビ': {
+            reason: '現実的な行動計画や数ヶ月先の流れを知り、迷いに対する具体的な指針を求めているあなたに最適です。リスクを回避し、チャンスを掴むための未来予測を提供します。',
+            messages: [
+                '数ヶ月先の未来を具体的に予測し、取るべき行動を明確にするためのメッセージです。',
+                '漠然とした不安を解消し、現実的な計画を立てるための羅針盤を手にしてください。'
+            ],
+            detailUrl: 'https://spiritual-therapist-mii.studio.site/mirai-navi',
+            reserveUrl: 'https://spiritual-therapist-mii.studio.site/mirai-navi-r'
+        },
+        'アートセラピー': {
+            reason: '言葉にできない心の奥にあるモヤモヤや過去のトラウマに気づき、根本的な癒しを求めているあなたへ。非言語的な表現を通じて深層心理を掘り下げ、解放のきっかけを見つけます。',
+            messages: [
+                '絵を通してあなたの無意識に光を当て、心のブロックを優しく解き放つメッセージです。',
+                '過去の感情を整理し、自分を深く見つめ直すための、内面からの気づきを受け取ります。'
+            ],
+            detailUrl: 'https://spiritual-therapist-mii.studio.site/art-therapy',
+            reserveUrl: 'https://spiritual-therapist-mii.studio.site/art-therapy-r'
+        },
+        'カラーカード': {
+            reason: 'シンプルで手軽に、日常に活かせるヒントを求めているあなたへ。色からのメッセージを通して、日々の気持ちを整え、内面への気づきを得るための手助けとなります。',
+            messages: [
+                '今あなたに必要な色からのメッセージは、日常の小さな迷いを解消する手軽なヒントになります。',
+                '心が求めている色を知り、日々の気持ちの波を穏やかに整えるための気づきです。'
+            ],
+            detailUrl: 'https://spiritual-therapist-mii.studio.site/color-card',
+            reserveUrl: 'https://spiritual-therapist-mii.studio.site/color-card-r'
+        },
+        'ヒーリング': {
+            reason: '心身の疲れやエネルギーの滞りを感じており、バランスを整えたいあなたへ。体とオーラに働きかけ、自己治癒力を高め、心身ともに回復へ導くアプローチが最適です。',
+            messages: [
+                'エネルギーの滞りを調整し、体と心の重さを手放すための深いリラクゼーションメッセージです。',
+                'オーラやチャクラを整えることで、本来持っている自己治癒力を高める指針を受け取ります。'
+            ],
+            detailUrl: 'https://spiritual-therapist-mii.studio.site/healing',
+            reserveUrl: 'https://spiritual-therapist-mii.studio.site/healing#h-yoyaku'
+        },
+        '対面リーディング': {
+            reason: 'エネルギーを直接感じ、その場で対話しながら疑問を解消したいという、深い交流を望むあなたへ。濃密な情報とエネルギー交換を通じて、本質的な導きを受け取ります。',
+            messages: [
+                '対話の中で生まれる、その場限りの深い気づきと、エネルギー調整のメッセージです。',
+                '直接対面だからこそ得られる、あなたの疑問に対する濃い情報と確かな導きです。'
+            ],
+            detailUrl: 'https://spiritual-therapist-mii.studio.site/f2f_reading',
+            reserveUrl: 'https://spiritual-therapist-mii.studio.site/f2f-reading-r'
+        }
+    };
+
+    // 質問とルーティングデータ
+    const QUESTIONS = [
+        // Q1 (Index 0)
+        { id: 1, text: "今、あなたの心の中で今いちばん強く感じている気持ちや感覚は、次のうちどれに近いですか？", options: [
+            { key: 'A', text: "迷いや不安があり、人生の方向性や次に何をすべきかを知りたい。", next: 2 },
+            { key: 'B', text: "疲れや重さがあり、心と体が滞っている感覚。言葉にできないモヤモヤをどうにかしたい。", next: 3 },
+            { key: 'C', text: "もっと知りたいという探求心。未来の流れや深層心理、色の意味などを深く掘り下げたい。", next: 4 }
+        ]},
+        // Q2 (Index 1)
+        { id: 2, text: "その悩みに向き合うとしたら、どんなサポートのかたちがしっくりきますか？", options: [
+            { key: 'A', text: "守護霊様など、スピリチュアルな視点からの導きを受け取りたい。", next: 8 },
+            { key: 'B', text: "現実的に、数ヶ月先の出来事を知り、リスク回避やチャンスにつなげたい。", next: 8 },
+            { key: 'C', text: "対面でエネルギーを感じながら、対話の中で疑問を解きたい。", next: 9 }
+        ]},
+        // Q3 (Index 2)
+        { id: 3, text: "メッセージを受け取るとしたら、どんな形が合っていますか？", options: [
+            { key: 'A', text: "文章量が多い形で、深くじっくりと受け取りたい。", next: 4 },
+            { key: 'B', text: "シンプルで分かりやすく、料金も控えめで、日常に活かせるヒントがほしい。", next: 4 },
+            { key: 'C', text: "言葉では伝えきれない心の奥のことを、絵からの分析で受け取りたい。", next: 4 }
+        ]},
+        // Q4 (Index 3) - テキストはA/Bのみだが、ルーティングはA/Bを使う
+        { id: 4, text: "今あなたが抱えている悩みは、どちらのタイプに近いですか？", options: [
+            { key: 'A', text: "漠然とした人生の迷いがある、またはテーマが一つはっきりしていて本質的なメッセージがほしい。", next: 6 },
+            { key: 'B', text: "深層心理や過去の心のブロックを掘り下げて、根本的な気づきや癒しのきっかけを見つけたい。", next: 'アートセラピー' }
+        ]},
+        // Q5 (Index 4)
+        { id: 5, text: "あなたの感じている疲れやモヤモヤは、どこから来ているように感じますか？", options: [
+            { key: 'A', text: "体やオーラ、エネルギーの滞りが気になっている。バランスを整えて自己治癒力を高めたい。", next: 'ヒーリング' },
+            { key: 'B', text: "過去のトラウマや抑えていた感情が気になっている。心の整理や無意識の解放をしたい。", next: 'アートセラピー' },
+            { key: 'C', text: "迷いや悩みに対して、気軽に受け取れるヒントや指針がほしい。", next: 7 }
+        ]},
+        // Q6 (Index 5)
+        { id: 6, text: "今、特に知りたい情報のタイプはどれですか？", options: [
+            { key: 'A', text: "未来の流れや予測。それを参考にして対策を立てたい。", next: '未来ナビ' },
+            { key: 'B', text: "深層心理や本音。それを絵などの非言語的な方法で引き出して見つめたい。", next: 'アートセラピー' },
+            { key: 'C', text: "魂や守護霊からの深いメッセージを、文章でじっくり受け取りたい。", next: 'リーディング' }
+        ]},
+        // Q7 (Index 6) - テキストはA/Bのみ
+        { id: 7, text: "メッセージの受け取り方として、大切にしたいことはどちらですか？", options: [
+            { key: 'A', text: "時間や場所にとらわれず、文章で受け取り、必要に応じて視覚的なサポートもあるとうれしい。", next: 'リーディング' },
+            { key: 'B', text: "直接対面し、その場で質問したりやり取りしながら、深い情報を受け取りたい。", next: '対面リーディング' }
+        ]},
+        // Q8 (Index 7)
+        { id: 8, text: "今の悩みの根本的な解決として、一番大切にしたいのはどれですか？", options: [
+            { key: 'A', text: "魂が本当に望んでいることや使命に気づき、人生の方向性を定めること。", next: 'リーディング' },
+            { key: 'B', text: "これからの現実的な行動や、数ヶ月先の流れに沿った計画を立てること。", next: '未来ナビ' },
+            { key: 'C', text: "過去のトラウマや心のブロックを深く癒して、根本から解放されたい。", next: 'アートセラピー' }
+        ]},
+        // Q9 (Index 8)
+        { id: 9, text: "メッセージを受け取るときに、どんな要素を特に大事にしたいですか？", options: [
+            { key: 'A', text: "守護霊様などからの言葉を、文章や絵などの豊かな情報で受け取りたい。", next: 'リーディング' },
+            { key: 'B', text: "手頃な料金で、日常に役立つヒントをシンプルに受け取りたい。", next: 'カラーカード' },
+            { key: 'C', text: "その場で対話しながら、エネルギーも感じつつ疑問を解消したい。", next: '対面リーディング' }
+        ]},
+        // Q10 (Index 9)
+        { id: 10, text: "疲れやモヤモヤを手放すために、どんなアプローチを求めていますか？", options: [
+            { key: 'A', text: "言葉以外の表現（絵など）を通して、自分の深いところを見つめて整理したい。", next: 'アートセラピー' },
+            { key: 'B', text: "体やエネルギーの流れを整えて、心身ともに回復したい。", next: 'ヒーリング' },
+            { key: 'C', text: "未来の流れを知って、無駄な心配や精神的な疲れを減らしたい。", next: '未来ナビ' }
+        ]},
+        // Q11 (Index 10)
+        { id: 11, text: "メッセージの受け取り方法として、一番しっくりくるのはどれですか？", options: [
+            { key: 'A', text: "自分のタイミングで読める文章で受け取り、じっくり振り返りたい。", next: 'リーディング' },
+            { key: 'B', text: "対面で、すぐに質問もできる形で、深く濃い情報とエネルギーを受け取りたい。", next: '対面リーディング' },
+            { key: 'C', text: "文章だけでなく、絵や色の分析を通してメッセージを受け取りたい。", next: 'アートセラピー' }
+        ]},
+        // Q12 (Index 11)
+        { id: 12, text: "今、あなたが必要としているメッセージの性質はどれに近いですか？", options: [
+            { key: 'A', text: "魂の成長や、人生の大きな流れに沿って、自分らしさを取り戻すための指針。", next: 'リーディング' },
+            { key: 'B', text: "日々の迷いや気持ちを整えるための、色などからの内面への気づき。", next: 'カラーカード' },
+            { key: 'C', text: "心や体の滞りを整え、疲れを手放すためのエネルギー調整。", next: 'ヒーリング' }
+        ]},
+        // Q13 (Index 12) - テキストはA/Bのみ
+        { id: 13, text: "受け取ったメッセージを、どのように活用したいですか？", options: [
+            { key: 'A', text: "あとで読み返せる文章として手元に残し、思考カラーマップなどで客観的に整理したい。", next: 'リーディング' },
+            { key: 'B', text: "数ヶ月先の予定に役立てたり、具体的な行動につなげたい。", next: '未来ナビ' },
+            { key: 'C', text: "絵など非言語の表現で得た気づきを、心の癒しやトラウマケアに活かしたい。", next: 'アートセラピー' }
+        ]},
+    ];
+
+    // ----------------------------------------
+    // グローバル状態管理
+    // ----------------------------------------
+
+    let currentQuestionId = 1; // 現在の質問ID (1から開始)
+    let history = [];          // 質問履歴 (QIDと選択肢キーを保存)
+    const contentElement = document.getElementById('content');
+    const backButton = document.getElementById('back-button');
+
+    // ----------------------------------------
+    // 診断ロジック
+    // ----------------------------------------
+
+    /**
+     * メッセージボックスを表示する（alertの代替）
+     * @param {string} message - 表示するメッセージ
+     */
+    function showMessage(message) {
+        document.getElementById('message-text').textContent = message;
+        document.getElementById('message-box').classList.remove('hidden');
+        document.getElementById('message-box').classList.add('flex');
+    }
+
+    /**
+     * 診断を初期化し、最初の質問を表示する
+     */
+    function initQuiz() {
+        currentQuestionId = 1;
+        history = [];
+        renderQuestion(currentQuestionId);
+    }
+
+    /**
+     * 指定された質問IDのコンテンツをレンダリングする
+     * @param {number} qid - 質問ID
+     */
+    function renderQuestion(qid) {
+        const qData = QUESTIONS.find(q => q.id === qid);
+        
+        if (!qData) {
+            showMessage("エラー: 質問データが見つかりません。");
+            return;
+        }
+
+        const qIndex = qid - 1; // QIDは1から、配列インデックスは0から
+        const totalQuestions = QUESTIONS.length;
+        
+        const optionsHtml = qData.options.map(option => {
+            if (qData.id === 4 && option.key === 'C') return '';
+            if (qData.id === 7 && option.key === 'C') return '';
+            
+            // Q13はテキストにCがないが、ルーティングが存在するため、Cオプションも表示する
+            if (qData.id === 13 && option.key === 'C') {
+                return `<button class="answer-button w-full text-left p-3 sm:p-4 rounded-lg shadow-md font-medium text-sm sm:text-base" onclick="handleAnswer('${option.key}', ${qid})">
+                    ${option.text}
+                </button>`;
+            }
+
+            return `<button class="answer-button w-full text-left p-3 sm:p-4 rounded-lg shadow-md font-medium text-sm sm:text-base" onclick="handleAnswer('${option.key}', ${qid})">
+                ${option.text}
+            </button>`;
+        }).join('');
+
+        contentElement.innerHTML = `
+            <!-- 質問番号の表記を削除しました -->
+            <h2 class="text-xl sm:text-2xl font-bold mb-6">${qData.text}</h2>
+            <div class="space-y-4">
+                ${optionsHtml}
+            </div>
+        `;
+
+        updateControls();
+    }
+
+    /**
+     * 選択肢がクリックされた時の処理
+     * @param {string} answerKey - 選択された回答キー (A, B, C)
+     * @param {number} qid - 現在の質問ID
+     */
+    function handleAnswer(answerKey, qid) {
+        const qData = QUESTIONS.find(q => q.id === qid);
+        if (!qData) return;
+
+        // 履歴に追加
+        history.push({ qid: qid, answer: answerKey });
+
+        // ルーティングの決定
+        const nextStep = qData.options.find(opt => opt.key === answerKey)?.next;
+
+        if (typeof nextStep === 'number') {
+            // 次の質問へ
+            currentQuestionId = nextStep;
+            renderQuestion(currentQuestionId);
+        } else if (typeof nextStep === 'string') {
+            // 診断結果へ
+            renderResult(nextStep);
+        } else {
+            showMessage("エラー: ルーティングが見つかりません。");
+            // 履歴を元に戻す（エラーなので）
+            history.pop();
+        }
+    }
+
+    /**
+     * 診断結果を表示する
+     * @param {string} menuName - おすすめメニュー名
+     */
+    function renderResult(menuName) {
+        const resultData = RESULTS[menuName];
+
+        if (!resultData) {
+            showMessage("エラー: 診断結果が見つかりません。");
+            return;
+        }
+
+        // 2つのメッセージからランダムに1つを選択
+        const randomIndex = Math.floor(Math.random() * resultData.messages.length);
+        const randomMessage = resultData.messages[randomIndex];
+
+        contentElement.innerHTML = `
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 border-b-2 pb-2 border-current">診断結果</h2>
+            
+            <div class="p-4 sm:p-6 rounded-lg bg-white shadow-xl mb-6">
+                <p class="text-lg font-semibold text-center mb-2">あなたにおすすめのメニューは...</p>
+                <p class="text-4xl font-extrabold text-center text-[var(--color-primary)]">${menuName}</p>
+            </div>
+
+            <div class="p-4 sm:p-6 rounded-lg bg-[var(--color-medium-accent)] shadow-lg mb-6">
+                <h3 class="text-xl font-bold mb-3 border-b border-current pb-1">おすすめ理由</h3>
+                <p class="text-sm sm:text-base">${resultData.reason}</p>
+            </div>
+
+            <div class="p-4 sm:p-6 rounded-lg bg-white shadow-lg mb-8">
+                <h3 class="text-xl font-bold mb-3 border-b border-current pb-1">今あなたに必要なメッセージ</h3>
+                <p class="text-sm sm:text-base">${randomMessage}</p>
+            </div>
+
+            <div class="space-y-4">
+                <a href="${resultData.detailUrl}" target="_blank" class="primary-button block text-center rounded-full py-3 px-6 text-lg font-bold shadow-md">
+                    ${menuName} の詳細を見る
+                </a>
+                <a href="${resultData.reserveUrl}" target="_blank" class="secondary-button block text-center rounded-full py-3 px-6 text-lg font-bold shadow-md">
+                    ${menuName} を予約する
+                </a>
+            </div>
+        `;
+        updateControls();
+    }
+
+    /**
+     * 履歴に基づき、一つ前の質問に戻る
+     */
+    function goBack() {
+        if (history.length > 0) {
+            history.pop(); // 直前の回答を削除
+
+            if (history.length === 0) {
+                // 最初の質問に戻る
+                initQuiz();
+            } else {
+                // 履歴の最後の要素のQIDを取得してレンダリング
+                const lastQuestion = history[history.length - 1];
+                currentQuestionId = lastQuestion.qid;
+
+                // 履歴を辿る前に、直前の質問に遷移した時のhistoryをクリアして再度質問を表示
+                // QIDだけを頼りに、一つ前の状態に戻る
+                // 再度レンダリングする前に、currentQuestionIdをhistory.pop()で設定される前の値に戻す必要がある
+                // 履歴の最後の要素のQIDは、一つ前の質問のIDになっている
+                const prevQuestionId = history[history.length - 1].qid;
+
+                // historyを一つ戻してから、そのIDで再レンダリング
+                // 既にhistory.pop()しているので、historyの長さで判断し、レンダリングはinitQuiz or renderQuestion(last.qid)
+                renderQuestion(prevQuestionId);
+            }
+        }
+    }
+
+    /**
+     * 制御ボタン（戻るボタン）の状態を更新する
+     */
+    function updateControls() {
+        // 診断結果が表示されている場合（historyが空で、かつ質問がレンダリングされていない状態）は非表示
+        const isResultScreen = !contentElement.innerHTML.includes('<h2>');
+
+        if (history.length > 0 && !isResultScreen) {
+            backButton.classList.remove('opacity-0', 'pointer-events-none');
+        } else {
+            backButton.classList.add('opacity-0', 'pointer-events-none');
+        }
+        
+        // 結果画面では「戻る」ボタンを「前の質問へ」に戻す
+        if (isResultScreen) {
+             backButton.textContent = '前の質問へ';
+             backButton.onclick = goBack;
+        } else {
+             backButton.textContent = '戻る';
+             backButton.onclick = goBack;
+        }
+    }
+
+    // ページロード時に診断を開始
+    window.onload = initQuiz;
+</script>
+
+</body>
+</html>
+
