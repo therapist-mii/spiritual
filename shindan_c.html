@@ -80,6 +80,11 @@
              border-left: 5px solid var(--color-accent);
              background-color: var(--color-light-accent);
         }
+        /* 追加: 読みやすさ向上のためのテキストスタイル - 行間を少し広げる */
+        .readable-text {
+            line-height: 1.75;
+        }
+
         /* モバイル固定ボタンエリア */
         #fixed-buttons-area {
             position: fixed;
@@ -154,7 +159,8 @@
 
 
         <!-- 診断結果セクション -->
-        <section id="result-area" class="hidden bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-8">
+        <!-- モバイルでは左右のパディングをp-4に減らし、コンテンツ幅を広げる -->
+        <section id="result-area" class="hidden bg-white p-4 sm:p-8 rounded-xl shadow-lg space-y-8">
             <h2 class="text-2xl sm:text-3xl font-bold section-title">
                 ステップ2: 診断結果
             </h2>
@@ -244,13 +250,13 @@
             { code: '#2196F3', message: 'あなたの創造性は無限大です。心を解き放ち、感じたこと、考えたことを自由に表現してみましょう。', menu: 'アートセラピー', reason: '自由な発想と、オープンな自己表現がテーマです。言葉にできない創造的なエネルギーを「絵や筆跡」で表すことで、あなたの心を深く解放し、スッキリ感を味わうきっかけを掴めます。' },
             { code: '#1976D2', message: 'あなたの信念と誠実さは、本物です。その信念を貫き、周りの人からの信頼の証として行動で示しましょう。', menu: '未来ナビ', reason: '自分の信念に基づいて行動し、責任を果たしたいという強い思いがあります。「リスクマネジメント」や「具体的な対策」など、堅実な行動を支える指針を立てるきっかけを掴みましょう。' },
             { code: '#BBDEFB', message: 'あなたの心は、穏やかで平和な状態に戻ろうとしています。焦らず、その自然な流れに身を任せてあげてください。', menu: 'ヒーリング', reason: '心に平和と静けさを求め、リラックスしたいというサインです。心のざわつきや、セルフケアでは抜けない心の詰まりを整え、穏やかで安心できる状態へ戻る土台づくりをサポートします。' },
-            { code: '#000080', message: 'あなたの内側には、全てを知る深い知恵があります。静かな時間を作り、瞑想を通じてその声に耳を傾けてみましょう。', menu: 'リーディング', reason: '人生の深い意味や、内なる真実を知りたいという探求心があります。「魂が本当に望むこと」を知り、自分の内面にある真の力を引き出すメッセージのヒントを受け取ってみませんか。' },
+            { code: '#000080', message: 'あなたの内側には、全てを知る深い知恵があります。静かな時間を作り、瞑想を通じてその声に耳を傾けてみましょう。', menu: 'リーディング', reason: '人生の深い意味や、内なる真実を知りたいという探求心があります。「魂が本当に望むこと」など、人生の本質的な方向性を知る高次なメッセージのヒントを受け取ってみませんか。' },
             { code: '#B2EBF2', message: 'あなたの心は、風のように自由で清らかです。肩の力を抜き、軽やかに、思うままに羽ばたいてみましょう。', menu: 'カラーカード', reason: '束縛から解放され、軽やかになりたいという願いがあります。日常の中で「ちょっとした指針」となるメッセージを手軽に受け取り、内省を始めるきっかけにするのに最適です。' },
             { code: '#1ABC9C', message: 'あなたの心は、今、調和を取り戻そうとしています。無理せず、心と体の声に耳を傾け、バランスの取れた生活を心がけてください。', menu: 'ヒーリング', reason: '心と体のバランス、穏やかな調和がテーマです。心身の滞りやモヤを整え、守護のサポートを受けながら、全体的なバランスを回復させるための準備をします。' },
             { code: '#43A047', message: 'あなたの努力は、必ず実を結びます。急いで結果を求めず、日々の成長と小さな達成を楽しむことに意識を向けてください。', menu: '未来ナビ', reason: '焦らず着実に進みたいという願いがあります。未来予報で「リスクマネジメント」や「チャンスの最大化」を計画し、努力を確実な実りへと導く指針を立てる準備をしていきましょう。' },
             { code: '#AEEA00', message: 'あなたの人生は、今、新しい成長期に入っています。好奇心とユーモアを持って、目の前の課題に飛び込んでみましょう。', menu: 'カラーカード', reason: '活発な成長と、新しいアイデアを求めているサインです。「メッセージのエッセンス」を受け取り、その「余白」をご自身で読み解くことで、内省と成長を楽しむきっかけが得られますよ。' },
             { code: '#f3ffd1', message: 'あなたは、そのままで十分魅力的です。肩の力を抜き、ありのままの自分でいることを自分に許可してあげてください。', menu: 'カラーカード', reason: '義務やプレッシャーから解放され、自然体で過ごしたいという願いがあります。安価に、日常の中で「ちょっとした指針」を受け取り、軽やかに心身を整えるためのヒントにするのに最適です。' },
-            { code: '#E0E1DD', message: 'あなたは、感情から一歩引いて物事を眺めることができる、賢明な人です。あなたの客観的な視点を信じて行動してください。', menu: 'リーディング', reason: '感情に流されず、冷静な知性を求めています。「思考カラーマップ」で心の状態を客観的に分析し、理性と知恵を持って人生の方向性を定めるための最初のヒントが得られます。' },
+            { code: '#E0E1DD', message: 'あなたは、感情から一歩引いて物事を眺めることができる、賢明な人です。あなたの客観的な視点を信じて行動してください。', menu: 'リーディング', reason: '感情から一歩引いて、冷静な知性を求めています。「思考カラーマップ」で心の状態を客観的に分析し、理性と知恵を持って人生の方向性を定めるための最初のヒントが得られます。' },
             { code: '#6D6D6D', message: 'あなたの内側には、しっかりと確立された「自分軸」があります。周りの意見に惑わされず、自分の価値観を信じてください。', menu: 'リーディング', reason: '他者に依存せず、自分の軸を確立したいという強い願いがあります。魂が本当に望むことなど、本質的な人生の方向性を知り、揺るぎない「自分軸」を強化する準備ができます。' },
             { code: '#3A3A3A', message: 'あなたの中には、物事の全てを受け止め、支える基盤となる力強さがあります。恐れず、自分の深い部分と向き合ってみましょう。', menu: 'リーディング', reason: '揺るぎない基盤を築きたいという強い思いがあります。漠然とした「悩み事」や「人生の迷い」があるなら、スピリチュアルな視点から本質的な人生の方向性を見つけるための最初のヒントを受け取れます。' },
             { code: '#FFFFFF', message: 'あなたは、無限の可能性と、純粋な光に満ちた存在です。過去の全てを許し、理想の未来を自由に描いていきましょう。', menu: '未来ナビ', reason: '最高の理想と新しい人生の始まりという未来志向のテーマです。未来予報を活用して「チャンスの最大化」を図り、理想の未来を現実のものにするための具体的な行動計画を立てる準備をしましょう。' }
@@ -440,7 +446,8 @@
 
             // --- 1. おすすめメニューカード (上部に配置) ---
             const recommendationCard = document.createElement('div');
-            recommendationCard.className = 'p-6 rounded-xl shadow-2xl space-y-6 bg-accent';
+            // モバイルのパディングをp-6からp-4に減らし、コンテンツ幅を広げる
+            recommendationCard.className = 'p-4 sm:p-6 rounded-xl shadow-2xl space-y-6 bg-accent';
             recommendationCard.style.backgroundColor = 'var(--color-accent)';
             recommendationCard.innerHTML = `
                 <h3 class="text-xl sm:text-3xl font-bold text-primary text-center">
@@ -453,7 +460,8 @@
                     <p class="text-2xl sm:text-3xl font-extrabold text-center text-primary">${bestMenu}</p>
                     
                     <h5 class="text-lg sm:text-xl font-bold text-primary mt-6">おすすめ理由:</h5>
-                    <p class="text-sm sm:text-lg leading-relaxed">${bestMenuData.reason}</p>
+                    <!-- モバイルでも読みやすいよう、テキストクラスを調整 -->
+                    <p class="text-base sm:text-lg leading-relaxed readable-text">${bestMenuData.reason}</p>
                 </div>
 
                 <!-- ボタンエリア: モバイルで縦並びを強制 -->
@@ -476,13 +484,15 @@
             
             // --- 2. 総合メッセージカード (下に配置、線で区切らない) ---
             const messageCard = document.createElement('div');
-            messageCard.className = 'message-card p-6 rounded-xl shadow-lg space-y-4';
+            // モバイルのパディングをp-6からp-4に減らし、コンテンツ幅を広げる
+            messageCard.className = 'message-card p-4 sm:p-6 rounded-xl shadow-lg space-y-4';
             messageCard.innerHTML = `
                 <h3 class="text-xl sm:text-2xl font-bold border-b pb-2 text-primary" style="border-color: var(--color-accent);">
                     選ばれた3色からの総合的なメッセージ
                 </h3>
                 <div class="text-sm sm:text-base leading-relaxed">
-                    <p class="text-base sm:text-lg font-medium">${allMessagesText}</p>
+                    <!-- readable-textで広めの行間を適用 -->
+                    <p class="text-base sm:text-lg font-medium readable-text">${allMessagesText}</p>
                     <p class="pt-4 font-bold text-primary text-sm sm:text-base">これらのメッセージは、あなたの今の心の状態を映し出しています。</p>
                 </div>
             `;
