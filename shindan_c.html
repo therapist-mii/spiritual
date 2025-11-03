@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>色彩心理からのおすすめメニュー診断</title>
+    <!-- ファビコンの指定 -->
+    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+
+    <!-- Google Fonts: Noto Serif JPの読み込み -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDNを読み込み -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* カスタム設定とフォントの適用 */
+        :root {
+            /* サイトの装飾色 */
+            --color-primary: #544C40; /* ダークブラウン系（文字、ヘッダー背景など） */
+            --color-light-bg: #EAE6E1; /* メイン背景色（オフホワイト系） */
+            --color-accent: #E4C1B5; /* アクセント色（温かいベージュ系） */
+            --color-light-accent: #ede1e1; /* サブ背景色（ペールピンク系） */
+        }
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: var(--color-light-bg);
+            color: var(--color-primary);
+            /* ヘッダーと固定ボタンの分のスペースを確保 */
+            padding-top: 5rem; /* ヘッダーの高さ */
+            padding-bottom: 7rem; /* 固定ボタンの高さ */
+        }
+        .header-bg {
+            background-color: var(--color-primary);
+        }
+        .text-primary {
+            color: var(--color-primary);
+        }
+        .bg-accent {
+            background-color: var(--color-accent);
+        }
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background-color: #d8b2a3; /* 少し濃い色 */
+            transform: translateY(-2px);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .color-box {
+            width: 100%;
+            padding-top: 100%; /* 1:1のアスペクト比を維持 */
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.2s, transform 0.1s;
+        }
+        .color-box:hover:not(.selected) {
+            transform: scale(1.05);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .color-box.selected {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 5px var(--color-accent);
+            transform: scale(1.08); /* 選択時により大きく */
+        }
+        .section-title {
+            border-left: 8px solid var(--color-accent);
+            padding-left: 1rem;
+        }
+        /* メッセージカードの特別なスタイル */
+        .message-card {
+             border-left: 5px solid var(--color-accent);
+             background-color: var(--color-light-accent);
+        }
+        /* 追加: 読みやすさ向上のためのテキストスタイル - 行間を少し広げる */
+        .readable-text {
+            line-height: 1.75;
+        }
+
+        /* モバイル固定ボタンエリア */
+        #fixed-buttons-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+        }
+        @media (min-width: 640px) {
+            /* デスクトップ表示では固定を解除し、元の位置に戻すためのパディング調整 */
+            body {
+                padding-top: 0; 
+                padding-bottom: 0;
+            }
+            #fixed-buttons-area {
+                position: static;
+                padding: 1rem 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- ヘッダー (画面上部に固定) -->
+    <header class="header-bg shadow-md fixed top-0 left-0 w-full z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-wider">
+                色彩心理からのおすすめメニュー診断
+            </h1>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-4xl mx-auto px-4 py-8 space-y-12">
+
+        <!-- 診断セクション -->
+        <section id="diagnosis-section" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg space-y-6">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title">
+                ステップ1: 色を3色選ぶ
+            </h2>
+            <p class="text-sm sm:text-lg">
+                気になる色を直感で3色選んでください。選んだ色をもう一度タップすると解除できます。
+            </p>
+
+            <!-- 選択された色表示エリア -->
+            <div id="selected-colors-container" class="min-h-16 flex flex-wrap items-center gap-2 p-3 rounded-lg shadow-inner" style="background-color: var(--color-light-accent);">
+                <p id="selection-prompt" class="text-gray-500 italic text-sm sm:text-base">色を3色選択してください...</p>
+            </div>
+
+            <!-- 色パレット -->
+            <!-- モバイルでは4列、デスクトップでは9列に調整し、タップしやすくする -->
+            <div id="color-palette" class="grid grid-cols-4 sm:grid-cols-9 gap-2 sm:gap-3 pt-4">
+                <!-- JavaScriptによってカラーボックスがここに挿入されます -->
+            </div>
+        </section>
+        
+        <!-- モバイル固定ボタンエリア (smサイズ以上では非固定化し、通常の流れに配置) -->
+        <div id="fixed-buttons-area" class="sm:static sm:p-0 sm:shadow-none sm:bg-transparent">
+            <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-center gap-4">
+                <button id="diagnose-button" class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg text-lg" disabled>
+                    メニュー診断する
+                </button>
+                <button id="re-diagnose-button" class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg text-lg" style="background-color: #ccc; color: #666;">
+                    再診断する
+                </button>
+            </div>
+        </div>
+
+
+        <!-- 診断結果セクション -->
+        <!-- モバイルでは左右のパディングをp-4に減らし、コンテンツ幅を広げる -->
+        <section id="result-area" class="hidden bg-white p-4 sm:p-8 rounded-xl shadow-lg space-y-8">
+            <h2 class="text-2xl sm:text-3xl font-bold section-title">
+                ステップ2: 診断結果
+            </h2>
+            <div id="results-container" class="space-y-8">
+                <!-- 診断結果がここに挿入されます -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="py-8 mt-4" style="background-color: var(--color-primary);">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-white text-xs sm:text-sm mb-4">© 2024 by Therapist Mii. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs sm:text-sm">
+                <a href="https://spiritual-therapist-mii.studio.site/" class="text-white hover:text-gray-300 transition-colors">HOME</a>
+                <a href="https://spiritual-therapist-mii.studio.site/menu" class="text-white hover:text-gray-300 transition-colors">メニュー一覧</a>
+                <a href="https://spiritual-therapist-mii.studio.site/reading" class="text-white hover:text-gray-300 transition-colors">リーディング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="text-white hover:text-gray-300 transition-colors">未来ナビ</a>
+                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="text-white hover:text-gray-300 transition-colors">アートセラピー</a>
+                <a href="https://spiritual-therapist-mii.studio.site/color-card" class="text-white hover:text-gray-300 transition-colors">カラーカード</a>
+                <a href="https://spiritual-therapist-mii.studio.site/healing" class="text-white hover:text-gray-300 transition-colors">ヒーリング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="text-white hover:text-gray-300 transition-colors">対面リーディング</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // ベースURL
+        const BASE_URL = 'https://spiritual-therapist-mii.studio.site';
+
+        // メニューごとの詳細・予約URLパス
+        const MENU_LINKS = {
+            'リーディング': {
+                detail: `${BASE_URL}/reading`,
+                reserve: `${BASE_URL}/reading-r`
+            },
+            '未来ナビ': {
+                detail: `${BASE_URL}/mirai-navi`,
+                reserve: `${BASE_URL}/mirai-navi-r`
+            },
+            'アートセラピー': {
+                detail: `${BASE_URL}/art-therapy`,
+                reserve: `${BASE_URL}/art-therapy-r`
+            },
+            'カラーカード': {
+                detail: `${BASE_URL}/color-card`,
+                reserve: `${BASE_URL}/color-card-r`
+            },
+            'ヒーリング': {
+                detail: `${BASE_URL}/healing`,
+                reserve: `${BASE_URL}/healing#h-yoyaku` // ヒーリングのみ特殊なアンカー
+            },
+            '対面リーディング': {
+                detail: `${BASE_URL}/f2f_reading`,
+                reserve: `${BASE_URL}/f2f-reading-r`
+            }
+        };
+
+        // 色コードと診断結果のデータ
+        const COLOR_DATA = [
+            { code: '#FF0000', message: 'あなたの情熱は周囲を明るく照らす力を持っています。そのエネルギーを、周りの人を鼓舞するためにぜひ使ってみましょう。', menu: '未来ナビ', reason: '今、目標達成への強い意欲があるあなたへ。「いつ、何をすべきか」という未来の地図の準備として、エネルギーを最高の成果へ導くための指針を立てるきっかけになりますよ。' },
+            { code: '#FFE4E1', message: 'あなたは愛と優しさで満たされています。まずは自分自身に、たっぷりその優しさを注いであげることをおすすめします。', menu: 'ヒーリング', reason: '心の奥底で安心感と自己受容を求めているサインです。言葉にしづらい心の重さや疲れをそっと手放し、ご自身の全体バランスを整えるための最初の一歩を踏み出す準備ができますよ。' },
+            { code: '#FFB6C1', message: '自分の持つ愛らしさや無邪気さを恥ずかしがらずに受け入れて表現してみましょう。それが、今のあなたの大きな魅力になります。', menu: 'アートセラピー', reason: '人生をもっと心のままに楽しみたいという願いがあります。言語化できない「モヤモヤ」を絵で表現し、心が解放に向かうためのヒントを見つけるきっかけになるでしょう。' },
+            { code: '#FF8A80', message: '親しい人との温かい交流を大切にする時期です。不安や悲しみを感じたら、信頼できる人に気持ちを素直に伝えてみましょう。', menu: 'ヒーリング', reason: '温かい心の繋がりと安らぎを求めていますね。守護のサポートを受けながら、心身の滞りを優しく整え、疲れた心を深い安心感で満たすための土台づくりをしましょう。' },
+            { code: '#6B4226', message: '焦らず、長期的な視点を持って計画を立てましょう。「地に足をつける」感覚を取り戻すために、体を動かしてみるのもおすすめです。', menu: '未来ナビ', reason: '人生の土台を固めたいという堅実な願いが込められています。「いつ、何をすべきか」という未来予報を活用し、具体的な行動計画を立てるためのきっかけを手に入れましょう。' },
+            { code: '#C49E7D', message: 'これまでの経験や知識を活かし、周りの人に優しく伝えてみましょう。芸術鑑賞や読書など、心を豊かにする時間を持つことが大切です。', menu: 'リーディング', reason: '内面的な豊かさや深い知恵に光が当たっています。守護霊様からの高次なメッセージは、ご自身の持つ魂の本質的な方向性を深く知るための準備段階として、大切な気づきを与えてくれます。' },
+            { code: '#D35400', message: 'あなたには、変化を起こすための集中力とエネルギーがあります。情熱を一点に集中させ、目標を突破する力を信じてください。', menu: '未来ナビ', reason: '停滞している状況を打破し、エネルギーを爆発させたいという強い意志があります。短期的な見通しと対策（未来予報）を活用し、目標突破のための戦略を練る準備を整えましょう。' },
+            { code: '#FF9800', message: '人生は心から楽しむためにあります。あなたの持つ明るさで、周りの人にも喜びを分けてあげてください。', menu: 'アートセラピー', reason: 'もっと自由に、喜びを表現したいという心のサインです。言葉にならない感情を、絵を通じて解放し、深層心理に隠された「魂の本音」を発見するきっかけを見つけてみましょう。' },
+            { code: '#FFCC80', message: 'あなたの親しみやすさは、大きな魅力です。心を開いて、周りの人との会話や交流を楽しんでみてください。', menu: 'カラーカード', reason: '軽やかさや交流を楽しみたいという今の気分にぴったりです。色からの「メッセージのエッセンス」を手軽に知り、内省を深めるための最初のヒントを受け取れますよ。' },
+            { code: '#F4A261', message: 'あなたは、自信を持って輝くことができます。あなたの個性を隠さず、積極的に表現することに意識を向けてください。', menu: 'アートセラピー', reason: '「自分の個性を発揮したい」「自信を高めたい」という願いがあります。視覚的な表現を通じて、「誰も知らない自分」や埋もれていた本音を深く掘り起こすきっかけを見つけてみましょう。' },
+            { code: '#F9A825', message: 'あなたは、物事の本質を見抜く力を持っています。深く考え、あなたの明晰な洞察力を信じて行動することをおすすめします。', menu: 'リーディング', reason: '物事の本質や知的な探求心がテーマです。「思考カラーマップ」で心の状態を客観的に分析し、人生の確かな方向性を定める最初の一歩となるヒントを得られます。深い洞察は、有料セッションでさらに掘り下げていきます。' },
+            { code: '#FDD835', message: 'あなたの内側には、無限の可能性を秘めた閃きがあります。その大切なアイデアを、ぜひ行動に移してみましょう。', menu: '未来ナビ', reason: '現状を打破する斬新なアイデアを求めているサインです。未来予報を通じて「チャンスの最大化」を図り、ひらめきを現実の成果に結びつけるための道筋を立てる準備をしましょう。' },
+            { code: '#ffffe6', message: 'あなたの前には、無限の可能性が広がっています。固定観念を捨て、自由に理想の未来を描いてみましょう。', menu: 'ヒーリング', reason: '「全てをリセットし、まっさらになりたい」という心の叫びです。セルフケアでは抜けきらない心の重さや詰まりを整え、新しい始まりのための土台づくりをサポートします。' },
+            { code: '#DCE775', message: '急いで結果を出そうとせず、今の努力が未来の大きな実りにつながると信じて、日々の小さな変化を楽しんでください。', menu: 'ヒーリング', reason: '穏やかなペースでの成長を望み、心身のリフレッシュが必要です。守護のサポートを受けながら、全体的なバランスを整えることで、着実なステップアップを応援する準備ができます。' },
+            { code: '#EC407A', message: 'あなたは、深い愛と喜びに満たされた存在です。その愛のエネルギーを解放し、人生を情熱的に楽しむことを自分に許可してあげてください。', menu: 'アートセラピー', reason: '「生きる喜びを深く感じたい」「自己肯定感を高めたい」という情熱的なテーマです。視覚的な表現を通して、心のブロックを外し、愛のエネルギーを解放するきっかけを掴めますよ。' },
+            { code: '#F48FB1', message: 'あなたは、優雅で洗練された美しさを持っています。自分自身を最高に美しく、丁寧に扱ってあげてください。', menu: 'アートセラピー', reason: '内面と外面、両方の美しさを求める美意識の現れです。深層心理を掘り下げ、真の魅力を妨げる潜在的なブロックを解消するきっかけを見つけてみましょう。より深いトラウマケアは有料セッションでご提供します。' },
+            { code: '#F8BBD0', message: 'あなたは、優しさと癒やしの力に満ちています。疲れた自分を許し、温かい思いやりを注いでみましょう。', menu: 'ヒーリング', reason: '心身の疲れを癒やし、リラックスしたいという強い願いがあります。言葉にしづらい心身の「だるさ・重さ」を整え、自己受容を深めるための優しい準備ができますよ。' },
+            { code: '#FFF0F5', message: 'あなたの夢と、そこにある純粋な愛を信じてください。その気持ちが、あなたの未来を美しく彩るでしょう。', menu: 'アートセラピー', reason: '純粋な愛の感情や、理想的な未来を描きたいという願いが込められています。深層心理分析で「魂の本音」を知り、人生で大切にすべきことを明確にするヒントを得られます。' },
+            { code: '#FFFAFA', message: 'あなたは、縛られることなく自由になることができます。自分の心の声に従って、軽やかに行動してみましょう。', menu: 'ヒーリング', reason: '過去の感情的な重荷から解放され、軽やかになりたいという強いサインです。心身の「詰まり」を整え、エネルギーを浄化することで、より自由に羽ばたく準備が整います。' },
+            { code: '#E6E6FA', message: 'あなたの内側には、深い静けさと高貴な精神性があります。静かな時間を作り、内面からのメッセージを受け取ってみてください。', menu: 'リーディング', reason: '日々の喧騒から離れ、精神的な平和とインスピレーションを求めています。「魂が本当に望むこと」など、人生の本質的な方向性を知る高次なメッセージに触れるきっかけになります。' },
+            { code: '#CE93D8', message: 'あなたは、そのままで十分完璧な存在です。欠点も含めて自分自身を深く受け入れ、優しさを周りの人にも分けてあげてください。', menu: 'ヒーリング', reason: '自分自身の全てを受け入れたいという癒やしのテーマです。自己治癒力が働く土台づくりをすることで、内なる癒やしが深まり、自己受容のプロセスが穏やかに進む準備ができます。' },
+            { code: '#8E24AA', message: 'あなたには、自分を変えるための、計り知れない精神的な力が備わっています。その力を信じ、内なる変革を始めてみませんか。', menu: 'リーディング', reason: '現状から脱却し、「本当の自分」に生まれ変わりたいという根源的な願いがあります。スピリチュアルな視点から、あなたの人生の深い意味と方向性を知る最初の一歩となるでしょう。' },
+            { code: '#6A1B9A', message: 'あなたの高い理想は、実現可能です。直感を信じ、その知恵を活かして、一歩ずつ現実のものにしていきましょう。', menu: '未来ナビ', reason: '高い理想やビジョンの実現が目前です。具体的な未来予報を通じて「チャンスの最大化」を図り、理想を実現するための行動を後押しする指針を立てることができます。' },
+            { code: '#3F3F74', message: 'あなたの知性と規律は、あなた自身を守る盾となります。感情に流されず、冷静に計画を実行することをおすすめします。', menu: 'リーディング', reason: '感情の波に左右されない強い自分になりたいという願いがあります。「思考カラーマップ」で心の状態を客観的に分析し、冷静で理性的な「自分軸」を確立する準備をお手伝いします。' },
+            { code: '#2196F3', message: 'あなたの創造性は無限大です。心を解き放ち、感じたこと、考えたことを自由に表現してみましょう。', menu: 'アートセラピー', reason: '自由な発想と、オープンな自己表現がテーマです。言葉にできない創造的なエネルギーを「絵や筆跡」で表すことで、あなたの心を深く解放し、スッキリ感を味わうきっかけを掴めます。' },
+            { code: '#1976D2', message: 'あなたの信念と誠実さは、本物です。その信念を貫き、周りの人からの信頼の証として行動で示しましょう。', menu: '未来ナビ', reason: '自分の信念に基づいて行動し、責任を果たしたいという強い思いがあります。「リスクマネジメント」や「具体的な対策」など、堅実な行動を支える指針を立てるきっかけを掴みましょう。' },
+            { code: '#BBDEFB', message: 'あなたの心は、穏やかで平和な状態に戻ろうとしています。焦らず、その自然な流れに身を任せてあげてください。', menu: 'ヒーリング', reason: '心に平和と静けさを求め、リラックスしたいというサインです。心のざわつきや、セルフケアでは抜けない心の詰まりを整え、穏やかで安心できる状態へ戻る土台づくりをサポートします。' },
+            { code: '#000080', message: 'あなたの内側には、全てを知る深い知恵があります。静かな時間を作り、瞑想を通じてその声に耳を傾けてみましょう。', menu: 'リーディング', reason: '人生の深い意味や、内なる真実を知りたいという探求心があります。「魂が本当に望むこと」など、人生の本質的な方向性を知る高次なメッセージのヒントを受け取ってみませんか。' },
+            { code: '#B2EBF2', message: 'あなたの心は、風のように自由で清らかです。肩の力を抜き、軽やかに、思うままに羽ばたいてみましょう。', menu: 'カラーカード', reason: '束縛から解放され、軽やかになりたいという願いがあります。日常の中で「ちょっとした指針」となるメッセージを手軽に受け取り、内省を始めるきっかけにするのに最適です。' },
+            { code: '#1ABC9C', message: 'あなたの心は、今、調和を取り戻そうとしています。無理せず、心と体の声に耳を傾け、バランスの取れた生活を心がけてください。', menu: 'ヒーリング', reason: '心と体のバランス、穏やかな調和がテーマです。心身の滞りやモヤを整え、守護のサポートを受けながら、全体的なバランスを回復させるための準備をします。' },
+            { code: '#43A047', message: 'あなたの努力は、必ず実を結びます。急いで結果を求めず、日々の成長と小さな達成を楽しむことに意識を向けてください。', menu: '未来ナビ', reason: '焦らず着実に進みたいという願いがあります。未来予報で「リスクマネジメント」や「チャンスの最大化」を計画し、努力を確実な実りへと導く指針を立てる準備をしていきましょう。' },
+            { code: '#AEEA00', message: 'あなたの人生は、今、新しい成長期に入っています。好奇心とユーモアを持って、目の前の課題に飛び込んでみましょう。', menu: 'カラーカード', reason: '活発な成長と、新しいアイデアを求めているサインです。「メッセージのエッセンス」を受け取り、その「余白」をご自身で読み解くことで、内省と成長を楽しむきっかけが得られますよ。' },
+            { code: '#f3ffd1', message: 'あなたは、そのままで十分魅力的です。肩の力を抜き、ありのままの自分でいることを自分に許可してあげてください。', menu: 'カラーカード', reason: '義務やプレッシャーから解放され、自然体で過ごしたいという願いがあります。安価に、日常の中で「ちょっとした指針」を受け取り、軽やかに心身を整えるためのヒントにするのに最適です。' },
+            { code: '#E0E1DD', message: 'あなたは、感情から一歩引いて物事を眺めることができる、賢明な人です。あなたの客観的な視点を信じて行動してください。', menu: 'リーディング', reason: '感情から一歩引いて、冷静な知性を求めています。「思考カラーマップ」で心の状態を客観的に分析し、理性と知恵を持って人生の方向性を定めるための最初のヒントが得られます。' },
+            { code: '#6D6D6D', message: 'あなたの内側には、しっかりと確立された「自分軸」があります。周りの意見に惑わされず、自分の価値観を信じてください。', menu: 'リーディング', reason: '他者に依存せず、自分の軸を確立したいという強い願いがあります。魂が本当に望むことなど、本質的な人生の方向性を知り、揺るぎない「自分軸」を強化する準備ができます。' },
+            { code: '#3A3A3A', message: 'あなたの中には、物事の全てを受け止め、支える基盤となる力強さがあります。恐れず、自分の深い部分と向き合ってみましょう。', menu: 'リーディング', reason: '揺るぎない基盤を築きたいという強い思いがあります。漠然とした「悩み事」や「人生の迷い」があるなら、スピリチュアルな視点から本質的な人生の方向性を見つけるための最初のヒントを受け取れます。' },
+            { code: '#FFFFFF', message: 'あなたは、無限の可能性と、純粋な光に満ちた存在です。過去の全てを許し、理想の未来を自由に描いていきましょう。', menu: '未来ナビ', reason: '最高の理想と新しい人生の始まりという未来志向のテーマです。未来予報を活用して「チャンスの最大化」を図り、理想の未来を現実のものにするための具体的な行動計画を立てる準備をしましょう。' }
+        ];
+
+        // グローバル変数
+        let selectedColors = [];
+        const MAX_SELECTION = 3;
+
+        // DOM要素の取得
+        const colorPalette = document.getElementById('color-palette');
+        const selectedColorsContainer = document.getElementById('selected-colors-container');
+        const selectionPrompt = document.getElementById('selection-prompt');
+        const diagnoseButton = document.getElementById('diagnose-button');
+        const reDiagnoseButton = document.getElementById('re-diagnose-button');
+        const resultArea = document.getElementById('result-area');
+        const resultsContainer = document.getElementById('results-container');
+
+        /**
+         * メインのカラーパレットをレンダリングする
+         */
+        function renderMainPalette() {
+            colorPalette.innerHTML = '';
+            COLOR_DATA.forEach((color, index) => {
+                const colorBox = document.createElement('div');
+                colorBox.className = 'color-box rounded-xl shadow-md relative'; // rounded-lgからxlに変更
+                colorBox.style.backgroundColor = color.code;
+                colorBox.dataset.code = color.code;
+                colorBox.dataset.index = index;
+
+                // 明るい色の場合、境界線を濃くする
+                if (isLightColor(color.code)) {
+                    colorBox.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                }
+
+                // 選択状態のクラスを適用
+                if (selectedColors.includes(color.code)) {
+                    colorBox.classList.add('selected');
+                }
+
+                colorBox.addEventListener('click', () => toggleColorSelection(color.code));
+                colorPalette.appendChild(colorBox);
+            });
+        }
+
+        /**
+         * 選択された色コードが明るい色かどうかを判定する (境界線表示用)
+         * @param {string} hex - 6桁のHEXカラーコード
+         * @returns {boolean} 明るい色ならtrue
+         */
+        function isLightColor(hex) {
+            // #を削除
+            const c = hex.substring(1);
+            // RGBに変換
+            const r = parseInt(c.substring(0, 2), 16);
+            const g = parseInt(c.substring(2, 4), 16);
+            const b = parseInt(c.substring(4, 6), 16);
+            // 輝度を計算 (Y = 0.299*R + 0.587*G + 0.114*B)
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            return luminance > 0.8; // 輝度が80%以上なら明るいと判断
+        }
+
+        /**
+         * 色の選択/選択解除を切り替える
+         * @param {string} code - 選択された色コード
+         */
+        function toggleColorSelection(code) {
+            const index = selectedColors.indexOf(code);
+            if (index > -1) {
+                // 既に選択されている場合、解除
+                selectedColors.splice(index, 1);
+            } else if (selectedColors.length < MAX_SELECTION) {
+                // 3色未満の場合、選択に追加
+                selectedColors.push(code);
+            } else {
+                // 3色選択済みの場合は何もしない (またはメッセージ表示)
+                console.log('3色までしか選択できません。');
+            }
+            updateSelectionState();
+        }
+
+        /**
+         * 選択状態とボタンの有効/無効を更新する
+         */
+        function updateSelectionState() {
+            // パレットの選択状態を更新
+            document.querySelectorAll('.color-box').forEach(box => {
+                box.classList.remove('selected');
+                if (selectedColors.includes(box.dataset.code)) {
+                    box.classList.add('selected');
+                }
+            });
+
+            // 選択色表示エリアを更新
+            renderSelectedColors();
+
+            // 診断ボタンの有効/無効を更新
+            if (selectedColors.length === MAX_SELECTION) {
+                diagnoseButton.disabled = false;
+                diagnoseButton.classList.remove('bg-gray-300');
+                diagnoseButton.classList.add('btn-primary');
+            } else {
+                diagnoseButton.disabled = true;
+                diagnoseButton.classList.remove('btn-primary');
+                diagnoseButton.classList.add('bg-gray-300');
+            }
+
+            // 結果エリアを非表示に戻す
+            resultArea.classList.add('hidden');
+        }
+
+        /**
+         * 選択された色を上部エリアに表示する
+         */
+        function renderSelectedColors() {
+            selectedColorsContainer.innerHTML = '';
+            if (selectedColors.length === 0) {
+                selectionPrompt.classList.remove('hidden');
+                selectedColorsContainer.appendChild(selectionPrompt);
+                return;
+            }
+            selectionPrompt.classList.add('hidden');
+
+            selectedColors.forEach(code => {
+                const colorTag = document.createElement('div');
+                // モバイルでのタップしやすさを考慮し、paddingとフォントサイズを調整
+                colorTag.className = 'flex items-center rounded-full p-2 pr-3 shadow-md font-bold cursor-pointer text-sm sm:text-base transition-transform hover:scale-105';
+                colorTag.style.backgroundColor = isLightColor(code) ? '#f0f0f0' : '#333';
+                colorTag.style.color = isLightColor(code) ? '#333' : '#fff';
+                colorTag.style.border = `3px solid ${code}`;
+                colorTag.dataset.code = code;
+                colorTag.innerHTML = `
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full mr-2" style="background-color: ${code}; border: 1px solid rgba(0,0,0,0.1);"></div>
+                    選択済み (${selectedColors.indexOf(code) + 1})
+                `;
+                colorTag.addEventListener('click', () => toggleColorSelection(code)); // クリックで解除
+                selectedColorsContainer.appendChild(colorTag);
+            });
+        }
+
+        /**
+         * 診断を実行し、結果を表示する
+         */
+        function runDiagnosis() {
+            if (selectedColors.length !== MAX_SELECTION) {
+                // 念のためチェック
+                return;
+            }
+
+            // 選択された3色のデータ抽出
+            const selectedData = selectedColors.map(code => COLOR_DATA.find(d => d.code === code));
+            
+            // 1. 総合メッセージの生成（3色のメッセージを一つにまとめて結合）
+            // 句点(。)で区切りを意識的に入れ、自然な流れの文章にする
+            const allMessagesText = selectedData.map(data => data.message.replace(/。$/, '')).join('。 ') + '。';
+
+            // 2. おすすめメニューの決定（最多出現メニューを選ぶ）
+            const menuCounts = {};
+            selectedData.forEach(data => {
+                menuCounts[data.menu] = (menuCounts[data.menu] || 0) + 1;
+            });
+
+            let bestMenu = '';
+            let maxCount = 0;
+
+            // 出現頻度と選択順を考慮して最適なメニューを決定
+            for (const menu in menuCounts) {
+                if (menuCounts[menu] > maxCount) {
+                    maxCount = menuCounts[menu];
+                    bestMenu = menu;
+                }
+            }
+
+            // 3. おすすめメニューの詳細と理由を取得
+            const bestMenuData = selectedData.find(data => data.menu === bestMenu);
+
+            if (!bestMenuData) {
+                // エラー処理
+                resultsContainer.innerHTML = `<p class="text-red-500">診断結果の取得中にエラーが発生しました。</p>`;
+                resultArea.classList.remove('hidden');
+                return;
+            }
+
+            // 4. 結果表示
+            resultsContainer.innerHTML = '';
+            resultArea.classList.remove('hidden');
+
+            // --- 1. おすすめメニューカード (上部に配置) ---
+            const recommendationCard = document.createElement('div');
+            // モバイルのパディングをp-6からp-4に減らし、コンテンツ幅を広げる
+            recommendationCard.className = 'p-4 sm:p-6 rounded-xl shadow-2xl space-y-6 bg-accent';
+            recommendationCard.style.backgroundColor = 'var(--color-accent)';
+            recommendationCard.innerHTML = `
+                <h3 class="text-xl sm:text-3xl font-bold text-primary text-center">
+                    あなたへのおすすめメニュー
+                </h3>
+                <div class="bg-white p-5 sm:p-6 rounded-lg shadow-inner space-y-4">
+                    <h4 class="text-xl sm:text-2xl font-bold text-primary text-center pb-2 border-b" style="border-color: var(--color-light-accent);">
+                        ✨ おすすめ１位✨
+                    </h4>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-center text-primary">${bestMenu}</p>
+                    
+                    <h5 class="text-lg sm:text-xl font-bold text-primary mt-6">おすすめ理由:</h5>
+                    <!-- モバイルでも読みやすいよう、テキストクラスを調整 -->
+                    <p class="text-base sm:text-lg leading-relaxed readable-text">${bestMenuData.reason}</p>
+                </div>
+
+                <!-- ボタンエリア: モバイルで縦並びを強制 -->
+                <div class="flex flex-col justify-center gap-3 sm:gap-4 pt-2">
+                    <a href="${MENU_LINKS[bestMenu].detail}" target="_blank" class="btn-primary text-center font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 text-lg" style="background-color: var(--color-primary); color: white;">
+                        メニュー詳細を見る
+                    </a>
+                    <a href="${MENU_LINKS[bestMenu].reserve}" target="_blank" class="btn-primary text-center font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 text-lg" style="background-color: #ffffe6; border: 2px solid var(--color-primary); color: var(--color-primary);">
+                        予約する
+                    </a>
+                </div>
+                <!-- HOMEボタン -->
+                <div class="flex justify-center pt-4">
+                    <a href="https://spiritual-therapist-mii.studio.site/" class="text-xs sm:text-sm text-primary underline hover:opacity-75 transition-opacity">
+                        HOMEに戻る
+                    </a>
+                </div>
+            `;
+            resultsContainer.appendChild(recommendationCard);
+            
+            // --- 2. 総合メッセージカード (下に配置、線で区切らない) ---
+            const messageCard = document.createElement('div');
+            // モバイルのパディングをp-6からp-4に減らし、コンテンツ幅を広げる
+            messageCard.className = 'message-card p-4 sm:p-6 rounded-xl shadow-lg space-y-4';
+            messageCard.innerHTML = `
+                <h3 class="text-xl sm:text-2xl font-bold border-b pb-2 text-primary" style="border-color: var(--color-accent);">
+                    選ばれた3色からの総合的なメッセージ
+                </h3>
+                <div class="text-sm sm:text-base leading-relaxed">
+                    <!-- readable-textで広めの行間を適用 -->
+                    <p class="text-base sm:text-lg font-medium readable-text">${allMessagesText}</p>
+                    <p class="pt-4 font-bold text-primary text-sm sm:text-base">これらのメッセージは、あなたの今の心の状態を映し出しています。</p>
+                </div>
+            `;
+            resultsContainer.appendChild(messageCard);
+            
+            // 結果エリアへスクロール
+            const resultSection = document.getElementById('result-area');
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        /**
+         * 診断をリセットする
+         */
+        function resetDiagnosis() {
+            selectedColors = []; // 選択をクリア
+            updateSelectionState(); // UIを更新
+            // 診断セクションの先頭へスクロール
+            document.getElementById('diagnosis-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+        // --- イベントリスナーの設定 ---
+        diagnoseButton.addEventListener('click', runDiagnosis);
+        reDiagnoseButton.addEventListener('click', resetDiagnosis);
+
+        // 初期化処理
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMainPalette();
+            updateSelectionState();
+        });
+    </script>
+</body>
+</html>
+
