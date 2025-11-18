@@ -120,14 +120,14 @@
                 <input type="text" id="clientName" name="clientName" placeholder="お名前" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150">
             </div>
 
-            <!-- ご相談カテゴリと内容 (繰り返しセクション) -->
+            <!-- ご相談テーマと内容 (繰り返しセクション) -->
             <div id="categoriesContainer" class="space-y-6">
-                <!-- 1件目のカテゴリと内容はJavaScriptで追加されます -->
+                <!-- 1件目のテーマと内容はJavaScriptで追加されます -->
             </div>
 
-            <!-- カテゴリ追加ボタン -->
+            <!-- テーマ追加ボタン -->
             <button type="button" id="addCategoryBtn" class="w-full btn-base bg-button-normal text-white hover:bg-button-hover hover:text-white mt-4">
-                + 相談カテゴリを追加 (1,000円／1カテゴリ追加)
+                + 相談テーマを追加 (1,000円／1テーマ追加)
             </button>
             <p class="text-xs text-gray-500 text-center mt-2">※お受けできないご相談をご確認ください</p>
 
@@ -159,7 +159,7 @@
             <h3 class="text-xl font-bold text-accent-dark mb-3 border-b border-accent-dark/30 pb-2">【リーディングお見積り】</h3>
             <div class="text-md space-y-1">
                 <p>1件：<span class="float-right">18,000 円</span></p>
-                <p>カテゴリ追加料：<span id="extraCategoriesDisplay" class="float-right">0 円</span></p>
+                <p>テーマ追加料：<span id="extraCategoriesDisplay" class="float-right">0 円</span></p>
                 <div class="border-t border-gray-400 my-2"></div>
                 <p class="text-lg font-bold text-accent-dark">合計金額：<span id="totalAmountDisplay" class="float-right">18,000 円</span></p>
             </div>
@@ -247,12 +247,12 @@
             const totalAmountDisplay = document.getElementById('totalAmountDisplay');
             const extraCategoriesDisplay = document.getElementById('extraCategoriesDisplay');
             const customAlert = document.getElementById('customAlert');
-            let categoryCount = 0; // 1から開始してカテゴリをカウント
+            let categoryCount = 0; // 1から開始してテーマをカウント
 
             // --- UI/UX: ふわっと表示させるための処理 ---
             document.body.classList.add('loaded');
 
-            // --- カテゴリ追加関数 ---
+            // --- テーマ追加関数 ---
             const addCategory = (isInitial = false) => {
                 categoryCount++;
                 const categoryIndex = categoryCount;
@@ -266,13 +266,13 @@
                         ${categoryIndex > 1 ? '<button type="button" class="float-right text-sm text-clear-normal hover:text-error-red transition duration-150 remove-category-btn">削除</button>' : ''}
                     </h4>
                     
-                    <!-- ご相談カテゴリ -->
+                    <!-- ご相談テーマ -->
                     <div>
                         <label for="category${categoryIndex}" class="block text-md font-bold mb-1 text-accent-dark">
-                            ご相談カテゴリ<span class="required-star">*</span>
+                            ご相談テーマ<span class="required-star">*</span>
                             ${categoryIndex === 1 ? '<span class="text-xs text-gray-500 font-normal ml-2">※お受けできないご相談をご確認ください</span>' : ''}
                         </label>
-                        <input type="text" id="category${categoryIndex}" name="category" placeholder="カテゴリ名（例：仕事、長女の子育てについて、おまかせ など）" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150">
+                        <input type="text" id="category${categoryIndex}" name="category" placeholder="テーマ名（例：仕事、長女の子育てについて、おまかせ など）" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150">
                     </div>
 
                     <!-- ご相談内容 -->
@@ -285,7 +285,7 @@
                 `;
                 categoriesContainer.appendChild(categoryDiv);
 
-                // カテゴリを削除するボタンにイベントリスナーを追加
+                // テーマを削除するボタンにイベントリスナーを追加
                 if (categoryIndex > 1) {
                     categoryDiv.querySelector('.remove-category-btn').addEventListener('click', () => {
                         categoryDiv.remove();
@@ -296,7 +296,7 @@
                 }
             };
 
-            // カテゴリのインデックスを振り直す
+            // テーマのインデックスを振り直す
             const reindexCategories = () => {
                 const items = categoriesContainer.querySelectorAll('.category-item');
                 categoryCount = 0; // カウントをリセット
@@ -389,10 +389,10 @@
                     }
                 });
 
-                // 3. カテゴリ/内容チェック (最低1件は必須)
+                // 3. テーマ/内容チェック (最低1件は必須)
                 if (categoryItems.length === 0) {
-                     // このケースはaddCategoryで初期カテゴリを追加しているため発生しないはずだが、念のため
-                    errorFields.push("ご相談カテゴリ（最低1件）");
+                     // このケースはaddCategoryで初期テーマを追加しているため発生しないはずだが、念のため
+                    errorFields.push("ご相談テーマ（最低1件）");
                     isValid = false;
                 } else {
                     categoryItems.forEach((item, index) => {
@@ -401,7 +401,7 @@
                         
                         if (!categoryInput.value.trim()) {
                             categoryInput.classList.add('border-2', 'border-error-red');
-                            errorFields.push(`${index + 1}件目 ご相談カテゴリ`);
+                            errorFields.push(`${index + 1}件目 ご相談テーマ`);
                             isValid = false;
                         }
                         if (!contentTextarea.value.trim()) {
@@ -434,7 +434,7 @@
                     const contentTextarea = item.querySelector('textarea[name="content"]').value.trim();
                     categoryDetails += `
 ${index + 1}件目
-【ご相談カテゴリ】${categoryInput}
+【ご相談テーマ】${categoryInput}
 【ご相談内容】
 ${contentTextarea}
 `;
@@ -454,7 +454,7 @@ ${notes ? `\n【ご希望・ご質問】\n${notes}\n` : ''}
 
 【リーディングお見積り】
 1件：18,000 円
-カテゴリ追加料：1,000円/1件
+テーマ追加料：1,000円/1件
 --------------------------------
 合計金額：${totalAmountText}
 --------------------------------
@@ -489,11 +489,11 @@ ${notes ? `\n【ご希望・ご質問】\n${notes}\n` : ''}
 
             // --- イベントリスナー設定 ---
             
-            // 初期カテゴリの追加
+            // 初期テーマの追加
             addCategory(true);
             updateQuotation(); 
 
-            // カテゴリ追加ボタン
+            // テーマ追加ボタン
             addCategoryBtn.addEventListener('click', () => {
                 addCategory();
                 updateQuotation();
@@ -505,9 +505,9 @@ ${notes ? `\n【ご希望・ご質問】\n${notes}\n` : ''}
             // クリアボタン
             clearBtn.addEventListener('click', () => {
                 form.reset();
-                categoriesContainer.innerHTML = ''; // カテゴリを一度リセット
+                categoriesContainer.innerHTML = ''; // テーマを一度リセット
                 categoryCount = 0; // カウントもリセット
-                addCategory(true); // 1件目カテゴリを再追加
+                addCategory(true); // 1件目テーマを再追加
                 updateQuotation();
                 showAlert("フォーム内容をクリアしました。");
                 // エラー表示をクリア
@@ -541,3 +541,4 @@ ${notes ? `\n【ご希望・ご質問】\n${notes}\n` : ''}
     </script>
 </body>
 </html>
+
