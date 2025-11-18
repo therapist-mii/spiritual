@@ -3,553 +3,541 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>リーディングご予約フォーム | Therapist Mii</title>
-    <!-- ファビコン -->
-    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png" type="image/png">
+    <title>Therapist Mii - リーディングご予約フォーム</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Noto Serif JP -->
+    <!-- Google Fonts: Noto Serif JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* カスタム設定 */
-        :root {
-            --color-primary: #776163; /* 文字を強調したいとき */
-            --color-header: #EAE6E1;
-            --color-button-normal: #E4C1B5;
-            --color-button-hover: #ad9196;
-            --color-clear-button: #7a736a;
-            --color-error: #ff0000;
-        }
-
-        /* Noto Serif JPをデフォルトフォントに設定 */
-        body {
-            font-family: 'Noto Serif JP', serif;
-            background-color: white;
-            color: black;
-            opacity: 0; /* JSでfadeInさせるために初期状態を非表示に */
-        }
-        
-        /* 神秘的なふわっと表示 (Fade-in Animation) */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in-content {
-            animation: fadeIn 1.2s ease-out forwards;
-            animation-delay: 0.3s;
-        }
-
-        /* Tailwindカスタムテーマの拡張 */
-        .tailwind-config {
-            color: var(--color-primary);
-            background-color: var(--color-header);
-        }
-        
-        /* 必須項目マークのスタイル */
-        .required-mark {
-            color: var(--color-error);
-            margin-left: 0.25rem;
-        }
-        
-        /* カスタムモーダル */
-        .modal {
-            transition: opacity 0.3s ease-in-out;
-            z-index: 1000;
-        }
-        .modal-overlay {
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(2px);
-        }
-    </style>
+    <!-- Favicon -->
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png" type="image/png">
     
     <script>
-        // Tailwind CSSのカスタム設定
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'primary-text': 'var(--color-primary)',
-                        'header-bg': 'var(--color-header)',
-                        'btn-normal': 'var(--color-button-normal)',
-                        'btn-hover': 'var(--color-button-hover)',
-                        'clear-btn': 'var(--color-clear-button)',
-                        'error-red': 'var(--color-error)',
+                        'header-bg': '#EAE6E1',
+                        'accent-dark': '#776163',
+                        'button-normal': '#E4C1B5',
+                        'button-hover': '#ad9196',
+                        'clear-normal': '#7a736a',
+                        'error-red': '#ff0000',
                     },
-                },
-            },
+                    fontFamily: {
+                        serif: ['"Noto Serif JP"', 'serif'],
+                    }
+                }
+            }
         }
     </script>
-</head>
-<body class="min-h-screen pt-16" onload="document.body.style.opacity='1'">
+    
+    <style>
+        /* ベーススタイル設定 */
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: white;
+            color: black;
+            opacity: 0; /* 初期状態で透明 */
+            transition: opacity 1.5s ease-in-out; /* ふわっと表示するトランジション */
+        }
+        /* ロード後に不透明にする */
+        body.loaded {
+            opacity: 1;
+        }
 
+        /* 必須項目の赤文字 */
+        .required-star {
+            color: var(--tw-colors-error-red);
+            font-weight: bold;
+            margin-left: 0.25rem;
+        }
+
+        /* フォーム入力時のフォーカススタイル */
+        input:focus, textarea:focus, select:focus {
+            border-color: #E4C1B5 !important;
+            box-shadow: 0 0 0 1px #E4C1B5;
+        }
+
+        /* ボタンの共通スタイル */
+        .btn-base {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+
+<body class="loaded">
     <!-- ヘッダー -->
-    <header class="fixed top-0 left-0 w-full header-bg shadow-md z-50">
-        <div class="max-w-3xl mx-auto px-4 py-3">
-            <h1 class="text-2xl font-bold tracking-widest text-primary-text">Therapist Mii</h1>
+    <header class="bg-header-bg py-4 shadow-md sticky top-0 z-10">
+        <div class="max-w-screen-md mx-auto px-4 text-center">
+            <h1 class="text-3xl font-bold text-accent-dark">Therapist Mii</h1>
         </div>
     </header>
 
     <!-- メインコンテンツ -->
-    <main class="fade-in-content max-w-xl mx-auto p-4 md:p-8">
-        <h2 class="text-3xl font-bold mb-8 text-center text-primary-text">リーディングご予約フォーム</h2>
-        
-        <p class="text-sm text-gray-600 mb-6 border-b pb-4">
-            直感的に操作できるシンプルなフォームです。必須項目（<span class="required-mark">*</span>）をご記入の上、「LINEに貼り付けて予約する」ボタンでご予約を確定してください。
+    <main class="max-w-screen-md mx-auto p-4 sm:p-6 bg-white">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center text-accent-dark mb-8 mt-4">リーディングご予約フォーム</h2>
+
+        <!-- 説明文 -->
+        <p class="text-sm mb-6 text-gray-700 p-3 bg-header-bg rounded-lg">
+            フォームにご入力後、お見積りが表示されます。「コピー」ボタンを押して内容を確認し、「LINEに貼り付けて予約する」ボタンからご予約ください。
         </p>
 
-        <!-- 基本料金表示 -->
-        <div class="bg-header-bg p-4 rounded-xl shadow-inner mb-8">
-            <p class="text-lg font-bold text-primary-text">料金</p>
-            <p class="text-3xl font-bold text-right">18,000円</p>
-        </div>
+        <form id="bookingForm" class="space-y-6">
 
-        <!-- フォーム本体 -->
-        <form id="readingForm" class="space-y-8">
-            
             <!-- 同意事項 -->
-            <section class="form-section p-4 border border-gray-200 rounded-lg">
-                <h3 class="text-xl font-bold mb-4 flex items-center">
-                    同意事項<span class="required-mark text-error-red">*</span>
-                </h3>
-                <p class="text-sm text-gray-500 mb-3">ご予約には以下の事項への同意が必要です。</p>
-                <div class="space-y-2 text-sm">
-                    <label class="flex items-start cursor-pointer">
-                        <input type="checkbox" id="consentPolicy" name="consentPolicy" class="mt-1 required-field h-4 w-4 text-primary-text border-gray-300 rounded focus:ring-primary-text">
-                        <span class="ml-3 text-gray-700">セッションポリシー、注意事項に同意します。
-                            <a href="https://spiritual-therapist-mii.studio.site/policy" target="_blank" class="text-primary-text hover:underline text-xs">(詳細はこちら)</a>
-                        </span>
-                    </label>
-                    <label class="flex items-start cursor-pointer">
-                        <input type="checkbox" id="consentNotAccepted" name="consentNotAccepted" class="mt-1 required-field h-4 w-4 text-primary-text border-gray-300 rounded focus:ring-primary-text">
-                        <span class="ml-3 text-gray-700">お受けできないご相談を確認しました。
-                            <a href="https://spiritual-therapist-mii.studio.site/policy#not-accepted-requests" target="_blank" class="text-primary-text hover:underline text-xs">(詳細はこちら)</a>
-                        </span>
-                    </label>
-                    <label class="flex items-start cursor-pointer">
-                        <input type="checkbox" id="consentPrivacy" name="consentPrivacy" class="mt-1 required-field h-4 w-4 text-primary-text border-gray-300 rounded focus:ring-primary-text">
-                        <span class="ml-3 text-gray-700">プライバシーポリシーに同意します。
-                            <a href="https://spiritual-therapist-mii.studio.site/privacypolicy" target="_blank" class="text-primary-text hover:underline text-xs">(詳細はこちら)</a>
-                        </span>
-                    </label>
-                </div>
-            </section>
-
-            <!-- お名前 -->
-            <section class="form-section">
-                <label for="name" class="block text-xl font-bold mb-2">
-                    お名前<span class="required-mark text-error-red">*</span>
+            <div id="agreementSection" class="p-4 border border-gray-300 rounded-lg shadow-inner bg-gray-50/50">
+                <label class="block text-lg font-bold mb-3 text-accent-dark">
+                    同意事項<span class="required-star">*</span>
                 </label>
-                <input type="text" id="name" name="name" placeholder="お名前" class="required-field w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200">
-            </section>
-
-            <!-- ご相談カテゴリと内容 (動的追加される部分) -->
-            <div id="categoriesContainer" class="space-y-8">
-                <!-- 1件目 (初期表示) -->
-                <div class="category-group p-4 border border-header-bg rounded-lg shadow-sm">
-                    <h4 class="text-lg font-bold mb-3 text-primary-text">
-                        1件目
-                    </h4>
-                    <label for="category-1" class="block font-bold mb-2 text-sm">
-                        ①ご相談カテゴリ<span class="required-mark text-error-red">*</span>
-                    </label>
-                    <p class="text-xs text-gray-500 mb-1">※お受けできないご相談をご確認ください。迷ったら、今いちばん近いものを1つお書きください。</p>
-                    <input type="text" id="category-1" name="category-1" placeholder="カテゴリ名（例：仕事、長女の子育てについて、おまかせ など）" class="required-field category-input w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200">
-
-                    <label for="content-1" class="block font-bold mb-2 text-sm">
-                        ご相談内容<span class="required-mark text-error-red">*</span>
-                    </label>
-                    <p class="text-xs text-gray-500 mb-1">ご相談内容を具体的にご記入ください。</p>
-                    <textarea id="content-1" name="content-1" rows="5" class="required-field content-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200"></textarea>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-start">
+                        <input type="checkbox" id="policyAgreement" name="agreement" data-name="セッションポリシー、注意事項" class="mt-1 mr-2 appearance-none h-4 w-4 border border-gray-400 rounded-sm bg-white checked:bg-accent-dark checked:border-accent-dark focus:outline-none transition duration-200">
+                        <label for="policyAgreement" class="text-gray-700">セッションポリシー、注意事項に同意します。 <a href="https://spiritual-therapist-mii.studio.site/policy" target="_blank" class="text-button-normal hover:text-accent-dark underline">詳細</a></label>
+                    </div>
+                    <div class="flex items-start">
+                        <input type="checkbox" id="notAcceptedAgreement" name="agreement" data-name="お受けできないご相談" class="mt-1 mr-2 appearance-none h-4 w-4 border border-gray-400 rounded-sm bg-white checked:bg-accent-dark checked:border-accent-dark focus:outline-none transition duration-200">
+                        <label for="notAcceptedAgreement" class="text-gray-700">お受けできないご相談を確認しました。 <a href="https://spiritual-therapist-mii.studio.site/policy#not-accepted-requests" target="_blank" class="text-button-normal hover:text-accent-dark underline">詳細</a></label>
+                    </div>
+                    <div class="flex items-start">
+                        <input type="checkbox" id="privacyAgreement" name="agreement" data-name="プライバシーポリシー" class="mt-1 mr-2 appearance-none h-4 w-4 border border-gray-400 rounded-sm bg-white checked:bg-accent-dark checked:border-accent-dark focus:outline-none transition duration-200">
+                        <label for="privacyAgreement" class="text-gray-700">プライバシーポリシーに同意します。 <a href="https://spiritual-therapist-mii.studio.site/privacypolicy" target="_blank" class="text-button-normal hover:text-accent-dark underline">詳細</a></label>
+                    </div>
                 </div>
             </div>
             
-            <!-- カテゴリ追加ボタン -->
-            <div class="text-center">
-                <button type="button" id="addCategoryBtn" class="bg-primary-text text-white px-6 py-3 rounded-full shadow-lg hover:bg-btn-hover transition duration-300 transform hover:scale-105 text-sm">
-                    + 相談カテゴリを追加 (1,000円／1カテゴリ追加)
-                </button>
+            <!-- お名前 -->
+            <div>
+                <label for="clientName" class="block text-lg font-bold mb-1 text-accent-dark">
+                    お名前<span class="required-star">*</span>
+                </label>
+                <input type="text" id="clientName" name="clientName" placeholder="お名前" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150">
             </div>
+
+            <!-- ご相談カテゴリと内容 (繰り返しセクション) -->
+            <div id="categoriesContainer" class="space-y-6">
+                <!-- 1件目のカテゴリと内容はJavaScriptで追加されます -->
+            </div>
+
+            <!-- カテゴリ追加ボタン -->
+            <button type="button" id="addCategoryBtn" class="w-full btn-base bg-button-normal text-white hover:bg-button-hover hover:text-white mt-4">
+                + 相談カテゴリを追加 (1,000円／1カテゴリ追加)
+            </button>
+            <p class="text-xs text-gray-500 text-center mt-2">※お受けできないご相談をご確認ください</p>
 
             <!-- お支払い方法 -->
-            <section class="form-section">
-                <label for="paymentMethod" class="block text-xl font-bold mb-2">
-                    お支払い方法<span class="required-mark text-error-red">*</span>
+            <div>
+                <label for="paymentMethod" class="block text-lg font-bold mb-1 text-accent-dark">
+                    お支払い方法<span class="required-star">*</span>
                 </label>
-                <select id="paymentMethod" name="paymentMethod" class="required-field w-full p-3 border rounded-lg bg-white focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200">
-                    <option value="" disabled selected>選択してください</option>
+                <select id="paymentMethod" name="paymentMethod" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150 bg-white">
+                    <option value="">選択してください</option>
                     <option value="銀行振込">銀行振込</option>
                     <option value="Paypay">Paypay</option>
                     <option value="Paypal">Paypal</option>
                 </select>
-            </section>
+            </div>
 
-            <!-- 備考 -->
-            <section class="form-section">
-                <label for="notes" class="block text-xl font-bold mb-2">備考</label>
-                <p class="text-sm text-gray-500 mb-1">ご希望・ご質問があればご記入ください。</p>
-                <textarea id="notes" name="notes" rows="3" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200"></textarea>
-            </section>
+            <!-- ご希望・ご質問 -->
+            <div>
+                <label for="notes" class="block text-lg font-bold mb-1 text-accent-dark">
+                    ご希望・ご質問
+                </label>
+                <textarea id="notes" name="notes" placeholder="ご希望・ご質問があればご記入ください" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150"></textarea>
+            </div>
 
-            <!-- お見積り表示エリア -->
-            <section class="form-section p-4 bg-header-bg rounded-xl shadow-inner mt-10">
-                <h3 class="text-2xl font-bold mb-4 text-primary-text">お見積り</h3>
-                <div id="estimateOutput" class="text-lg space-y-2">
-                    <!-- JSでお見積り内容が挿入されます -->
-                </div>
-                <div class="mt-4 border-t border-gray-400 pt-4">
-                    <p class="text-lg font-bold">【ご提出いただくもの】</p>
-                    <ul class="list-disc list-inside ml-4 text-gray-700 text-sm mt-1">
-                        <li>目元の写真</li>
-                        <li>手書きのお名前</li>
-                        <li>手書きの相談のタイトル</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- LINE予約手順 -->
-            <section class="mt-10 p-4 border border-dashed border-primary-text rounded-lg bg-white">
-                <h3 class="text-xl font-bold text-primary-text mb-3">【LINEで予約する際の手順】</h3>
-                <ol class="list-decimal list-inside space-y-2 text-gray-700">
-                    <li>ご確認いただけましたら、<span class="font-bold">コピーボタン</span>を押してください。</li>
-                    <li><span class="font-bold">「LINEに貼り付けて予約する」ボタン</span>を押し、起動したLINEに貼り付けて送信ください。</li>
-                </ol>
-            </section>
         </form>
+        
+        <!-- お見積り表示 -->
+        <div id="quotationArea" class="mt-10 p-5 border-2 border-accent-dark/50 rounded-xl bg-header-bg/70 shadow-lg transition duration-300">
+            <h3 class="text-xl font-bold text-accent-dark mb-3 border-b border-accent-dark/30 pb-2">【リーディングお見積り】</h3>
+            <div class="text-md space-y-1">
+                <p>1件：<span class="float-right">18,000 円</span></p>
+                <p>カテゴリ追加料：<span id="extraCategoriesDisplay" class="float-right">0 円</span></p>
+                <div class="border-t border-gray-400 my-2"></div>
+                <p class="text-lg font-bold text-accent-dark">合計金額：<span id="totalAmountDisplay" class="float-right">18,000 円</span></p>
+            </div>
+        </div>
+
+        <!-- 提出物リスト -->
+        <div class="mt-8 p-5 border border-button-normal rounded-xl bg-white shadow-md">
+            <h3 class="text-xl font-bold text-accent-dark mb-3 border-b border-accent-dark/30 pb-2">【ご提出いただくもの】</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>目元の写真</li>
+                <li>手書きのお名前</li>
+                <li>手書きの相談のタイトル</li>
+            </ul>
+        </div>
+
+        <!-- LINEで予約する際の手順 -->
+        <div class="mt-8 p-4 bg-error-red/10 border border-error-red/30 rounded-lg">
+            <h4 class="text-lg font-bold text-error-red mb-2">【LINEで予約する際の手順】</h4>
+            <ol class="list-decimal list-inside space-y-1 text-gray-700">
+                <li>ご確認いただけましたら、コピーボタンを押してください。</li>
+                <li>「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
+            </ol>
+        </div>
 
         <!-- ページ下部機能ボタン -->
-        <div class="flex flex-col space-y-4 mt-8">
-            <!-- クリアボタン -->
-            <button id="clearFormBtn" class="bg-clear-btn text-white px-6 py-4 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] hover:bg-btn-normal font-bold">
-                入力内容をクリア
+        <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mt-8">
+            <button type="button" id="clearBtn" class="btn-base bg-clear-normal text-white hover:bg-button-normal sm:w-1/3">
+                フォームをクリア
             </button>
-            
-            <!-- コピーボタン -->
-            <button id="copyBtn" class="bg-btn-normal text-white px-6 py-4 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] hover:bg-btn-hover hover:text-white font-bold">
-                入力内容をコピー
+            <button type="button" id="copyBtn" class="btn-base bg-button-normal text-white hover:bg-button-hover sm:w-1/3">
+                コピー
             </button>
-            
-            <!-- LINEで予約するボタン -->
-            <button id="lineReserveBtn" class="bg-btn-normal text-white px-6 py-4 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.05] hover:bg-btn-hover hover:text-white font-bold">
+            <button type="button" id="lineBtn" class="btn-base bg-button-normal text-white hover:bg-button-hover sm:w-1/3">
                 LINEに貼り付けて予約する
             </button>
+        </div>
+
+        <!-- カスタムアラート表示領域 -->
+        <div id="customAlert" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-error-red text-white p-4 rounded-lg shadow-2xl z-50 transition-all duration-300 opacity-0 pointer-events-none w-11/12 max-w-sm text-center font-bold">
+            <!-- メッセージはJSで挿入されます -->
         </div>
 
     </main>
 
     <!-- フッター -->
-    <footer class="mt-16 pt-10 pb-4 border-t border-gray-200 bg-header-bg">
-        <div class="max-w-xl mx-auto px-4 space-y-8">
+    <footer class="bg-header-bg mt-12 pt-8 pb-4">
+        <div class="max-w-screen-md mx-auto px-4">
             
-            <!-- はじめての方へセクション -->
-            <section class="p-4 bg-white rounded-xl shadow-md border-t-4 border-primary-text">
-                <h3 class="text-xl font-bold text-primary-text mb-3">はじめての方へ</h3>
+            <!-- 初めての方へセクション -->
+            <div class="mb-8 p-4 bg-white rounded-lg shadow-inner border border-gray-200">
+                <h3 class="text-xl font-bold text-accent-dark mb-2">はじめての方へ</h3>
                 <p class="text-sm text-gray-700 mb-4">
-                    はじめての方、またはリピーター様でも未入力の方は、以下のフォームにご記入をお願いいたします。
+                    はじめての方は、以下のフォームにご記入お願いいたします。<br>
+                    リピーター様も未入力の方はご記入お願いいたします。
                 </p>
-                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" class="block text-center bg-btn-normal text-white px-6 py-3 rounded-full shadow-md hover:bg-btn-hover transition duration-300 font-bold text-sm">
+                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" class="w-full inline-block text-center btn-base bg-button-normal text-white hover:bg-button-hover hover:text-white">
                     はじめての方のフォーム
                 </a>
-            </section>
+            </div>
 
             <!-- ナビゲーションリンク -->
-            <nav class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm text-center">
-                <a href="https://spiritual-therapist-mii.studio.site/" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">HOME</a>
-                <a href="https://spiritual-therapist-mii.studio.site/menu" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">メニュー一覧</a>
-                <a href="https://spiritual-therapist-mii.studio.site/reading" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">リーディング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">未来ナビ</a>
-                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">アートセラピー</a>
-                <a href="https://spiritual-therapist-mii.studio.site/color-card" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">カラーカード</a>
-                <a href="https://spiritual-therapist-mii.studio.site/healing" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">ヒーリング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="text-gray-700 hover:text-primary-text transition duration-200 border-b border-dashed pb-1">対面リーディング</a>
+            <nav class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+                <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-accent-dark transition duration-150">HOME</a>
+                <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-accent-dark transition duration-150">メニュー一覧</a>
+                <a href="https://spiritual-therapist-mii.studio.site/reading" class="hover:text-accent-dark transition duration-150">リーディング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="hover:text-accent-dark transition duration-150">未来ナビ</a>
+                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="hover:text-accent-dark transition duration-150">アートセラピー</a>
+                <a href="https://spiritual-therapist-mii.studio.site/color-card" class="hover:text-accent-dark transition duration-150">カラーカード</a>
+                <a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-accent-dark transition duration-150">ヒーリング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="hover:text-accent-dark transition duration-150">対面リーディング</a>
             </nav>
 
-            <!-- 著作権 -->
-            <p class="text-xs text-center text-gray-500 pt-4">
-                © 2025 by Therapist Mii. All rights reserved.
-            </p>
+            <p class="text-center text-xs text-gray-500 mt-6">© 2025 by Therapist Mii. All rights reserved.</p>
         </div>
     </footer>
-    
-    <!-- カスタムモーダル (バリデーションエラー/コピー完了メッセージ用) -->
-    <div id="customModal" class="modal fixed inset-0 flex items-center justify-center hidden">
-        <div class="modal-overlay absolute inset-0"></div>
-        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-sm transform scale-95 opacity-0 transition-all duration-300 relative z-100">
-            <h3 id="modalTitle" class="text-xl font-bold mb-3 text-primary-text"></h3>
-            <p id="modalMessage" class="mb-5 text-gray-700"></p>
-            <button id="closeModalBtn" class="w-full bg-btn-normal text-white py-2 rounded-full hover:bg-btn-hover transition duration-200">閉じる</button>
-        </div>
-    </div>
 
     <script>
-        const CATEGORY_PRICE = 1000;
-        const BASE_PRICE = 18000;
-        let categoryCount = 1;
-        const categoriesContainer = document.getElementById('categoriesContainer');
-        const addCategoryBtn = document.getElementById('addCategoryBtn');
-        const estimateOutput = document.getElementById('estimateOutput');
-        const readingForm = document.getElementById('readingForm');
-        const copyBtn = document.getElementById('copyBtn');
-        const lineReserveBtn = document.getElementById('lineReserveBtn');
-        const clearFormBtn = document.getElementById('clearFormBtn');
-        
-        // モーダル要素
-        const modal = document.getElementById('customModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('bookingForm');
+            const categoriesContainer = document.getElementById('categoriesContainer');
+            const addCategoryBtn = document.getElementById('addCategoryBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const lineBtn = document.getElementById('lineBtn');
+            const totalAmountDisplay = document.getElementById('totalAmountDisplay');
+            const extraCategoriesDisplay = document.getElementById('extraCategoriesDisplay');
+            const customAlert = document.getElementById('customAlert');
+            let categoryCount = 0; // 1から開始してカテゴリをカウント
 
-        // モーダル表示関数
-        function showModal(title, message) {
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            modal.classList.remove('hidden');
-            
-            // アニメーション
-            const content = modal.querySelector('.modal-content');
-            setTimeout(() => {
-                content.classList.add('scale-100', 'opacity-100');
-                content.classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        }
+            // --- UI/UX: ふわっと表示させるための処理 ---
+            document.body.classList.add('loaded');
 
-        // モーダル非表示関数
-        function closeModal() {
-            const content = modal.querySelector('.modal-content');
-            content.classList.add('scale-95', 'opacity-0');
-            content.classList.remove('scale-100', 'opacity-100');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay')) {
-                closeModal();
-            }
-        });
-
-        // お見積りの更新
-        function updateEstimate() {
-            const totalCategories = readingForm.querySelectorAll('.category-group').length;
-            const additionalCategories = totalCategories > 1 ? totalCategories - 1 : 0;
-            const additionalFee = additionalCategories * CATEGORY_PRICE;
-            const totalAmount = BASE_PRICE + additionalFee;
-
-            const estimateHTML = `
-                <p>リーディング 1件：18,000 円</p>
-                <p>カテゴリ追加料：${additionalCategories}件 × ${CATEGORY_PRICE.toLocaleString()}円 = ${additionalFee.toLocaleString()} 円</p>
-                <div class="border-t border-gray-400 my-2"></div>
-                <p class="text-2xl font-bold text-right text-primary-text">合計金額：${totalAmount.toLocaleString()} 円</p>
-            `;
-            estimateOutput.innerHTML = estimateHTML;
-        }
-
-        // カテゴリ追加機能
-        function addCategory() {
-            categoryCount++;
-            const newCategoryHTML = `
-                <div class="category-group p-4 border border-header-bg rounded-lg shadow-sm">
-                    <h4 class="text-lg font-bold mb-3 text-primary-text">
-                        ${categoryCount}件目 <button type="button" class="remove-category-btn text-error-red text-xs font-normal ml-2 hover:opacity-75">[削除]</button>
-                    </h4>
-                    <label for="category-${categoryCount}" class="block font-bold mb-2 text-sm">
-                        ご相談カテゴリ<span class="required-mark text-error-red">*</span>
-                    </label>
-                    <p class="text-xs text-gray-500 mb-1">※お受けできないご相談をご確認ください。迷ったら、今いちばん近いものを1つお書きください。</p>
-                    <input type="text" id="category-${categoryCount}" name="category-${categoryCount}" placeholder="カテゴリ名（例：仕事、長女の子育てについて、おまかせ など）" class="required-field category-input w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200">
-
-                    <label for="content-${categoryCount}" class="block font-bold mb-2 text-sm">
-                        ご相談内容<span class="required-mark text-error-red">*</span>
-                    </label>
-                    <p class="text-xs text-gray-500 mb-1">ご相談内容を具体的にご記入ください。</p>
-                    <textarea id="content-${categoryCount}" name="content-${categoryCount}" rows="5" class="required-field content-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-text focus:border-primary-text transition duration-200"></textarea>
-                </div>
-            `;
-            categoriesContainer.insertAdjacentHTML('beforeend', newCategoryHTML);
-            updateEstimate();
-        }
-
-        // カテゴリ削除機能
-        categoriesContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-category-btn')) {
-                if (readingForm.querySelectorAll('.category-group').length > 1) {
-                    e.target.closest('.category-group').remove();
-                    // カテゴリ番号を振り直す（ユーザー体験向上のため）
-                    readingForm.querySelectorAll('.category-group').forEach((group, index) => {
-                        group.querySelector('h4').innerHTML = `${index + 1}件目 <button type="button" class="remove-category-btn text-error-red text-xs font-normal ml-2 hover:opacity-75">[削除]</button>`;
-                    });
-                    categoryCount = readingForm.querySelectorAll('.category-group').length;
-                    updateEstimate();
-                } else {
-                    showModal('削除できません', 'カテゴリは最低1件必要です。');
-                }
-            }
-        });
-
-        addCategoryBtn.addEventListener('click', addCategory);
-
-        // フォーム入力時のイベントリスナーを設定して、リアルタイムでお見積りを更新
-        readingForm.addEventListener('input', updateEstimate);
-
-        // 入力チェック (バリデーション)
-        function validateForm() {
-            let isValid = true;
-            const requiredFields = document.querySelectorAll('.required-field');
-            
-            // エラー表示をリセット
-            requiredFields.forEach(field => {
-                field.style.borderColor = '';
-                field.style.boxShadow = '';
-            });
-
-            requiredFields.forEach(field => {
-                let isFieldValid = true;
-
-                if (field.type === 'checkbox') {
-                    if (!field.checked) {
-                        isFieldValid = false;
-                        // チェックボックスは親要素の枠を赤くする
-                        field.closest('.form-section').style.borderColor = 'var(--color-error)';
-                        field.closest('.form-section').style.boxShadow = '0 0 0 1px var(--color-error)';
-                    }
-                } else if (field.tagName === 'SELECT') {
-                    if (field.value === "") {
-                        isFieldValid = false;
-                    }
-                } else if (field.value.trim() === '') {
-                    isFieldValid = false;
-                }
-
-                if (!isFieldValid) {
-                    isValid = false;
-                    // テキスト/セレクトボックスは自身の枠を赤くする
-                    if (field.type !== 'checkbox') {
-                        field.style.borderColor = 'var(--color-error)';
-                        field.style.boxShadow = '0 0 0 1px var(--color-error)';
-                    }
-                }
-            });
-
-            if (!isValid) {
-                showModal('必須項目にご記入ください', 'お手数ですが、赤い枠で示された全ての必須項目を正しくご入力ください。');
-            }
-            return isValid;
-        }
-
-        // コピー内容の整形
-        function formatCopyContent() {
-            const name = document.getElementById('name').value.trim();
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const notes = document.getElementById('notes').value.trim();
-            
-            let categoriesData = [];
-            readingForm.querySelectorAll('.category-group').forEach((group, index) => {
-                const category = group.querySelector('.category-input').value.trim();
-                const content = group.querySelector('.content-input').value.trim();
-                categoriesData.push({ index: index + 1, category, content });
-            });
-
-            const totalCategories = categoriesData.length;
-            const additionalCategories = totalCategories > 1 ? totalCategories - 1 : 0;
-            const additionalFee = additionalCategories * CATEGORY_PRICE;
-            const totalAmount = BASE_PRICE + additionalFee;
-
-            let content = `リーディング希望\n\n`;
-            content += `【お名前】\n${name}\n\n`;
-            
-            categoriesData.forEach(data => {
-                content += `${data.index}件目\n`;
-                content += `【ご相談カテゴリ】\n${data.category}\n`;
-                content += `【ご相談内容】\n${data.content}\n\n`;
-            });
-            
-            content += `【お支払い方法】\n${paymentMethod}\n\n`;
-            
-            if (notes) {
-                content += `【ご希望・ご質問（備考）】\n${notes}\n\n`;
-            }
-
-            content += `\n--- お見積り ---\n`;
-            content += `リーディング 1件：18,000 円\n`;
-            content += `カテゴリ追加料：${additionalCategories}件 × ${CATEGORY_PRICE.toLocaleString()}円 = ${additionalFee.toLocaleString()} 円\n`;
-            content += `--------------------------------\n`;
-            content += `合計金額：${totalAmount.toLocaleString()} 円\n`;
-            content += `--------------------------------\n\n`;
-            
-            content += `【ご提出いただくもの】\n`;
-            content += `目元の写真\n`;
-            content += `手書きのお名前\n`;
-            content += `手書きの相談のタイトル\n`;
-
-            return content;
-        }
-
-        // クリップボードにコピー
-        function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showModal('コピーが完了しました', '入力内容をクリップボードにコピーしました。LINEに貼り付けて送信してください。');
-                } else {
-                    showModal('コピー失敗', 'コピーに失敗しました。お手数ですが、内容を手動でコピーしてください。');
-                }
-            } catch (err) {
-                showModal('コピー失敗', 'コピーに失敗しました。お手数ですが、内容を手動でコピーしてください。');
-            }
-            document.body.removeChild(textarea);
-        }
-
-        // コピーボタン処理
-        copyBtn.addEventListener('click', function() {
-            if (validateForm()) {
-                const content = formatCopyContent();
-                copyToClipboard(content);
-            }
-        });
-
-        // LINE予約ボタン処理
-        lineReserveBtn.addEventListener('click', function() {
-            if (validateForm()) {
-                const content = formatCopyContent();
-                copyToClipboard(content); // まずコピーを実行
+            // --- カテゴリ追加関数 ---
+            const addCategory = (isInitial = false) => {
+                categoryCount++;
+                const categoryIndex = categoryCount;
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = `category-item p-4 border border-gray-200 rounded-lg shadow-sm space-y-4 ${!isInitial ? 'mt-6 bg-white' : 'bg-white'}`;
+                categoryDiv.setAttribute('data-index', categoryIndex);
                 
-                // LINEアプリを起動
+                categoryDiv.innerHTML = `
+                    <h4 class="text-lg font-bold text-accent-dark border-b border-button-normal/50 pb-2">
+                        ${categoryIndex}件目
+                        ${categoryIndex > 1 ? '<button type="button" class="float-right text-sm text-clear-normal hover:text-error-red transition duration-150 remove-category-btn">削除</button>' : ''}
+                    </h4>
+                    
+                    <!-- ご相談カテゴリ -->
+                    <div>
+                        <label for="category${categoryIndex}" class="block text-md font-bold mb-1 text-accent-dark">
+                            ご相談カテゴリ<span class="required-star">*</span>
+                            ${categoryIndex === 1 ? '<span class="text-xs text-gray-500 font-normal ml-2">※お受けできないご相談をご確認ください</span>' : ''}
+                        </label>
+                        <input type="text" id="category${categoryIndex}" name="category" placeholder="カテゴリ名（例：仕事、長女の子育てについて、おまかせ など）" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150">
+                    </div>
+
+                    <!-- ご相談内容 -->
+                    <div>
+                        <label for="content${categoryIndex}" class="block text-md font-bold mb-1 text-accent-dark">
+                            ご相談内容<span class="required-star">*</span>
+                        </label>
+                        <textarea id="content${categoryIndex}" name="content" placeholder="ご相談内容をお書きください" rows="6" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-button-normal transition duration-150"></textarea>
+                    </div>
+                `;
+                categoriesContainer.appendChild(categoryDiv);
+
+                // カテゴリを削除するボタンにイベントリスナーを追加
+                if (categoryIndex > 1) {
+                    categoryDiv.querySelector('.remove-category-btn').addEventListener('click', () => {
+                        categoryDiv.remove();
+                        updateQuotation();
+                        // 削除後に表示されている番号を振り直す
+                        reindexCategories();
+                    });
+                }
+            };
+
+            // カテゴリのインデックスを振り直す
+            const reindexCategories = () => {
+                const items = categoriesContainer.querySelectorAll('.category-item');
+                categoryCount = 0; // カウントをリセット
+                items.forEach((item, index) => {
+                    const newIndex = index + 1;
+                    categoryCount = newIndex; // 正しいカウントを設定
+                    item.setAttribute('data-index', newIndex);
+                    
+                    // タイトル更新
+                    item.querySelector('h4').innerHTML = `
+                        ${newIndex}件目
+                        ${newIndex > 1 ? '<button type="button" class="float-right text-sm text-clear-normal hover:text-error-red transition duration-150 remove-category-btn">削除</button>' : ''}
+                    `;
+                    
+                    // ラベルと入力欄のID/name更新
+                    item.querySelector(`[id^="category"]`).id = `category${newIndex}`;
+                    item.querySelector(`[for^="category"]`).setAttribute('for', `category${newIndex}`);
+                    item.querySelector(`[id^="content"]`).id = `content${newIndex}`;
+                    item.querySelector(`[for^="content"]`).setAttribute('for', `content${newIndex}`);
+
+                    // 削除ボタンのリスナー再設定
+                    if (newIndex > 1) {
+                        item.querySelector('.remove-category-btn').addEventListener('click', () => {
+                            item.remove();
+                            updateQuotation();
+                            reindexCategories(); // 再帰的に再インデックス
+                        });
+                    }
+                });
+            };
+
+
+            // --- 見積もり更新関数 ---
+            const updateQuotation = () => {
+                const count = categoriesContainer.querySelectorAll('.category-item').length;
+                const initialPrice = 18000;
+                const extraCategoryPrice = (count > 0 ? count - 1 : 0) * 1000;
+                const totalAmount = initialPrice + extraCategoryPrice;
+
+                // 桁区切り処理
+                const formatNumber = (num) => num.toLocaleString('ja-JP');
+
+                extraCategoriesDisplay.textContent = `${formatNumber(extraCategoryPrice)} 円`;
+                totalAmountDisplay.textContent = `${formatNumber(totalAmount)} 円`;
+            };
+
+            // --- カスタムアラート表示関数 ---
+            const showAlert = (message) => {
+                customAlert.textContent = message;
+                customAlert.classList.remove('opacity-0', 'pointer-events-none');
+                customAlert.classList.add('opacity-100');
+                
                 setTimeout(() => {
-                    window.open('https://line.me/ti/p/Kv76GQK_UI', '_blank');
-                }, 500); // コピー完了メッセージが表示されるのを少し待つ
-            }
-        });
+                    customAlert.classList.remove('opacity-100');
+                    customAlert.classList.add('opacity-0', 'pointer-events-none');
+                }, 3000);
+            };
 
-        // クリアボタン処理
-        clearFormBtn.addEventListener('click', function() {
-            readingForm.reset();
-            // 動的追加されたカテゴリを削除して初期状態に戻す
-            while (categoriesContainer.children.length > 1) {
-                categoriesContainer.removeChild(categoriesContainer.lastChild);
-            }
-            categoryCount = 1;
-            // エラー表示のリセット
-            document.querySelectorAll('.required-field').forEach(field => {
-                field.style.borderColor = '';
-                field.style.boxShadow = '';
-            });
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.style.borderColor = '';
-                section.style.boxShadow = '';
-            });
-            updateEstimate();
-            showModal('入力内容をクリア', 'フォームの内容をすべて消去しました。');
-        });
+            // --- バリデーション関数 ---
+            const validateForm = () => {
+                let isValid = true;
+                const errorFields = [];
+                const requiredInputs = form.querySelectorAll('input[name="clientName"], select[name="paymentMethod"]');
+                const categoryItems = categoriesContainer.querySelectorAll('.category-item');
 
-        // 初期表示時のお見積り更新
-        updateEstimate();
+                // 以前のエラー表示をクリア
+                form.querySelectorAll('.border-error-red').forEach(el => el.classList.remove('border-2', 'border-error-red'));
+
+                // 1. 同意事項チェック
+                const agreements = document.querySelectorAll('input[name="agreement"]');
+                const agreementSection = document.getElementById('agreementSection');
+                let allAgreed = true;
+                agreements.forEach(checkbox => {
+                    if (!checkbox.checked) {
+                        allAgreed = false;
+                    }
+                });
+                if (!allAgreed) {
+                    agreementSection.classList.add('border-2', 'border-error-red');
+                    errorFields.push("同意事項（すべて）");
+                    isValid = false;
+                }
+
+                // 2. 一般必須入力チェック
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim() || (input.tagName === 'SELECT' && input.value === "")) {
+                        input.classList.add('border-2', 'border-error-red');
+                        errorFields.push(input.previousElementSibling.textContent.replace('*', '').trim());
+                        isValid = false;
+                    }
+                });
+
+                // 3. カテゴリ/内容チェック (最低1件は必須)
+                if (categoryItems.length === 0) {
+                     // このケースはaddCategoryで初期カテゴリを追加しているため発生しないはずだが、念のため
+                    errorFields.push("ご相談カテゴリ（最低1件）");
+                    isValid = false;
+                } else {
+                    categoryItems.forEach((item, index) => {
+                        const categoryInput = item.querySelector('input[name="category"]');
+                        const contentTextarea = item.querySelector('textarea[name="content"]');
+                        
+                        if (!categoryInput.value.trim()) {
+                            categoryInput.classList.add('border-2', 'border-error-red');
+                            errorFields.push(`${index + 1}件目 ご相談カテゴリ`);
+                            isValid = false;
+                        }
+                        if (!contentTextarea.value.trim()) {
+                            contentTextarea.classList.add('border-2', 'border-error-red');
+                            errorFields.push(`${index + 1}件目 ご相談内容`);
+                            isValid = false;
+                        }
+                    });
+                }
+
+
+                if (!isValid) {
+                    showAlert("必須項目を全てご入力ください。");
+                    return false;
+                }
+                return true;
+            };
+
+            // --- コピー内容生成関数 ---
+            const generateCopyText = () => {
+                const clientName = document.getElementById('clientName').value.trim();
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                const notes = document.getElementById('notes').value.trim();
+                const categoryItems = categoriesContainer.querySelectorAll('.category-item');
+                const totalAmountText = totalAmountDisplay.textContent;
+
+                let categoryDetails = '';
+                categoryItems.forEach((item, index) => {
+                    const categoryInput = item.querySelector('input[name="category"]').value.trim();
+                    const contentTextarea = item.querySelector('textarea[name="content"]').value.trim();
+                    categoryDetails += `
+${index + 1}件目
+【ご相談カテゴリ】${categoryInput}
+【ご相談内容】
+${contentTextarea}
+`;
+                });
+
+                let text = `
+リーディング希望
+
+【お名前】${clientName}
+
+${categoryDetails.trim()}
+
+【お支払い方法】${paymentMethod}
+${notes ? `\n【ご希望・ご質問】\n${notes}\n` : ''}
+
+--------------------------------
+
+【リーディングお見積り】
+1件：18,000 円
+カテゴリ追加料：1,000円/1件
+--------------------------------
+合計金額：${totalAmountText}
+--------------------------------
+
+【ご提出いただくもの】
+目元の写真
+手書きのお名前
+手書きの相談のタイトル
+`;
+                return text.trim();
+            };
+
+            // --- クリップボードにコピーする関数 ---
+            const copyToClipboard = (text) => {
+                // document.execCommand('copy')を使用 (iframe制限対応)
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showAlert("内容をクリップボードにコピーしました！");
+                    } else {
+                        showAlert("コピーに失敗しました。手動でコピーしてください。");
+                    }
+                } catch (err) {
+                    showAlert("コピーに失敗しました。手動でコピーしてください。");
+                }
+                document.body.removeChild(textarea);
+            };
+
+            // --- イベントリスナー設定 ---
+            
+            // 初期カテゴリの追加
+            addCategory(true);
+            updateQuotation(); 
+
+            // カテゴリ追加ボタン
+            addCategoryBtn.addEventListener('click', () => {
+                addCategory();
+                updateQuotation();
+            });
+
+            // 見積もり更新 (入力内容の変更時)
+            form.addEventListener('input', updateQuotation);
+
+            // クリアボタン
+            clearBtn.addEventListener('click', () => {
+                form.reset();
+                categoriesContainer.innerHTML = ''; // カテゴリを一度リセット
+                categoryCount = 0; // カウントもリセット
+                addCategory(true); // 1件目カテゴリを再追加
+                updateQuotation();
+                showAlert("フォーム内容をクリアしました。");
+                // エラー表示をクリア
+                form.querySelectorAll('.border-error-red').forEach(el => el.classList.remove('border-2', 'border-error-red'));
+            });
+
+            // コピーボタン
+            copyBtn.addEventListener('click', () => {
+                if (validateForm()) {
+                    const text = generateCopyText();
+                    copyToClipboard(text);
+                }
+            });
+
+            // LINEボタン
+            lineBtn.addEventListener('click', () => {
+                if (validateForm()) {
+                    const text = generateCopyText();
+                    copyToClipboard(text);
+                    // LINEアプリ起動（指定URLに遷移）
+                    // 適切なURLエンコードはLINE側で処理される前提で、ここでは遷移のみ
+                    window.location.href = "https://line.me/ti/p/Kv76GQK_UI";
+                }
+            });
+
+            // 同意事項のチェックボックスのカスタムスタイル適用
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.style.cursor = 'pointer';
+            });
+        });
     </script>
 </body>
 </html>
