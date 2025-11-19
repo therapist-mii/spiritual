@@ -178,13 +178,15 @@
                 <!-- 支払い・割引セクション -->
                 <h3 class="text-xl font-bold mt-8 mb-4 text-mii-emphasis border-t pt-6">お支払いについて</h3>
 
-                <!-- クーポン -->
-                <div class="form-group">
-                    <label for="coupon" class="block font-semibold mb-2">クーポン:</label>
+                <!-- 必須項目: クーポン -->
+                <div class="form-group" data-required="coupon">
+                    <label for="coupon" class="block font-semibold mb-2 flex items-center">
+                        クーポン<span class="required-star">*</span>
+                    </label>
                     <p class="text-xs text-gray-500 mb-2">クーポンをお持ちの方は選択してください。</p>
-                    <select id="coupon" name="coupon" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mii-emphasis transition duration-300">
-                        <option value="none" selected>選択してください</option>
-                        <option value="none">クーポン無し</option>
+                    <select id="coupon" name="coupon" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mii-emphasis transition duration-300" required>
+                        <option value="" disabled selected>選択してください</option>
+                        <option value="0">クーポン無し</option>
                         <option value="5">5％OFFクーポン</option>
                         <option value="10">10％OFFクーポン</option>
                         <option value="15">15％OFFクーポン</option>
@@ -403,8 +405,10 @@
                 let couponDiscountText = '';
                 
                 // クーポン割引の計算
-                const couponValue = parseInt(couponSelect.value);
+                // value="" は弾かれるため、クーポン無し (value="0") または値がある場合のみ処理
+                const couponValue = parseInt(couponSelect.value); 
                 const isCouponApplied = !isNaN(couponValue) && couponValue > 0;
+                
                 if (isCouponApplied) {
                     // 基本料金18,000円と追加カテゴリ料金(1,000円)の両方に割引が適用されると解釈
                     const subtotalBeforeReferral = BASE_PRICE + additionalCategoryFee;
@@ -470,6 +474,10 @@
                     copyText += `【ご相談内容】\n${details}\n\n`;
                 });
                 
+                // クーポン情報 (クーポン無し value="0" もコピー対象とする)
+                const couponText = couponSelect.options[couponSelect.selectedIndex].text;
+                copyText += `【クーポン】\n${couponText}\n\n`;
+                
                 // 支払い方法・備考
                 copyText += `【お支払い方法】\n${paymentMethod}\n\n`;
                 if (remarks) {
@@ -518,7 +526,8 @@
                         }
                     } else if (tagName === 'select') {
                         // セレクトボックス
-                        if (!field.value || field.value === '選択してください' || field.value === '') {
+                        // value="" のオプションが選択されている場合をチェック
+                        if (!field.value || field.value === '') {
                              isFieldValid = false;
                         }
                     }
