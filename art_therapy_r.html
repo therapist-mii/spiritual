@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BGR45N6NR8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-BGR45N6NR8');
+</script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アートセラピー お見積り＆ご予約フォーム | Therapist Mii</title>
+    <meta name="description" content="Therapist Miiのアートセラピーお見積り＆ご予約フォームです。">
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        header: '#EAE6E1',
+                        text: '#000000',
+                        accent: '#776163',
+                        error: '#ff0000',
+                        btn: {
+                            DEFAULT: '#E4C1B5',
+                            hover: '#ad9196',
+                        },
+                        clear: {
+                            DEFAULT: '#7a736a',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif JP"', 'serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1.5s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 1.0s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.8;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E4C1B5; 
+            border-radius: 4px;
+        }
+
+        .input-field {
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #E4C1B5;
+            box-shadow: 0 0 0 2px rgba(228, 193, 181, 0.2);
+        }
+        /* エラースタイル */
+        .input-error {
+            border-color: #ff0000 !important;
+            background-color: #fffafa !important;
+        }
+
+        /* Checkbox Customization */
+        input[type="checkbox"] {
+            accent-color: #776163;
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.2em;
+            flex-shrink: 0; /* 縮小を防ぐ */
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-header py-6 text-center fixed w-full top-0 z-50 shadow-sm opacity-0 animate-fade-in">
+        <h1 class="text-2xl md:text-3xl tracking-widest text-accent font-medium">Therapist Mii</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 pt-28 pb-12 max-w-2xl">
+        
+        <!-- Page Title -->
+        <div class="text-center mb-10 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
+            <h2 class="text-xl md:text-2xl font-medium mb-2">アートセラピー</h2>
+            <p class="text-accent text-sm tracking-wider">お見積り＆ご予約フォーム</p>
+        </div>
+
+        <form id="reservationForm" class="space-y-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+            
+            <!-- Consent Section -->
+            <section class="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                <h3 class="text-lg text-accent mb-4 border-b border-gray-200 pb-2">同意事項 <span class="text-error text-sm align-top">*</span></h3>
+                <div class="space-y-3 text-sm">
+                    <!-- Added border-transparent and padding for better error visualization -->
+                    <label class="flex items-start gap-3 cursor-pointer hover:opacity-70 transition-all border border-transparent rounded p-2">
+                        <input type="checkbox" name="policy_consent" required onchange="validateField(this)">
+                        <span>
+                            <a href="https://spiritual-therapist-mii.studio.site/policy" target="_blank" class="underline decoration-accent/50 underline-offset-4 hover:text-accent relative z-10">セッションポリシー、注意事項</a>に同意します。
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer hover:opacity-70 transition-all border border-transparent rounded p-2">
+                        <input type="checkbox" name="not_accepted_consent" required onchange="validateField(this)">
+                        <span>
+                            <a href="https://spiritual-therapist-mii.studio.site/policy#not-accepted-requests" target="_blank" class="underline decoration-accent/50 underline-offset-4 hover:text-accent relative z-10">お受けできないご相談</a>を確認しました。
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer hover:opacity-70 transition-all border border-transparent rounded p-2">
+                        <input type="checkbox" name="privacy_consent" required onchange="validateField(this)">
+                        <span>
+                            <a href="https://spiritual-therapist-mii.studio.site/privacypolicy" target="_blank" class="underline decoration-accent/50 underline-offset-4 hover:text-accent relative z-10">プライバシーポリシー</a>に同意します。
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Basic Info -->
+            <section class="space-y-6">
+                <div>
+                    <label for="userName" class="block text-base mb-2">お名前 <span class="text-error text-sm align-top">*</span></label>
+                    <input type="text" id="userName" placeholder="お名前" required 
+                        class="input-field w-full p-3 border border-gray-300 rounded-md bg-white text-text placeholder-gray-400"
+                        oninput="updateQuote(); validateField(this)">
+                </div>
+
+                <!-- Deep Dive Content -->
+                <div>
+                    <div class="mb-2 flex justify-between items-baseline">
+                        <label for="deepDiveContent" class="block text-base">深掘りしたい内容 <span class="text-error text-sm align-top">*</span></label>
+                        <span class="text-xs text-gray-500">※お受けできないご相談をご確認ください</span>
+                    </div>
+                    <input type="text" id="deepDiveContent" placeholder="例：私の強みはなんでしょうか？" required
+                        class="input-field w-full p-3 border border-gray-300 rounded-md bg-white placeholder-gray-400"
+                        oninput="updateQuote(); validateField(this)">
+                </div>
+            </section>
+
+            <!-- Payment & Discounts -->
+            <section class="bg-gray-50 p-6 rounded-lg border border-gray-100 space-y-6">
+                <h3 class="text-lg text-accent border-b border-gray-200 pb-2">お支払いについて</h3>
+
+                <!-- Coupon -->
+                <div>
+                    <label for="coupon" class="block text-base mb-2">クーポン <span class="text-error text-sm align-top">*</span></label>
+                    <p class="text-xs text-gray-500 mb-2">クーポンの有無を選択してください。</p>
+                    <div class="relative">
+                        <select id="coupon" required class="input-field w-full p-3 border border-gray-300 rounded-md bg-white appearance-none cursor-pointer"
+                            onchange="updateQuote(); validateField(this)">
+                            <option value="" disabled selected>選択してください</option>
+                            <option value="0">クーポン無し</option>
+                            <option value="0.05">5％OFFクーポン</option>
+                            <option value="0.10">10％OFFクーポン</option>
+                            <option value="0.15">15％OFFクーポン</option>
+                            <option value="0.20">20％OFFクーポン</option>
+                            <option value="0.25">25％OFFクーポン</option>
+                            <option value="0.30">30％OFFクーポン</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Referral Discount -->
+                <div>
+                    <label class="block text-base mb-2">紹介割引</label>
+                    <p class="text-xs text-gray-500 mb-2">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可 <br>紹介割引：−500円</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="referrerInput" placeholder="紹介者のお名前" 
+                            class="input-field flex-grow p-3 border border-gray-300 rounded-md bg-white">
+                        <button type="button" onclick="applyReferral()"
+                            class="bg-btn text-white px-6 py-3 rounded-md hover:bg-btn-hover transition-colors duration-300 whitespace-nowrap">
+                            追加する
+                        </button>
+                    </div>
+                    <p id="referral-status" class="text-accent text-sm mt-2 hidden">紹介割引を適用しました。</p>
+                </div>
+
+                <!-- Payment Method -->
+                <div>
+                    <label for="paymentMethod" class="block text-base mb-2">お支払い方法 <span class="text-error text-sm align-top">*</span></label>
+                    <div class="relative">
+                        <select id="paymentMethod" required class="input-field w-full p-3 border border-gray-300 rounded-md bg-white appearance-none cursor-pointer"
+                            onchange="updateQuote(); validateField(this)">
+                            <option value="" disabled selected>選択してください</option>
+                            <option value="銀行振込">銀行振込</option>
+                            <option value="Paypay">Paypay</option>
+                            <option value="Paypal">Paypal</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remarks -->
+                <div>
+                    <label for="remarks" class="block text-base mb-2">備考</label>
+                    <p class="text-xs text-gray-500 mb-2">ご希望・ご質問があればご記入ください</p>
+                    <textarea id="remarks" rows="3"
+                        class="input-field w-full p-3 border border-gray-300 rounded-md bg-white resize-y"
+                        oninput="updateQuote()"></textarea>
+                </div>
+            </section>
+
+            <!-- Real-time Quotation Display -->
+            <section class="bg-white border-2 border-header p-6 rounded-lg shadow-sm mt-8">
+                <h3 class="text-center text-xl text-accent font-medium mb-6 tracking-widest">お見積り</h3>
+                
+                <div id="quotation-text" class="font-serif text-sm leading-relaxed whitespace-pre-wrap text-gray-800">
+<!-- Content will be generated by JS -->
+                </div>
+                
+                <!-- Static List of Required Items -->
+                <div class="mt-8 pt-6 border-t border-dashed border-gray-300 text-sm text-gray-600">
+                    <p class="font-medium text-accent mb-2">【ご提出いただくもの】</p>
+                    <ul class="list-disc list-inside space-y-1 pl-2">
+                        <li>目元の写真</li>
+                        <li>手書きのお名前</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-1 gap-4 pt-4">
+                
+                <!-- Buttons container -->
+                <div class="flex flex-col gap-4">
+                    <!-- Clear Button -->
+                     <button type="button" onclick="clearForm()" 
+                        class="w-full py-3 rounded-md border border-clear text-clear hover:bg-btn hover:text-white hover:border-btn transition-all duration-300 text-sm">
+                        入力をクリア
+                    </button>
+
+                    <!-- Instructions -->
+                    <div class="bg-gray-50 p-4 rounded text-sm text-gray-600 space-y-2">
+                        <p class="font-medium text-accent text-center">【LINEで予約する際の手順】</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>ご確認いただけましたら、<strong class="text-accent">コピー</strong>ボタンを押してください。</li>
+                            <li>「<strong class="text-accent">LINEに貼り付けて予約する</strong>」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
+                        </ol>
+                    </div>
+
+                    <!-- Copy Button -->
+                    <button type="button" onclick="handleAction('copy')" 
+                        class="w-full py-4 bg-white border-2 border-btn text-text rounded-md hover:bg-btn hover:text-white transition-all duration-300 font-medium shadow-sm">
+                        コピー
+                    </button>
+
+                    <!-- Line Button -->
+                    <button type="button" onclick="handleAction('line')" 
+                        class="w-full py-4 bg-btn text-white rounded-md hover:bg-btn-hover transition-all duration-300 font-medium shadow-md transform active:scale-95">
+                        LINEに貼り付けて予約する
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-header mt-auto">
+        <!-- First Time User CTA -->
+        <div class="bg-white py-12 px-4 text-center">
+            <div class="max-w-2xl mx-auto opacity-90">
+                <h3 class="text-xl text-accent mb-4 font-medium">はじめての方へ</h3>
+                <p class="text-sm mb-6 leading-relaxed">
+                    はじめての方は、以下のフォームにご記入お願いいたします。<br>
+                    リピーター様も未入力の方はご記入お願いいたします。
+                </p>
+                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank"
+                   class="inline-block px-8 py-3 bg-btn text-white rounded-full hover:bg-btn-hover transition-colors duration-300 shadow-sm">
+                    はじめての方のフォーム
+                </a>
+            </div>
+        </div>
+
+        <!-- Site Links -->
+        <div class="py-8 px-4 text-center text-xs text-gray-600 space-y-4">
+            <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 max-w-4xl mx-auto">
+                <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-accent transition-colors">HOME</a>
+                <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-accent transition-colors">メニュー一覧</a>
+                <a href="https://spiritual-therapist-mii.studio.site/reading" class="hover:text-accent transition-colors">リーディング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="hover:text-accent transition-colors">未来ナビ</a>
+                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="hover:text-accent transition-colors">アートセラピー</a>
+                <a href="https://spiritual-therapist-mii.studio.site/color-card" class="hover:text-accent transition-colors">カラーカード</a>
+                <a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-accent transition-colors">ヒーリング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="hover:text-accent transition-colors">対面リーディング</a>
+            </nav>
+            
+            <p class="mt-6 text-gray-500">&copy; 2025 by Therapist Mii. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Custom Popup for Validation Messages -->
+    <div id="custom-alert" class="fixed inset-0 flex items-center justify-center z-[100] hidden bg-black/20 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-[90%] mx-4 transform transition-transform duration-300 scale-95">
+            <h4 class="text-accent text-lg font-medium mb-2">確認</h4>
+            <p class="text-gray-700 text-sm mb-6" id="alert-message">必須項目を入力してください。</p>
+            <button onclick="closeAlert()" class="w-full py-2 bg-btn text-white rounded hover:bg-btn-hover transition-colors">
+                閉じる
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Variables
+        const basePrice = 18000;
+        const referralDiscountAmount = 500;
+        let appliedReferrerName = "";
+        
+        // DOM Elements
+        const quotationText = document.getElementById('quotation-text');
+        const customAlert = document.getElementById('custom-alert');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateQuote();
+        });
+
+        // --- Logic: Referral Discount ---
+        function applyReferral() {
+            const input = document.getElementById('referrerInput');
+            const status = document.getElementById('referral-status');
+            
+            if(input.value.trim() !== "") {
+                appliedReferrerName = input.value.trim();
+                status.classList.remove('hidden');
+                input.disabled = true; // Lock input after applying
+                updateQuote();
+            } else {
+                showAlert("紹介者のお名前を入力してください。");
+            }
+        }
+
+        // --- Logic: Calculate & Render Quote ---
+        function updateQuote() {
+            // Gather Data
+            const userName = document.getElementById('userName').value || "（未入力）";
+            const deepDiveContent = document.getElementById('deepDiveContent').value || "（未入力）";
+            
+            const couponSelect = document.getElementById('coupon');
+            const couponValue = parseFloat(couponSelect.value) || 0;
+            const paymentMethod = document.getElementById('paymentMethod').value || "（未選択）";
+            const remarks = document.getElementById('remarks').value;
+
+            // Calculate Prices
+            const subtotal = basePrice;
+            const couponDiscount = Math.floor(subtotal * couponValue);
+            const referralDiscount = appliedReferrerName ? referralDiscountAmount : 0;
+            
+            const total = Math.max(0, subtotal - couponDiscount - referralDiscount);
+
+            // Format Currency
+            const fmt = (num) => num.toLocaleString();
+
+            // Generate Text
+            const text = `■ ${userName} 様
+
+【アートセラピーお見積り】
+1件：${fmt(subtotal)} 円
+・クーポン割引：−${fmt(couponDiscount)}円
+・紹介割引：−${fmt(referralDiscount)}円
+--------------------------------
+合計金額：${fmt(total)}円
+--------------------------------
+
+
+【入力内容】
+■ お支払い方法：${paymentMethod}
+■ ご紹介者：${appliedReferrerName || "なし"}
+■ 備考
+${remarks || "なし"}
+
+
+【深堀りしたい内容】
+${deepDiveContent}
+
+【ご提出いただくもの】
+目元の写真
+手書きのお名前`;
+
+            quotationText.textContent = text;
+            return text; // Return for copy function
+        }
+
+        // --- Logic: Validation ---
+        function validateField(field) {
+            // チェックボックスの場合、親のlabel要素にスタイルを適用する
+            const isCheckbox = field.type === 'checkbox';
+            const target = isCheckbox ? field.closest('label') : field;
+
+            if (field.checkValidity()) {
+                target.classList.remove('input-error');
+            } else {
+                // Only add error class if it was touched/interacted or explicitly checked
+                target.classList.add('input-error');
+            }
+        }
+
+        function checkAllValidations() {
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalid = null;
+
+            requiredFields.forEach(field => {
+                // 表示更新のために一度validateFieldを呼ぶ
+                validateField(field);
+
+                if (!field.checkValidity()) {
+                    isValid = false;
+                    if (!firstInvalid) firstInvalid = field;
+                }
+            });
+
+            if (!isValid) {
+                // エラーがある場合、最初の項目へスクロール
+                if (firstInvalid) {
+                    // チェックボックスの場合は親要素をターゲットに
+                    const scrollTarget = firstInvalid.type === 'checkbox' ? firstInvalid.closest('label') : firstInvalid;
+                    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                showAlert("必須項目をすべて入力してください。");
+                return false;
+            }
+            return true;
+        }
+
+        // --- Logic: Actions ---
+        function handleAction(type) {
+            if (!checkAllValidations()) return;
+
+            const text = updateQuote();
+
+            // Copy to clipboard
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                if (type === 'copy') {
+                    showAlert("お見積り内容をコピーしました！");
+                }
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+                // Try navigator API as backup
+                navigator.clipboard.writeText(text).then(() => {
+                    if (type === 'copy') showAlert("お見積り内容をコピーしました！");
+                }).catch(e => showAlert("コピーに失敗しました。"));
+            }
+            document.body.removeChild(textarea);
+
+            // LINE Logic
+            if (type === 'line') {
+                setTimeout(() => {
+                    window.location.href = "https://line.me/ti/p/Kv76GQK_UI";
+                }, 500);
+            }
+        }
+
+        function clearForm() {
+            if(confirm("入力内容をすべて消去してもよろしいですか？")) {
+                document.getElementById('reservationForm').reset();
+                
+                // Reset custom states
+                appliedReferrerName = "";
+                const refInput = document.getElementById('referrerInput');
+                refInput.disabled = false;
+                refInput.value = "";
+                document.getElementById('referral-status').classList.add('hidden');
+                
+                // Remove error classes
+                document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+                
+                updateQuote();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // --- Logic: Custom Alert ---
+        function showAlert(message) {
+            const alertBox = document.getElementById('custom-alert');
+            const alertContent = alertBox.querySelector('div');
+            document.getElementById('alert-message').textContent = message;
+            
+            alertBox.classList.remove('hidden');
+            // Trigger animation
+            setTimeout(() => {
+                alertBox.classList.remove('opacity-0');
+                alertContent.classList.remove('scale-95');
+                alertContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeAlert() {
+            const alertBox = document.getElementById('custom-alert');
+            const alertContent = alertBox.querySelector('div');
+            
+            alertBox.classList.add('opacity-0');
+            alertContent.classList.remove('scale-100');
+            alertContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 300);
+        }
+        
+        // Close alert on outside click
+        document.getElementById('custom-alert').addEventListener('click', function(e) {
+            if (e.target === this) closeAlert();
+        });
+
+    </script>
+</body>
+</html>
