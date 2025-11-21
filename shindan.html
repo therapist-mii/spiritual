@@ -113,7 +113,7 @@
                 <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-black transition duration-150">HOME</a>
                 <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-black transition duration-150">メニュー一覧</a>
                 <a href="https://spiritual-therapist-mii.studio.site/reading" class="hover:text-black transition duration-150">リーディング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="hover:text-black transition duration-150">未来ナビ</a>
+                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="hover:text-black transition duration-150">未来予報</a>
                 <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="hover:text-black transition duration-150">アートセラピー</a>
                 <a href="https://spiritual-therapist-mii.studio.site/color-card" class="hover:text-black transition duration-150">カラーカード</a>
                 <a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-black transition duration-150">ヒーリング</a>
@@ -201,22 +201,22 @@
             // ルートと結果
             routes: {
                 Q1: { A: 'Q2', B: 'Q5', C: 'Q4' },
-                Q2: { A: 'Q3', B: '未来ナビ', C: '対面リーディング' },
+                Q2: { A: 'Q3', B: '未来予報', C: '対面リーディング' },
                 Q3: { A: 'Q6', B: 'カラーカード', C: 'Q6' }, // Q3のCはQ6へ
                 Q4: { A: 'Q6', B: 'アートセラピー' },
                 Q5: { A: 'ヒーリング', B: 'アートセラピー', C: 'カラーカード' },
-                Q6: { A: '未来ナビ', B: 'アートセラピー', C: 'リーディング' },
+                Q6: { A: '未来予報', B: 'アートセラピー', C: 'リーディング' },
                 Q7: { A: 'Q3', B: '対面リーディング' },
             },
 
             // メニュー詳細と予約リンク
             menuDetails: {
                 'リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/reading', reserve: 'https://therapist-mii.github.io/spiritual/reading-r.html' },
-                '未来ナビ': { detail: 'https://spiritual-therapist-mii.studio.site/mirai-navi', reserve: 'https://spiritual-therapist-mii.studio.site/mirai-navi-r' },
-                'アートセラピー': { detail: 'https://spiritual-therapist-mii.studio.site/art-therapy', reserve: 'https://spiritual-therapist-mii.studio.site/art-therapy-r' },
-                'カラーカード': { detail: 'https://spiritual-therapist-mii.studio.site/color-card', reserve: 'https://spiritual-therapist-mii.studio.site/color-card-r' },
-                'ヒーリング': { detail: 'https://spiritual-therapist-mii.studio.site/healing', reserve: 'https://spiritual-therapist-mii.studio.site/healing#h-yoyaku' },
-                '対面リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/f2f_reading', reserve: 'https://spiritual-therapist-mii.studio.site/f2f-reading-r' }
+                '未来予報': { detail: 'https://spiritual-therapist-mii.studio.site/mirai-navi', reserve: 'https://therapist-mii.github.io/spiritual/mirainavi-r.html' },
+                'アートセラピー': { detail: 'https://spiritual-therapist-mii.studio.site/art-therapy', reserve: 'https://therapist-mii.github.io/spiritual/art_therapy_r.html' },
+                'カラーカード': { detail: 'https://spiritual-therapist-mii.studio.site/color-card', reserve: 'https://therapist-mii.github.io/spiritual/color_card-r.html' },
+                'ヒーリング': { detail: 'https://spiritual-therapist-mii.studio.site/healing', reserve: 'https://therapist-mii.github.io/spiritual/healing-r.html' },
+                '対面リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/f2f_reading', reserve: 'https://therapist-mii.github.io/spiritual/f2f_reading-r.html' }
             },
 
             // 結果テキスト (理由とメッセージ)
@@ -240,7 +240,7 @@
                         'あなたは、誰かと比べる必要のない、唯一無二の存在です。その個性を誇りに思ってください。'
                     ]
                 },
-                '未来ナビ': {
+                '未来予報': {
                     reasons: [
                         '「どうすればいい？」という不安を、具体的な行動計画に変え、自信を持って前に進める道筋を作ります。',
                         '客観的な視点からのアドバイスを求める心に、現実的な未来の予測で、安心感を提供いたします。',
@@ -436,7 +436,7 @@
                         </a>
                     </div>
                     
-                    <!-- ナビゲーションボタン -->
+                    <!-- 予報ゲーションボタン -->
                     <div class="flex justify-center space-x-4">
                         <button 
                             class="diag-button w-full sm:w-1/2 max-w-xs bg-nav-button text-white hover:bg-gray-700"
@@ -555,5 +555,6 @@
     </script>
 </body>
 </html>
+
 
 
