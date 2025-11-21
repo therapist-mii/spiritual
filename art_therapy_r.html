@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <!-- 1. head 内設定 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <!-- 1-2. タイトル・favicon -->
     <title>アートセラピーお見積り＆ご予約 | Therapist Mii</title>
     <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
     
-    <!-- 1-3. フォント・CSS・Tailwind -->
+    <!-- Google Fonts: Noto Serif JP -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
+    <!-- 1-3. Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- 1-4. Google Analytics -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BGR45N6NR8"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-BGR45N6NR8');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BGR45N6NR8');
     </script>
 
-    <!-- 2. カラー・フォント・アニメーション -->
+    <!-- 2. カラー・フォント・アニメーション スタイル -->
     <style>
         /* 2-1. CSS 変数 */
         :root {
@@ -40,6 +41,7 @@
             --color-clear-default: #7a736a;
             --color-clear-hover: #E4C1B5;
         }
+
         /* 2-2. body スタイル */
         body {
             font-family: 'Noto Serif JP', serif;
@@ -48,24 +50,29 @@
             line-height: 1.8;
             overflow-x: hidden;
         }
+
         /* 2-3. フェードインアニメーション */
         .fade-in {
             animation: fadeInUp 1.2s ease-out forwards;
             opacity: 0;
             transform: translateY(20px);
         }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+        
         /* 2-4. 共通クラス */
         .accent-text { color: var(--color-accent); }
+
         .required-mark {
             color: var(--color-error);
             margin-left: 4px;
         }
+
         /* ボタン */
         .btn-primary {
             background-color: var(--color-btn-default);
@@ -76,6 +83,7 @@
             background-color: var(--color-btn-hover);
             color: #fff;
         }
+
         .btn-clear {
             background-color: var(--color-clear-default);
             color: #fff;
@@ -84,8 +92,10 @@
         .btn-clear:hover {
             background-color: var(--color-clear-hover);
         }
+
         /* フォーム部品 */
-        input[type="text"],textarea,
+        input[type="text"],
+        textarea,
         select {
             border: 1px solid #ccc;
             padding: 10px;
@@ -94,10 +104,12 @@
             transition: border-color 0.3s;
             border-radius: 4px;
         }
-        input[type="text"]:focus,textarea:focus,
+        input[type="text"]:focus,
+        textarea:focus,
         select:focus {
             border-color: var(--color-accent);
         }
+
         /* エラー用 */
         .input-error {
             border-color: var(--color-error) !important;
@@ -109,11 +121,13 @@
             padding: 10px;
             border-radius: 4px;
         }
+
         /* チェックボックス（今回ほぼ未使用だが共通として残す） */
         input[type="checkbox"] {
             accent-color: var(--color-accent);
             transform: scale(1.1);
         }
+
         /* モーダル */
         .modal-overlay {
             position: fixed;
@@ -122,19 +136,32 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* デフォルト非表示 */
+            display: none; /* 初期状態では非表示 */
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .modal-content {
             background-color: var(--color-bg);
-            padding: 30px;
+            padding: 2rem;
             border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
+            max-width: 90%;
+            width: 400px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: modalPop 0.3s ease-out;
         }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         /* 見積りボックス */
         .estimate-box {
             border: 1px solid var(--color-header);
@@ -143,6 +170,7 @@
             border-radius: 8px;
             margin-top: 2rem;
         }
+
         /* リンク */
         a {
             color: var(--color-accent);
@@ -150,25 +178,12 @@
             text-underline-offset: 4px;
         }
         a:hover { opacity: 0.7; }
-
-        /* トースト */
-        #copyToast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--color-accent);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 9999px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-        }
     </style>
 </head>
+
 <!-- 3. レイアウト -->
 <body class="flex flex-col min-h-screen">
+    
     <!-- 4. ヘッダー -->
     <header class="py-6 text-center fade-in" style="background-color: var(--color-header);">
         <div class="text-2xl tracking-widest font-medium text-gray-800">
@@ -177,6 +192,7 @@
     </header>
 
     <main class="flex-grow container mx-auto px-4 py-10 max-w-2xl fade-in">
+        
         <!-- 5. メインタイトル・説明 -->
         <div class="text-center mb-10">
             <h2 class="text-xl md:text-2xl font-medium accent-text mb-4">
@@ -189,6 +205,7 @@
 
         <!-- 6. フォーム構造（全体） -->
         <form id="bookingForm" onsubmit="return false;">
+            
             <!-- 7-1. 同意事項（必須・ボタンのみ） -->
             <div class="mb-8 p-4 bg-gray-50 rounded-lg" id="agreement-section">
                 <div class="text-sm leading-relaxed">
@@ -219,6 +236,7 @@
                     id="userName"
                     placeholder="お名前"
                     class="w-full"
+                    oninput="calculateTotal()"
                 >
             </div>
 
@@ -235,13 +253,15 @@
                     rows="4"
                     placeholder="例：私の強みはなんでしょうか？"
                     class="w-full"
+                    oninput="calculateTotal()"
                 ></textarea>
             </div>
 
-            <!-- 7-4-1. お支払いについて セクション見出し -->
+            <!-- 7-4. お支払いについて（クーポン・紹介割引・支払い方法） -->
             <hr class="border-gray-200 my-8">
             <h3 class="text-lg accent-text mb-6 border-b border-gray-200 pb-2">
-                お支払いについて</h3>
+                お支払いについて
+            </h3>
 
             <!-- 7-4-2. 割引クーポン * -->
             <div class="mb-6">
@@ -251,7 +271,7 @@
                 <p class="text-xs text-gray-500 mb-2">
                     クーポンの有無を選択してください。
                 </p>
-                <select id="coupon" class="w-full">
+                <select id="coupon" class="w-full" onchange="calculateTotal()">
                     <option value="">選択してください</option>
                     <option value="0">クーポン無し</option>
                     <option value="5">5％OFFクーポン</option>
@@ -275,11 +295,12 @@
                         id="referralName"
                         placeholder="紹介者のお名前"
                         class="flex-grow"
+                        oninput="updateDisplayTexts()"
                     >
                     <button
                         type="button"
                         id="addReferralButton"
-                        class="btn-primary w-full sm:w-auto px-4 py-2 rounded text-sm font-medium"
+                        class="btn-primary w-full sm:w-auto py-2 px-4 rounded text-sm"
                     >
                         追加する
                     </button>
@@ -294,7 +315,7 @@
                 <label class="block mb-2 font-medium">
                     お支払い方法<span class="required-mark">*</span>
                 </label>
-                <select id="paymentMethod" class="w-full">
+                <select id="paymentMethod" class="w-full" onchange="calculateTotal()">
                     <option value="">選択してください</option>
                     <option value="銀行振込">銀行振込</option>
                     <option value="Paypay">Paypay</option>
@@ -308,148 +329,149 @@
                 <p class="text-xs text-gray-500 mb-2">
                     ご希望・ご質問があればご記入ください
                 </p>
-                <textarea id="remarks" rows="4" class="w-full"></textarea>
+                <textarea id="remarks" rows="4" class="w-full" oninput="updateDisplayTexts()"></textarea>
             </div>
 
-            <!-- 8. お見積り表示ブロック -->
-            <div class="estimate-box fade-in" style="animation-delay: 0.4s;">
-                <!-- 8-1. ヘッダー（お名前） -->
-                <div class="mb-4 font-medium text-lg border-b border-dashed border-gray-300 pb-2">
-                    ■ <span id="displayUserName">お名前</span> 様
-                </div>
-
-                <!-- 8-2. お見積り本体 -->
-                <div class="space-y-2 text-sm mb-4">
-                    <div>【アートセラピーお見積り】</div>
-                    <div class="flex justify-between pl-4">
-                        <span>1件</span>
-                        <span><span id="displayUnitPrice">0</span>円</span>
-                    </div>
-                    <div class="flex justify-between pl-4 text-gray-600">
-                        <span>・クーポン割引</span>
-                        <span>−<span id="displayCouponDiscount">0</span>円</span>
-                    </div>
-                    <div class="flex justify-between pl-4 text-gray-600">
-                        <span>・紹介割引</span>
-                        <span>−<span id="displayReferralDiscount">0</span>円</span>
-                    </div>
-                </div>
-
-                <div class="border-t border-b border-gray-400 py-3 mb-4">
-                    <div class="flex justify-between items-center font-bold text-lg accent-text">
-                        <span>合計金額</span>
-                        <span><span id="displayTotal">0</span>円</span>
-                    </div>
-                </div>
-
-                <!-- 8-3. 入力内容表示 -->
-                <div class="text-xs text-gray-600 space-y-1 mb-6 bg-white p-3 rounded border border-gray-200">
-                    <div>【入力内容】</div>
-                    <div>■ お支払い方法： <span id="displayPayment">未選択</span></div>
-                    <div>■ ご紹介者： <span id="displayReferralName">なし</span></div>
-                    <div>■ 備考： <span id="displayRemarks">なし</span></div>
-                </div>
-
-                <!-- 8-4. 深掘りしたい内容表示 -->
-                <div class="bg-white p-3 rounded border border-gray-200 text-xs mb-3">
-                    <p class="font-medium mb-1">【深堀りしたい内容】</p>
-                    <p id="displayDeepContent" class="whitespace-pre-wrap text-left text-gray-700"></p>
-                </div>
-
-                <!-- 8-5. ご提出いただくもの -->
-                <div class="bg-white p-3 rounded border border-gray-200 text-xs text-center">
-                    <p class="font-medium mb-1">【ご提出いただくもの】</p>
-                    <p>目元の写真</p>
-                    <p>手書きのお名前</p>
-                </div>
-
-                <!-- 12. ボタン群と挙動 -->
-                <div class="mt-8 space-y-3">
-                    <!-- 12-1. 説明テキスト -->
-                    <div class="text-center mb-2 text-sm text-gray-600 space-y-1">
-                        <p>① ご確認いただけましたら、コピーボタンを押してください。</p>
-                        <p>② 「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</p>
-                    </div>
-
-                    <!-- 12-2. コピーボタン -->
-                    <button type="button" id="copyButton"
-                        class="btn-primary w-full py-4 rounded-full font-bold text-lg shadow-sm">
-                        コピー
-                    </button>
-
-                    <!-- 12-3. LINE ボタン -->
-                    <button type="button" id="lineButton"
-                        class="bg-[#06C755] text-white hover:bg-[#05b54b] transition w-full py-4 rounded-full font-bold text-lg shadow-sm">
-                        LINEに貼り付けて予約する
-                    </button>
-
-                    <!-- 12-4. クリアボタン -->
-                    <button type="button" id="clearButton"
-                        class="btn-clear w-full py-3 rounded-full text-sm mt-2">
-                        クリア
-                    </button>
-                </div>
-            </div>
         </form>
+
+        <!-- 8. お見積り表示ブロック -->
+        <div class="estimate-box fade-in" style="animation-delay: 0.4s;">
+            <!-- 8-1. ヘッダー（お名前） -->
+            <div class="mb-4 font-medium text-lg border-b border-dashed border-gray-300 pb-2">
+                ■ <span id="displayUserName">お名前</span> 様
+            </div>
+
+            <!-- 8-2. お見積り本体 -->
+            <div class="space-y-2 text-sm mb-4">
+                <div>【アートセラピーお見積り】</div>
+                <div class="flex justify-between pl-4">
+                    <span>1件</span>
+                    <span><span id="displayUnitPrice">8,000</span>円</span>
+                </div>
+                <div class="flex justify-between pl-4 text-gray-600">
+                    <span>・クーポン割引</span>
+                    <span>−<span id="displayCouponDiscount">0</span>円</span>
+                </div>
+                <div class="flex justify-between pl-4 text-gray-600">
+                    <span>・紹介割引</span>
+                    <span>−<span id="displayReferralDiscount">0</span>円</span>
+                </div>
+            </div>
+
+            <div class="border-t border-b border-gray-400 py-3 mb-4">
+                <div class="flex justify-between items-center font-bold text-lg accent-text">
+                    <span>合計金額</span>
+                    <span><span id="displayTotal">0</span>円</span>
+                </div>
+            </div>
+
+            <!-- 8-3. 入力内容表示 -->
+            <div class="text-xs text-gray-600 space-y-1 mb-6 bg-white p-3 rounded border border-gray-200">
+                <div>【入力内容】</div>
+                <div>■ お支払い方法： <span id="displayPayment">未選択</span></div>
+                <div>■ ご紹介者： <span id="displayReferralName">なし</span></div>
+                <div>■ 備考： <span id="displayRemarks">なし</span></div>
+            </div>
+
+            <!-- 8-4. 深掘りしたい内容表示 -->
+            <div class="bg-white p-3 rounded border border-gray-200 text-xs mb-3">
+                <p class="font-medium mb-1">【深堀りしたい内容】</p>
+                <p id="displayDeepContent" class="whitespace-pre-wrap text-left text-gray-700"></p>
+            </div>
+
+            <!-- 8-5. ご提出いただくもの -->
+            <div class="bg-white p-3 rounded border border-gray-200 text-xs text-center">
+                <p class="font-medium mb-1">【ご提出いただくもの】</p>
+                <p>目元の写真</p>
+                <p>手書きのお名前</p>
+            </div>
+
+        </div>
+
+        <!-- 12. ボタン群と挙動 -->
+        <div class="mt-8">
+            <!-- 12-1. 説明テキスト -->
+            <div class="text-center mb-4 text-sm text-gray-600 space-y-1">
+                <p>① ご確認いただけましたら、コピーボタンを押してください。</p>
+                <p>② 「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</p>
+            </div>
+
+            <!-- 12-2. コピーボタン -->
+            <button type="button" id="copyButton"
+                class="btn-primary w-full py-4 rounded-full font-bold text-lg shadow-sm mb-3">
+                コピー
+            </button>
+
+            <!-- 12-3. LINE ボタン -->
+            <button type="button" id="lineButton"
+                class="bg-[#06C755] text-white hover:bg-[#05b54b] transition w-full py-4 rounded-full font-bold text-lg shadow-sm">
+                LINEに貼り付けて予約する
+            </button>
+
+            <!-- 12-4. クリアボタン -->
+            <button type="button" id="clearButton"
+                class="btn-clear w-full py-3 rounded-full text-sm mt-2">
+                クリア
+            </button>
+        </div>
+
+        <!-- 13. モーダル（バリデーションエラー用） -->
+        <div id="validationModal" class="modal-overlay">
+            <div class="modal-content text-center">
+                <h3 class="text-xl font-bold accent-text mb-4" id="modalTitle">入力内容をご確認ください</h3>
+                <p class="text-gray-600 mb-6" id="modalMessage">必須項目がすべて入力されていません。</p>
+                <button onclick="closeModal()" class="btn-primary w-full py-2 rounded-full font-medium">閉じる</button>
+            </div>
+        </div>
+
+        <!-- 13. トースト（コピー成功用） -->
+        <div id="copyToast"
+            class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-3 rounded-full shadow-lg transition-opacity duration-300 opacity-0 z-50">
+            クリップボードにコピーしました
+        </div>
+
     </main>
 
     <!-- 14. フッター -->
-    <footer class="mt-10 py-10 text-center text-sm border-t border-gray-200 bg-gray-50">
-        <!-- 14-1. はじめての方へ -->
-        <div class="mb-8">
-            <p class="text-base font-medium accent-text mb-4">はじめての方へ</p>
-            <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank"
-                class="inline-block py-3 px-8 rounded-full font-medium text-sm transition"
-                style="background-color: var(--color-btn-default); color: #000;">
-                はじめての方のフォーム
-            </a>
-        </div>
+    <footer class="mt-10 py-8 text-center text-gray-700 bg-gray-50 border-t border-gray-200">
+        <div class="container mx-auto px-4 max-w-2xl">
+            <!-- 14-1. はじめての方へ -->
+            <div class="mb-8 p-4 border border-gray-200 rounded-lg">
+                <h4 class="text-lg font-medium accent-text mb-3">はじめての方へ</h4>
+                <p class="text-sm mb-4">はじめての方は、こちらのフォームからのお申し込みをお願いいたします。</p>
+                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank"
+                    class="inline-block py-3 px-6 rounded-full font-bold text-sm"
+                    style="background-color: var(--color-btn-default); color: #000; transition: all 0.3s ease;">
+                    はじめての方のフォーム
+                </a>
+            </div>
 
-        <!-- 14-2. サイト内リンク一覧 -->
-        <div class="max-w-md mx-auto mb-8">
-            <p class="text-gray-500 mb-2">サイト内リンク</p>
-            <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-gray-600">
-                <a href="https://spiritual-therapist-mii.studio.site" target="_blank">HOME</a>
+            <!-- 14-2. サイト内リンク一覧 -->
+            <div class="text-xs flex flex-wrap justify-center gap-x-4 gap-y-2 mb-6">
+                <a href="https://spiritual-therapist-mii.studio.site/" target="_blank">HOME</a>
                 <a href="https://spiritual-therapist-mii.studio.site/menu" target="_blank">メニュー一覧</a>
                 <a href="https://spiritual-therapist-mii.studio.site/reading" target="_blank">リーディング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/mirai" target="_blank">未来ナビ</a>
-                <a href="https://spiritual-therapist-mii.studio.site/arttherapy" target="_blank">アートセラピー</a>
-                <a href="https://spiritual-therapist-mii.studio.site/card" target="_blank">カラーカード</a>
+                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" target="_blank">未来ナビ</a>
+                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" target="_blank">アートセラピー</a>
+                <a href="https://spiritual-therapist-mii.studio.site/color-card" target="_blank">カラーカード</a>
                 <a href="https://spiritual-therapist-mii.studio.site/healing" target="_blank">ヒーリング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/session" target="_blank">対面リーディング</a>
+                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" target="_blank">対面リーディング</a>
             </div>
-        </div>
 
-        <!-- 14-3. コピーライト -->
-        <p class="text-xs text-gray-400">
-            © 2025 by Therapist Mii. All rights reserved.
-        </p>
+            <!-- 14-3. コピーライト -->
+            <p class="text-xs text-gray-400">
+                © 2025 by Therapist Mii. All rights reserved.
+            </p>
+        </div>
     </footer>
 
-    <!-- 13. モーダル・トースト -->
-    <!-- バリデーションエラーモーダル -->
-    <div id="validationModal" class="modal-overlay">
-        <div class="modal-content text-center">
-            <h4 class="text-xl font-bold accent-text mb-4">入力内容をご確認ください</h4>
-            <p class="text-gray-600 mb-6 text-sm">必須項目がすべて入力されていません。</p>
-            <button type="button" onclick="closeModal()"
-                class="btn-primary py-2 px-6 rounded-full text-sm font-medium">
-                OK
-            </button>
-        </div>
-    </div>
-
-    <!-- コピー成功トースト -->
-    <div id="copyToast" class="opacity-0">
-        クリップボードにコピーしました
-    </div>
-
+    <!-- 9. 見積り計算ロジック（JS） -->
     <script>
         // 9-1. 定数・ステート
-        const BASE_PRICE = 8000; // 1件あたり
+        const BASE_PRICE = 8000;
         const REFERRAL_DISCOUNT = 500;
-        let isReferralApplied = false;
         let isAgreementAccepted = false;
+        let isReferralApplied = false;
 
         // 9-2. 要素取得
         const inputs = {
@@ -459,6 +481,9 @@
             referralName: document.getElementById('referralName'),
             payment: document.getElementById('paymentMethod'),
             remarks: document.getElementById('remarks'),
+            agreementButton: document.getElementById('agreementButton'),
+            agreementStatus: document.getElementById('agreementStatus'),
+            agreementSection: document.getElementById('agreement-section'),
         };
 
         const display = {
@@ -471,8 +496,6 @@
             referralName: document.getElementById('displayReferralName'),
             remarks: document.getElementById('displayRemarks'),
             deepContent: document.getElementById('displayDeepContent'),
-            agreementSection: document.getElementById('agreement-section'),
-            agreementStatus: document.getElementById('agreementStatus'),
             referralStatus: document.getElementById('referralStatus'),
         };
 
@@ -482,68 +505,123 @@
             display.payment.textContent = inputs.payment.value || '未選択';
             display.referralName.textContent = inputs.referralName.value || 'なし';
             display.remarks.textContent = inputs.remarks.value || 'なし';
-            // 深掘りしたい内容はそのまま表示（空の場合は空文字列）
-            display.deepContent.textContent = inputs.deepContent.value || ''; 
+            display.deepContent.textContent = inputs.deepContent.value || '';
         }
 
         // 9-3. 計算関数
         function calculateTotal() {
             const base = BASE_PRICE;
-            // クーポン割引率を取得 (value="0"の場合も0)
+            // クーポンはvalue属性に割引率(%)が入っている
             const couponRate = parseInt(inputs.coupon.value || '0', 10);
             
             let couponDiscount = 0;
             if (couponRate > 0) {
+                // クーポン割引額を計算
                 couponDiscount = base * (couponRate / 100);
             }
 
             let referralDiscount = isReferralApplied ? REFERRAL_DISCOUNT : 0;
 
+            // 合計金額を計算（最低0円）
             let total = Math.max(0, base - couponDiscount - referralDiscount);
 
-            // 表示更新（カンマ付き、割引額と合計は切り捨て）
+            // 表示更新（カンマ付き）
             display.unitPrice.textContent = base.toLocaleString('ja-JP');
+            // 割引額は小数点以下を切り捨てて表示
             display.couponDiscount.textContent = Math.floor(couponDiscount).toLocaleString('ja-JP');
             display.referralDiscount.textContent = referralDiscount.toLocaleString('ja-JP');
             display.total.textContent = Math.floor(total).toLocaleString('ja-JP');
 
             updateDisplayTexts();
+            checkAndRemoveErrorClasses(inputs.name);
+            checkAndRemoveErrorClasses(inputs.deepContent);
+            checkAndRemoveErrorClasses(inputs.coupon);
+            checkAndRemoveErrorClasses(inputs.payment);
         }
-        
-        // 10. バリデーション関数
-        function validateForm() {
-            const requiredFields = [
-                { id: 'userName', element: inputs.name, type: 'input' },
-                { id: 'deepContent', element: inputs.deepContent, type: 'input' },
-                { id: 'coupon', element: inputs.coupon, type: 'select' },
-                { id: 'paymentMethod', element: inputs.payment, type: 'select' },
-            ];
 
+        // 9-5. 紹介割引適用
+        document.getElementById('addReferralButton').addEventListener('click', () => {
+            const name = inputs.referralName.value.trim();
+            if (name) {
+                isReferralApplied = true;
+                display.referralStatus.classList.remove('hidden');
+                calculateTotal();
+            } else {
+                inputs.referralName.placeholder = '名前を入力してください';
+                inputs.referralName.focus();
+            }
+        });
+
+        // 7-1. 同意ボタンのロジック
+        inputs.agreementButton.addEventListener('click', () => {
+            isAgreementAccepted = true;
+            inputs.agreementStatus.classList.remove('hidden');
+            inputs.agreementSection.classList.remove('error-text-box'); // エラー解除
+            inputs.agreementButton.textContent = '同意済み';
+            inputs.agreementButton.disabled = true;
+            inputs.agreementButton.classList.remove('btn-primary');
+            inputs.agreementButton.classList.add('bg-gray-400', 'text-white', 'cursor-not-allowed');
+        });
+
+        // 10-4. 入力時に赤枠を消すための共通関数
+        function checkAndRemoveErrorClasses(element) {
+            if (element.tagName === 'SELECT' || element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                const isNotEmpty = element.value !== "" && element.value !== null;
+                if (element.tagName === 'SELECT') {
+                    // SELECTは値が入っているかだけ確認
+                    if (element.value !== "") {
+                        element.classList.remove('input-error');
+                    }
+                } else if (isNotEmpty) {
+                    element.classList.remove('input-error');
+                }
+            }
+        }
+
+        // 初期化時のイベントリスナー設定
+        Object.values(inputs).forEach(element => {
+            if (element && element.id !== 'agreementButton') {
+                element.addEventListener('input', () => checkAndRemoveErrorClasses(element));
+                element.addEventListener('change', () => checkAndRemoveErrorClasses(element));
+            }
+        });
+
+        // 10. バリデーション処理
+        function validateForm() {
             let isValid = true;
             let firstErrorElement = null;
 
-            // 必須項目リセット
-            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-            display.agreementSection.classList.remove('error-text-box');
+            // 必須項目チェック
+            const requiredFields = [
+                { id: 'agreement-section', check: isAgreementAccepted, isAgreement: true },
+                { id: 'userName', element: inputs.name, check: inputs.name.value.trim() !== "" },
+                { id: 'deepContent', element: inputs.deepContent, check: inputs.deepContent.value.trim() !== "" },
+                { id: 'coupon', element: inputs.coupon, check: inputs.coupon.value !== "" },
+                { id: 'paymentMethod', element: inputs.payment, check: inputs.payment.value !== "" },
+            ];
 
-            // 1. 同意事項のチェック
-            if (!isAgreementAccepted) {
-                display.agreementSection.classList.add('error-text-box');
-                isValid = false;
-                if (!firstErrorElement) firstErrorElement = display.agreementSection;
+            // まず全てのエラー表示をリセット
+            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+            inputs.agreementSection.classList.remove('error-text-box');
+
+            for (const field of requiredFields) {
+                if (!field.check) {
+                    isValid = false;
+                    const elementToMark = field.isAgreement ? inputs.agreementSection : field.element;
+
+                    if (field.isAgreement) {
+                        elementToMark.classList.add('error-text-box');
+                    } else {
+                        field.element.classList.add('input-error');
+                    }
+
+                    if (!firstErrorElement) {
+                        firstErrorElement = elementToMark;
+                    }
+                }
             }
 
-            // 2. 他の必須項目のチェック
-            requiredFields.forEach(field => {
-                if (!field.element.value.trim() || field.element.value === "") {
-                    field.element.classList.add('input-error');
-                    isValid = false;
-                    if (!firstErrorElement) firstErrorElement = field.element;
-                }
-            });
-
             if (!isValid) {
-                // エラー時の挙動
                 showModal();
                 if (firstErrorElement) {
                     firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -556,15 +634,17 @@
         function generateCopyText() {
             const name = inputs.name.value;
             const unitPrice = BASE_PRICE;
-            const coupon = display.couponDiscount.textContent; // カンマ付き文字列
-            const referral = display.referralDiscount.textContent; // カンマ付き文字列
-            const total = display.total.textContent; // カンマ付き文字列
+            // displayから取得することでカンマ付きの割引額を取得する
+            const coupon = display.couponDiscount.textContent || '0';
+            const referral = display.referralDiscount.textContent || '0';
+            const total = display.total.textContent || '0';
 
             const payment = inputs.payment.value || '未選択';
             const referralName = inputs.referralName.value || 'なし';
             const remarks = inputs.remarks.value ? inputs.remarks.value : 'なし';
             const deep = inputs.deepContent.value || '';
-
+            
+            // toLocaleString("ja-JP") は BASE_PRICE のみ使用し、他は表示値を使用
             return `■ ${name} 様
 
 【アートセラピーお見積り】
@@ -580,17 +660,96 @@
 ■ ご紹介者：${referralName}
 ■ 備考：${remarks}
 
-【深堀りしたい内容】
+【深掘りしたい内容】
 ${deep}
 
 【ご提出いただくもの】
 目元の写真
 手書きのお名前`;
         }
-        
-        // --- モーダル・トースト関数 ---
 
-        // 13. モーダル
+        // 12-2. コピーボタンの挙動
+        document.getElementById('copyButton').addEventListener('click', async () => {
+            if (validateForm()) {
+                const copyText = generateCopyText();
+                try {
+                    // navigator.clipboard.writeText() でクリップボードへコピー
+                    await navigator.clipboard.writeText(copyText);
+                    showToast();
+                } catch (err) {
+                    // フォールバックとして document.execCommand('copy') を使用
+                    const textArea = document.createElement('textarea');
+                    textArea.value = copyText;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showToast();
+                    } catch (err) {
+                        console.error('Copy failed:', err);
+                        // ユーザーに手動コピーを促すメッセージなどを表示しても良い
+                    } finally {
+                        document.body.removeChild(textArea);
+                    }
+                }
+            }
+        });
+
+        // 12-3. LINE ボタンの挙動
+        document.getElementById('lineButton').addEventListener('click', () => {
+            if (validateForm()) {
+                // 1. コピー処理（コピーボタンと同じテキスト）
+                const copyText = generateCopyText();
+                try {
+                    navigator.clipboard.writeText(copyText);
+                    showToast();
+                } catch (err) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = copyText;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+
+                // 2. LINE 予約用 URL へ遷移（新規タブ）
+                window.open('https://line.me/ti/p/Kv76GQK_UI', '_blank');
+            }
+        });
+
+        // 12-4. クリアボタンの挙動
+        document.getElementById('clearButton').addEventListener('click', () => {
+            // フィールド値のクリア
+            inputs.name.value = '';
+            inputs.deepContent.value = '';
+            inputs.coupon.value = '';
+            inputs.referralName.value = '';
+            inputs.payment.value = '';
+            inputs.remarks.value = '';
+
+            // ステートのリセット
+            isReferralApplied = false;
+            isAgreementAccepted = false;
+            
+            // UIのリセット
+            display.referralStatus.classList.add('hidden');
+            inputs.agreementStatus.classList.add('hidden');
+            inputs.agreementButton.textContent = '同意する';
+            inputs.agreementButton.disabled = false;
+            inputs.agreementButton.classList.add('btn-primary');
+            inputs.agreementButton.classList.remove('bg-gray-400', 'text-white', 'cursor-not-allowed');
+
+            // エラー表示のクリア
+            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+            document.querySelectorAll('.error-text-box').forEach(el => el.classList.remove('error-text-box'));
+
+            // 見積り表示の再計算/更新（すべてデフォルト値に戻る）
+            calculateTotal();
+        });
+
+        // 13. モーダル関数
         function showModal() {
             document.getElementById('validationModal').style.display = 'flex';
         }
@@ -598,7 +757,7 @@ ${deep}
             document.getElementById('validationModal').style.display = 'none';
         }
 
-        // 13. トースト
+        // 13. トースト関数
         function showToast() {
             const toast = document.getElementById('copyToast');
             toast.classList.remove('opacity-0');
@@ -609,138 +768,10 @@ ${deep}
             }, 3000);
         }
 
-        // --- イベントリスナー設定 ---
-
-        // 7-1. 同意ボタン
-        document.getElementById('agreementButton').addEventListener('click', () => {
-            isAgreementAccepted = true;
-            display.agreementStatus.classList.remove('hidden');
-            display.agreementSection.classList.remove('error-text-box');
-        });
-
-        // 7-4-3. 紹介割引適用
-        document.getElementById('addReferralButton').addEventListener('click', () => {
-            const name = inputs.referralName.value.trim();
-            if (name) {
-                isReferralApplied = true;
-                display.referralStatus.classList.remove('hidden');
-                calculateTotal();
-            } else {
-                inputs.referralName.placeholder = '名前を入力してください';
-                inputs.referralName.focus();
-            }
-        });
-
-        // 10-4. 入力時に赤枠を消す & 見積もり更新
-        
-        // テキスト/テキストエリア (名前, 深掘り内容, 備考)
-        ['userName', 'deepContent', 'remarks', 'referralName'].forEach(id => {
-            const el = document.getElementById(id);
-            el.addEventListener('input', () => {
-                if (el.value.trim()) {
-                    el.classList.remove('input-error');
-                }
-                // 見積もりと表示テキストを更新
-                updateDisplayTexts();
-            });
-        });
-
-        // セレクト (クーポン, 支払い方法)
-        ['coupon', 'paymentMethod'].forEach(id => {
-            const el = document.getElementById(id);
-            el.addEventListener('change', () => {
-                if (el.value !== "") {
-                    el.classList.remove('input-error');
-                }
-                // クーポンは合計金額に影響するため、calculateTotalを呼び出す
-                if (id === 'coupon') {
-                    calculateTotal();
-                } else {
-                    updateDisplayTexts();
-                }
-            });
-        });
-
-        // 12-2. コピーボタンの挙動
-        document.getElementById('copyButton').addEventListener('click', () => {
-            if (validateForm()) {
-                const copyText = generateCopyText();
-                
-                // document.execCommand('copy') を使用 (iFrame制限回避のため)
-                const textarea = document.createElement('textarea');
-                textarea.value = copyText;
-                textarea.style.position = 'fixed'; 
-                textarea.style.left = '-9999px'; 
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast();
-                } catch (err) {
-                    console.error('コピーに失敗しました。', err);
-                }
-                document.body.removeChild(textarea);
-            }
-        });
-
-        // 12-3. LINE ボタンの挙動
-        document.getElementById('lineButton').addEventListener('click', () => {
-            if (validateForm()) {
-                // コピー処理
-                const copyText = generateCopyText();
-                
-                const textarea = document.createElement('textarea');
-                textarea.value = copyText;
-                textarea.style.position = 'fixed'; 
-                textarea.style.left = '-9999px'; 
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                } catch (err) {
-                    console.error('コピーに失敗しました。', err);
-                }
-                document.body.removeChild(textarea);
-                
-                // LINE 予約用 URL へ遷移（新規タブ）
-                window.open('https://line.me/ti/p/Kv76GQK_UI', '_blank');
-            }
-        });
-
-        // 12-4. クリアボタンの挙動
-        document.getElementById('clearButton').addEventListener('click', clearForm);
-        
-        function clearForm() {
-            // フィールド値の初期化
-            inputs.name.value = '';
-            inputs.deepContent.value = '';
-            inputs.coupon.value = ''; // "" に戻す
-            inputs.referralName.value = '';
-            inputs.payment.value = ''; // "" に戻す
-            inputs.remarks.value = '';
-
-            // ステートのリセット
-            isReferralApplied = false;
-            isAgreementAccepted = false;
-            
-            // UI表示のリセット
-            display.referralStatus.classList.add('hidden');
-            display.agreementStatus.classList.add('hidden');
-
-            // エラー表示の削除
-            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-            document.querySelectorAll('.error-text-box').forEach(el => el.classList.remove('error-text-box'));
-
-            // 見積り表示の再計算
+        // 初期ロード時の実行
+        document.addEventListener('DOMContentLoaded', () => {
             calculateTotal();
-        }
-
-        // 初期化処理: ページロード時
-        window.onload = function() {
-            calculateTotal();
-            // モーダルを閉じるボタンにイベントリスナーを追加
-            document.querySelector('#validationModal button').addEventListener('click', closeModal);
-        }
+        });
 
     </script>
 </body>
