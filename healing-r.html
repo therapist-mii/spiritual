@@ -1,808 +1,809 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ヒーリングお見積り＆ご予約 - Therapist Mii</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Noto Serif JP -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BGR45N6NR8"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-BGR45N6NR8');
-    </script>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>ヒーリングお見積り＆ご予約 - Therapist Mii</title>
+ <!-- Favicon -->
+ <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+ 
+ <!-- Tailwind CSS CDN -->
+ <script src="https://cdn.tailwindcss.com"></script>
+ 
+ <!-- Google Fonts: Noto Serif JP -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+ 
+ <!-- Google tag (gtag.js) -->
+ <script async src="https://www.googletagmanager.com/gtag/js?id=G-BGR45N6NR8"></script>
+ <script>
+ window.dataLayer = window.dataLayer || [];
+ function gtag(){dataLayer.push(arguments);}
+ gtag('js', new Date());
+ 
+ gtag('config', 'G-BGR45N6NR8');
+ </script>
 
-    <style>
-        /* Noto Serif JPをデフォルトフォントとして設定 */
-        body {
-            font-family: 'Noto Serif JP', serif;
-            background-color: white;
-            color: black;
-            opacity: 0; /* 初期状態で非表示 */
-            transition: opacity 1.5s ease-in-out; /* ふわっと表示するためのトランジション */
-        }
-        .form-container {
-            transition: opacity 1.5s ease-in-out;
-        }
+ <style>
+ /* Noto Serif JPをデフォルトフォントとして設定 */
+ body {
+ font-family: 'Noto Serif JP', serif;
+ background-color: white;
+ color: black;
+ opacity: 0; /* 初期状態で非表示 */
+ transition: opacity 1.5s ease-in-out; /* ふわっと表示するためのトランジション */
+ }
+ .form-container {
+ transition: opacity 1.5s ease-in-out;
+ }
 
-        /* 必須項目の赤色 */
-        .required-star {
-            color: #ff0000;
-        }
+ /* 必須項目の赤色 */
+ .required-star {
+ color: #ff0000;
+ }
 
-        /* カスタムボタンのスタイル */
-        .btn-primary {
-            background-color: #E4C1B5;
-            color: black;
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #ad9196;
-            color: white;
-        }
-        .btn-clear {
-            background-color: #7a736a;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        .btn-clear:hover {
-            background-color: #E4C1B5;
-            color: white;
-        }
+ /* カスタムボタンのスタイル */
+ .btn-primary {
+ background-color: #E4C1B5;
+ color: black;
+ transition: all 0.3s ease;
+ }
+ .btn-primary:hover {
+ background-color: #ad9196;
+ color: white;
+ }
+ .btn-clear {
+ background-color: #7a736a;
+ color: white;
+ transition: all 0.3s ease;
+ }
+ .btn-clear:hover {
+ background-color: #E4C1B5;
+ color: white;
+ }
 
-        /* 入力フォーカス時の枠線強調（デザインの統一感を保つため、デフォルトの青を上書き） */
-        input:focus, textarea:focus, select:focus {
-            border-color: #776163;
-            outline: none;
-            box-shadow: 0 0 0 1px #776163;
-        }
-        
-        /* エラー時の枠線 */
-        .input-error {
-            border-color: #ff0000 !important;
-        }
+ /* 入力フォーカス時の枠線強調（デザインの統一感を保つため、デフォルトの青を上書き） */
+ input:focus, textarea:focus, select:focus {
+ border-color: #776163;
+ outline: none;
+ box-shadow: 0 0 0 1px #776163;
+ }
+ 
+ /* エラー時の枠線 */
+ .input-error {
+ border-color: #ff0000 !important;
+ }
 
-        /* Toastメッセージの基本スタイル */
-        .toast-message {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 1rem 2rem;
-            background-color: #776163; /* 文字を目立たせたいときの色を使用 */
-            color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-    </style>
+ /* Toastメッセージの基本スタイル */
+ .toast-message {
+ position: fixed;
+ bottom: 20px;
+ left: 50%;
+ transform: translateX(-50%);
+ padding: 1rem 2rem;
+ background-color: #776163; /* 文字を目立たせたいときの色を使用 */
+ color: white;
+ border-radius: 0.5rem;
+ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+ z-index: 1000;
+ opacity: 0;
+ transition: opacity 0.3s ease-in-out;
+ }
+ </style>
 </head>
 <body class="antialiased">
-    <!-- Header -->
-    <header class="bg-[#EAE6E1] p-4 shadow-md sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-[#776163] tracking-widest">Therapist Mii</h1>
-            <!-- モバイル向けメニューボタン（今回は不要なため省略） -->
-        </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        <!-- フォームコンテナ (ふわっと表示の対象) -->
-        <div id="form-content" class="form-container opacity-0">
-            <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-center text-[#776163] pt-4">ヒーリングお見積り＆ご予約</h2>
-
-            <form id="healing-form" class="space-y-8">
-                <!-- 1. 同意事項 -->
-                <section class="p-4 rounded-lg border border-gray-200">
-                    <h3 class="text-lg font-bold mb-3 text-[#776163]">同意事項<span class="required-star">*</span></h3>
-                    <div class="space-y-2">
-                        <label class="flex items-start cursor-pointer">
-                            <input type="checkbox" id="agree_policy" name="agree_policy" class="mt-1 form-checkbox h-5 w-5 text-[#E4C1B5] rounded border-gray-300 focus:ring-[#776163]">
-                            <span class="ml-2 text-sm">セッションポリシー、注意事項に<a href="https://spiritual-therapist-mii.studio.site/policy" target="_blank" class="text-[#ad9196] hover:underline">同意します。</a></span>
-                        </label>
-                        <label class="flex items-start cursor-pointer">
-                            <input type="checkbox" id="agree_privacy" name="agree_privacy" class="mt-1 form-checkbox h-5 w-5 text-[#E4C1B5] rounded border-gray-300 focus:ring-[#776163]">
-                            <span class="ml-2 text-sm">プライバシーポリシーに<a href="https://spiritual-therapist-mii.studio.site/privacypolicy" target="_blank" class="text-[#ad9196] hover:underline">同意します。</a></span>
-                        </label>
-                        <div id="agreement-error-box" class="border border-transparent rounded p-1"></div>
-                    </div>
-                </section>
-
-                <!-- 2. ヒーリング対象者セクション -->
-                <section class="space-y-6">
-                    <h3 class="text-xl font-bold text-[#776163]">ヒーリング対象者<span class="required-star">*</span></h3>
-                    <p class="text-sm text-gray-600">ヒーリングを受けたい方の情報をご記入ください。</p>
-                    
-                    <div id="targets-container" class="space-y-6">
-                        <!-- 動的に追加される対象者フォームがここに入ります -->
-                    </div>
-
-                    <button type="button" id="add-target-btn" class="w-full sm:w-auto px-4 py-2 text-sm rounded-lg btn-primary hover:bg-[#ad9196] hover:text-white transition duration-200">
-                        対象者を追加
-                    </button>
-                </section>
-
-                <!-- 3. おうちヒーリング所在地 -->
-                <section class="p-4 rounded-lg border border-gray-200">
-                    <label for="location" class="block text-lg font-bold mb-2 text-[#776163]">おうちヒーリングの場合、自宅所在地（番地不要）</label>
-                    <input type="text" id="location" name="location" placeholder="例: 千葉県成田市飯田町" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
-                    <p class="text-xs text-gray-500 mt-1">「おうちヒーリング」をご希望の場合にご記入ください。遠隔にておこないます。</p>
-                </section>
-
-                <!-- 4. 割引と支払い -->
-                <section class="space-y-6 p-4 rounded-lg border border-gray-200">
-                    <h3 class="text-xl font-bold text-[#776163]">お支払いについて</h3>
-                    
-                    <!-- クーポン -->
-                    <div>
-                        <label for="coupon" class="block text-lg font-bold mb-2 text-[#776163]">クーポン<span class="required-star">*</span></label>
-                        <p class="text-sm text-gray-600 mb-2">クーポンの有無を選択してください。</p>
-                        <select id="coupon" name="coupon" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
-                            <option value="">選択してください</option>
-                            <option value="none">クーポン無し</option>
-                            <option value="5">5％OFFクーポン</option>
-                            <option value="10">10％OFFクーポン</option>
-                            <option value="15">15％OFFクーポン</option>
-                            <option value="20">20％OFFクーポン</option>
-                            <option value="25">25％OFFクーポン</option>
-                            <option value="30">30％OFFクーポン</option>
-                        </select>
-                    </div>
-
-                    <!-- 紹介割引 -->
-                    <div>
-                        <label class="block text-lg font-bold mb-2 text-[#776163]">紹介割引</label>
-                        <p class="text-sm text-gray-600 mb-2">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可 (-500円)</p>
-                        <div class="flex space-x-2">
-                            <input type="text" id="introducer_name" placeholder="紹介者のお名前" class="flex-grow p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
-                            <button type="button" id="add-introducer-btn" class="flex-shrink-0 px-4 py-3 text-sm rounded-lg btn-primary hover:bg-[#ad9196] hover:text-white transition duration-200 disabled:opacity-50" disabled>
-                                追加する
-                            </button>
-                        </div>
-                        <div id="introducer-display" class="mt-2 text-[#776163] font-semibold"></div>
-                    </div>
-
-                    <!-- お支払い方法 -->
-                    <div>
-                        <label for="payment_method" class="block text-lg font-bold mb-2 text-[#776163]">お支払い方法<span class="required-star">*</span></label>
-                        <select id="payment_method" name="payment_method" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
-                            <option value="">選択してください</option>
-                            <option value="銀行振込">銀行振込</option>
-                            <option value="Paypay">Paypay</option>
-                            <option value="Paypal">Paypal</option>
-                        </select>
-                    </div>
-                </section>
-
-                <!-- 5. 備考 -->
-                <section class="p-4 rounded-lg border border-gray-200">
-                    <label for="notes" class="block text-lg font-bold mb-2 text-[#776163]">備考</label>
-                    <p class="text-sm text-gray-600 mb-2">ご希望・ご質問があればご記入ください。</p>
-                    <textarea id="notes" name="notes" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]"></textarea>
-                </section>
-
-                <!-- 6. お見積り表示エリア -->
-                <section class="bg-[#F9F7F5] p-6 rounded-lg shadow-inner">
-                    <h3 class="text-xl font-bold mb-4 text-[#776163]">■ お見積り</h3>
-                    <div id="quote-output" class="whitespace-pre-wrap text-sm leading-relaxed">
-                        <p class="text-center text-gray-500">上記フォームにご入力いただくと、ここに自動でお見積りが表示されます。</p>
-                    </div>
-                </section>
-                
-                <section class="p-4 rounded-lg border border-gray-200">
-                    <h4 class="text-lg font-bold mb-3 text-[#776163]">【LINEで予約する際の手順】</h4>
-                    <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
-                        <li>ご確認いただけましたら、コピーボタンを押してください。</li>
-                        <li>「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
-                    </ol>
-                </section>
-
-                <!-- 7. ページ下部機能ボタン -->
-                <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                    <button type="button" id="clear-btn" class="w-full sm:w-1/3 py-3 rounded-lg text-lg font-bold btn-clear hover:bg-[#ad9196] hover:text-white">
-                        クリア
-                    </button>
-                    <button type="button" id="copy-btn" class="w-full sm:w-1/3 py-3 rounded-lg text-lg font-bold btn-primary">
-                        コピー
-                    </button>
-                    <button type="button" id="line-btn" class="w-full sm:w-1/3 py-3 rounded-lg text-lg font-bold btn-primary">
-                        LINEに貼り付けて予約する
-                    </button>
-                </div>
-            </form>
-        </div>
-        
-        <!-- Toast Message (Popup) -->
-        <div id="toast" class="toast-message hidden" role="alert"></div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-[#EAE6E1] mt-12 p-8 text-sm">
-        <div class="max-w-4xl mx-auto space-y-8">
-            <!-- はじめての方へセクション -->
-            <div class="p-4 bg-white rounded-lg shadow-inner border border-gray-200">
-                <h4 class="text-lg font-bold mb-2 text-[#776163]">はじめての方へ</h4>
-                <p class="text-gray-700 mb-4">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
-                <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" class="inline-block px-6 py-2 rounded-lg text-sm font-bold btn-primary hover:bg-[#ad9196] hover:text-white">
-                    はじめての方のフォーム
-                </a>
-            </div>
-
-            <!-- リンク一覧 -->
-            <nav class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                <a href="https://spiritual-therapist-mii.studio.site/" class="text-[#776163] hover:text-[#ad9196]">HOME</a>
-                <a href="https://spiritual-therapist-mii.studio.site/menu" class="text-[#776163] hover:text-[#ad9196]">メニュー一覧</a>
-                <a href="https://spiritual-therapist-mii.studio.site/reading" class="text-[#776163] hover:text-[#ad9196]">リーディング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="text-[#776163] hover:text-[#ad9196]">未来ナビ</a>
-                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="text-[#776163] hover:text-[#ad9196]">アートセラピー</a>
-                <a href="https://spiritual-therapist-mii.studio.site/color-card" class="text-[#776163] hover:text-[#ad9196]">カラーカード</a>
-                <a href="https://spiritual-therapist-mii.studio.site/healing" class="text-[#776163] hover:text-[#ad9196]">ヒーリング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="text-[#776163] hover:text-[#ad9196]">対面リーディング</a>
-            </nav>
-
-            <!-- コピーライト -->
-            <div class="text-center pt-4 border-t border-gray-300 mt-4">
-                <p class="text-gray-600">© 2025 by Therapist Mii. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // ページロード時にふわっと表示
-        window.onload = () => {
-            document.body.style.opacity = 1;
-            document.getElementById('form-content').style.opacity = 1;
-        };
-
-        const form = document.getElementById('healing-form');
-        const targetsContainer = document.getElementById('targets-container');
-        const addTargetBtn = document.getElementById('add-target-btn');
-        const introducerNameInput = document.getElementById('introducer_name');
-        const addIntroducerBtn = document.getElementById('add-introducer-btn');
-        const introducerDisplay = document.getElementById('introducer-display');
-        const quoteOutput = document.getElementById('quote-output');
-        const LINE_URL = "https://line.me/ti/p/Kv76GQK_UI";
-
-        let targetCount = 0;
-        let isIntroducerAdded = false;
-
-        // ----------------------------------------------------
-        // ユーティリティ関数
-        // ----------------------------------------------------
-
-        /**
-         * カスタムToastメッセージを表示する
-         * @param {string} message - 表示するメッセージ
-         */
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.remove('hidden');
-            toast.style.opacity = 1;
-
-            setTimeout(() => {
-                toast.style.opacity = 0;
-                setTimeout(() => {
-                    toast.classList.add('hidden');
-                }, 300);
-            }, 3000);
-        }
-
-        /**
-         * クリップボードにテキストをコピーする
-         * @param {string} text - コピーするテキスト
-         */
-        function copyToClipboard(text) {
-            try {
-                // execCommand('copy')は非推奨だがiframe内で動作しやすいため採用
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed';
-                textarea.style.left = '-9999px';
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                showToast("お見積り内容をクリップボードにコピーしました。");
-                return true;
-            } catch (err) {
-                console.error('Failed to copy text: ', err);
-                showToast("コピーに失敗しました。お手数ですが手動でコピーしてください。");
-                return false;
-            }
-        }
-
-        /**
-         * 数値をカンマ区切り文字列に変換する
-         * @param {number} num 
-         */
-        function formatPrice(num) {
-            return num.toLocaleString();
-        }
-
-        /**
-         * ----------------------------------------------------
-         * フォーム要素の動的生成
-         * ----------------------------------------------------
-         */
-
-        const menuOptions = {
-            'omakase': { name: 'おまかせヒーリング', time: '30分', price: 5000 },
-            'mental': { name: 'メンタルヒーリング', time: '30分', price: 5000 },
-            'energy': { name: 'エネルギートリートメント', time: '30分', price: 5000 },
-            'head': { name: 'ヘッドヒーリング', time: '30分', price: 5000 },
-            'one_min': { name: '1分ヒーリング', time: '1分', price: 200 }
-        };
-
-        const reportOptions = [
-            { id: 'report_0', name: '報告不要', price: 0, desc: '報告書は作成しません。' },
-            { id: 'report_mini', name: 'ミニ報告', price: 2000, desc: '簡単な結果報告をいたします。' },
-            { id: 'report_1part', name: '1部位鑑定書', price: 5000, desc: '特定の1部位に焦点を当てた鑑定書です。' },
-            { id: 'report_full', name: '鑑定書', price: 15000, desc: '詳細な総合鑑定書です。' },
-            { id: 'report_aura', name: 'オーラアート', price: 15000, desc: '現在のオーラをアートとして表現します。' },
-            { id: 'report_full_art', name: '鑑定書＋オーラアート', price: 20000, desc: '詳細な鑑定書とオーラアートのセットです。' }
-        ];
-
-        /**
-         * 新しい対象者フォームのセットを生成・追加する
-         */
-        function addTargetSet() {
-            targetCount++;
-            const index = targetCount;
-            const targetId = `target_${index}`;
-            
-            const div = document.createElement('div');
-            div.id = targetId;
-            div.className = 'p-4 border border-[#EAE6E1] rounded-lg bg-white shadow-sm space-y-4 relative';
-            div.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <h4 class="text-md font-bold text-[#776163]">対象者 #${index}</h4>
-                    ${index > 1 ? `<button type="button" class="text-red-500 hover:text-red-700 text-sm delete-target" data-id="${targetId}">削除</button>` : ''}
-                </div>
-                
-                <p class="text-sm font-bold text-[#776163]">ヒーリングを受けたい方の名前と、関係、年齢をお書きください。</p>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <!-- お名前 (必須) -->
-                    <div>
-                        <label for="name_${index}" class="block text-sm font-medium">お名前<span class="required-star">*</span></label>
-                        <input type="text" id="name_${index}" data-required="true" placeholder="お名前" class="w-full p-2 border border-gray-300 rounded-lg required-field">
-                    </div>
-                    <!-- 関係 -->
-                    <div>
-                        <label for="relation_${index}" class="block text-sm font-medium">関係 (初めての方)</label>
-                        <input type="text" id="relation_${index}" placeholder="例：本人" class="w-full p-2 border border-gray-300 rounded-lg">
-                    </div>
-                    <!-- 年齢 -->
-                    <div>
-                        <label for="age_${index}" class="block text-sm font-medium">年齢 (初めての方)</label>
-                        <input type="number" id="age_${index}" placeholder="年齢" class="w-full p-2 border border-gray-300 rounded-lg">
-                    </div>
-                </div>
-
-                <!-- メニュー選択 (必須) -->
-                <div>
-                    <label for="menu_${index}" class="block text-sm font-bold mb-1 text-[#776163]">メニュー選択<span class="required-star">*</span></label>
-                    <select id="menu_${index}" data-required="true" class="w-full p-2 border border-gray-300 rounded-lg required-field menu-select">
-                        <option value="">選択してください</option>
-                        ${Object.keys(menuOptions).map(key => {
-                            const opt = menuOptions[key];
-                            return `<option value="${key}" data-price="${opt.price}">${opt.name} ${opt.time} ${formatPrice(opt.price)}円</option>`;
-                        }).join('')}
-                    </select>
-                </div>
-
-                <!-- 1分ヒーリング選択時のみ表示 -->
-                <div id="one_min_fields_${index}" class="space-y-4 p-3 border border-dashed border-[#ad9196] rounded-lg hidden">
-                    <!-- ご希望日 -->
-                    <div>
-                        <label for="dates_${index}" class="block text-sm font-medium">ご希望日（複数記入可）</label>
-                        <input type="text" id="dates_${index}" placeholder="例: 1月1日, 1月2日" class="w-full p-2 border border-gray-300 rounded-lg">
-                    </div>
-                    <!-- 希望分数 -->
-                    <div>
-                        <label for="duration_${index}" class="block text-sm font-medium">希望分数</label>
-                        <select id="duration_${index}" class="w-full p-2 border border-gray-300 rounded-lg duration-select">
-                            ${Array.from({ length: 10 }, (_, i) => i + 1).map(min => `<option value="${min}">${min}分</option>`).join('')}
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 報告書タイプ (必須) -->
-                <div id="report_fields_${index}" class="report-fields-container">
-                    <h5 class="text-sm font-bold mt-4 mb-2">報告タイプを選択してください<span class="required-star">*</span></h5>
-                    ${reportOptions.map((opt, i) => `
-                        <label class="flex items-start mb-2 cursor-pointer">
-                            <input type="radio" name="report_${index}" value="${opt.id}" data-price="${opt.price}" class="mt-1 form-radio h-4 w-4 text-[#E4C1B5] rounded-full required-field report-radio" ${i === 0 ? 'checked' : ''}>
-                            <span class="ml-2 text-sm">
-                                ${opt.name}: <span class="font-semibold">${formatPrice(opt.price)}円</span>
-                                <span class="text-xs text-gray-500 block">${opt.desc}</span>
-                            </span>
-                        </label>
-                    `).join('')}
-                    <div id="report-error-box_${index}" class="border border-transparent rounded p-1"></div>
-                </div>
-            `;
-            targetsContainer.appendChild(div);
-
-            // イベントリスナーを設定
-            const menuSelect = div.querySelector(`#menu_${index}`);
-            menuSelect.addEventListener('change', updateFormState);
-            div.querySelectorAll('.report-radio').forEach(radio => radio.addEventListener('change', updateQuote));
-            div.querySelector('.duration-select')?.addEventListener('change', updateQuote);
-            div.querySelector(`#dates_${index}`)?.addEventListener('input', updateQuote);
-            div.querySelector(`#name_${index}`)?.addEventListener('input', updateQuote);
-        }
-
-        /**
-         * フォームの状態（1分ヒーリング関連フィールドの表示/非表示）を更新する
-         */
-        function updateFormState(event) {
-            const index = event.target.id.split('_')[1];
-            const menuValue = event.target.value;
-            const isOneMin = menuValue === 'one_min';
-
-            const oneMinFields = document.getElementById(`one_min_fields_${index}`);
-            const reportFields = document.getElementById(`report_fields_${index}`);
-            const reportRadios = reportFields.querySelectorAll('.report-radio');
-            
-            // 1分ヒーリング関連フィールドの表示/非表示
-            if (isOneMin) {
-                oneMinFields.classList.remove('hidden');
-                reportFields.classList.add('hidden');
-                
-                // 1分ヒーリングの場合、報告書は非表示（必須チェックからも除外）
-                reportRadios.forEach(radio => radio.setAttribute('data-required', 'false'));
-            } else {
-                oneMinFields.classList.add('hidden');
-                reportFields.classList.remove('hidden');
-                
-                // それ以外の場合、報告書は表示（必須チェックの対象）
-                reportRadios.forEach(radio => radio.setAttribute('data-required', 'true'));
-            }
-            
-            updateQuote();
-        }
-
-        /**
-         * ----------------------------------------------------
-         * 計算と見積り生成
-         * ----------------------------------------------------
-         */
-
-        /**
-         * フォームデータを集計し、お見積りテキストを生成する
-         */
-        function generateQuote() {
-            const data = {
-                targets: [],
-                introducer: isIntroducerAdded ? introducerNameInput.value.trim() : '',
-                coupon: document.getElementById('coupon').value,
-                paymentMethod: document.getElementById('payment_method').value,
-                location: document.getElementById('location').value.trim(),
-                notes: document.getElementById('notes').value.trim(),
-                totalBasePrice: 0,
-                totalDiscount: 0,
-                finalPrice: 0,
-            };
-
-            // 1. 対象者ごとの集計
-            for (let i = 1; i <= targetCount; i++) {
-                const targetDiv = document.getElementById(`target_${i}`);
-                if (!targetDiv) continue; // 削除された対象者はスキップ
-
-                const name = document.getElementById(`name_${i}`).value.trim();
-                const relation = document.getElementById(`relation_${i}`).value.trim();
-                const age = document.getElementById(`age_${i}`).value.trim();
-                const menuKey = document.getElementById(`menu_${i}`).value;
-
-                let targetPrice = 0;
-                let details = '';
-                let reportType = '';
-
-                if (menuKey && menuOptions[menuKey]) {
-                    const menu = menuOptions[menuKey];
-                    targetPrice += menu.price;
-
-                    if (menuKey === 'one_min') {
-                        // 1分ヒーリングの場合
-                        const durationSelect = document.getElementById(`duration_${i}`);
-                        const duration = parseInt(durationSelect ? durationSelect.value : 1);
-                        targetPrice = menu.price * duration; // 200円 * 分数
-                        details = `${menu.name} ${duration}分 ${formatPrice(targetPrice)}円`;
-
-                        const dates = document.getElementById(`dates_${i}`).value.trim();
-                        details += `\nご希望日：${dates || '未記入'}`;
-                        reportType = '報告書なし (1分ヒーリング)';
-                    } else {
-                        // 通常メニューの場合
-                        details = `${menu.name} ${menu.time} ${formatPrice(menu.price)}円`;
-
-                        const selectedReport = targetDiv.querySelector(`input[name="report_${i}"]:checked`);
-                        if (selectedReport) {
-                            const reportPrice = parseInt(selectedReport.dataset.price || 0);
-                            targetPrice += reportPrice;
-                            reportType = reportOptions.find(r => r.id === selectedReport.value)?.name || selectedReport.value;
-                            details += `\n報告書：${reportType} ${reportPrice > 0 ? formatPrice(reportPrice) + '円' : '0円'}`;
-                        } else {
-                            details += '\n報告書：未選択';
-                        }
-                    }
-                }
-
-                data.targets.push({
-                    name: name,
-                    relation: relation,
-                    age: age,
-                    menu: menuKey ? details : 'メニュー未選択',
-                    reportType: reportType,
-                    price: targetPrice
-                });
-
-                data.totalBasePrice += targetPrice;
-            }
-
-            // 2. 割引の計算
-            let couponDiscount = 0;
-            const couponRate = parseInt(data.coupon || 0);
-            if (couponRate > 0) {
-                couponDiscount = Math.floor(data.totalBasePrice * (couponRate / 100));
-            }
-
-            const introducerDiscount = data.introducer ? 500 : 0;
-            data.totalDiscount = couponDiscount + introducerDiscount;
-            data.finalPrice = Math.max(0, data.totalBasePrice - data.totalDiscount);
-
-            // 3. お見積りテキストの生成
-            let quoteText = `■ ${document.getElementById('name_1').value.trim() || 'お名前'} 様\n\n`;
-            quoteText += `【ヒーリングお見積り】\n`;
-
-            data.targets.forEach((t, index) => {
-                quoteText += `\n`;
-                quoteText += `①${index + 1} ${t.name || '未記入'}様\n`;
-                if (t.age || t.relation) {
-                    quoteText += `  ・年齢: ${t.age || '未記入'}歳\n`;
-                    quoteText += `  ・関係: ${t.relation || '未記入'}\n`;
-                }
-                quoteText += `  ・${t.menu.replace(/\n/g, '\n  ・')}\n`; // 報告書タイプもインデント
-            });
-
-            quoteText += `\n—\n`;
-            quoteText += `・クーポン割引：− ${formatPrice(couponDiscount)} 円 (${couponRate}% OFF)\n`;
-            quoteText += `・紹介割引：− ${formatPrice(introducerDiscount)} 円\n`;
-            quoteText += `--------------------------------\n`;
-            quoteText += `合計金額：${formatPrice(data.finalPrice)} 円\n`;
-            quoteText += `--------------------------------\n\n`;
-
-            quoteText += `【入力内容】\n`;
-            quoteText += `■ お支払い方法: ${data.paymentMethod || '未選択'}\n`;
-            quoteText += `■ ご紹介者: ${data.introducer || 'なし'}\n`;
-            quoteText += `■ 自宅所在地: ${data.location || 'なし'}\n`;
-            quoteText += `■ 備考: ${data.notes || 'なし'}\n\n`;
-
-            quoteText += `【ご提出いただくもの】\n`;
-            quoteText += `（リピーター様は不要です）\n`;
-            quoteText += `目元の写真\n`;
-            quoteText += `手書きのお名前\n`;
-            
-            return quoteText;
-        }
-
-        /**
-         * お見積りテキストを更新し、表示エリアに反映する
-         */
-        function updateQuote() {
-            quoteOutput.textContent = generateQuote();
-        }
-
-        /**
-         * ----------------------------------------------------
-         * バリデーション
-         * ----------------------------------------------------
-         */
-
-        /**
-         * バリデーションを実行し、エラーがあれば表示する
-         * @returns {boolean} - バリデーション結果
-         */
-        function validateForm() {
-            let isValid = true;
-            let firstErrorElement = null;
-
-            // すべてのエラー表示をリセット
-            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-            document.getElementById('agreement-error-box').classList.remove('input-error');
-
-            // 1. 同意事項のチェック
-            const agreePolicy = document.getElementById('agree_policy').checked;
-            const agreePrivacy = document.getElementById('agree_privacy').checked;
-
-            if (!agreePolicy || !agreePrivacy) {
-                isValid = false;
-                document.getElementById('agreement-error-box').classList.add('input-error');
-                if (!firstErrorElement) firstErrorElement = document.getElementById('agreement-error-box');
-            }
-            
-            // 2. 必須入力フィールドのチェック
-            document.querySelectorAll('.required-field[data-required="true"]').forEach(input => {
-                let isEmpty = false;
-                if (input.type === 'text' || input.tagName === 'SELECT' || input.type === 'number') {
-                    if (input.value.trim() === '') {
-                        isEmpty = true;
-                    }
-                } else if (input.type === 'radio') {
-                    // ラジオボタンのチェック (同じname属性を持つグループ全体で一つでもチェックされていればOK)
-                    const name = input.name;
-                    const group = document.querySelectorAll(`input[name="${name}"][data-required="true"]`);
-                    const isGroupChecked = Array.from(group).some(radio => radio.checked);
-                    
-                    if (!isGroupChecked) {
-                        isEmpty = true;
-                        // ラジオボタンは親コンテナに枠を表示
-                        const container = input.closest('.report-fields-container');
-                        if (container) {
-                            const errorBox = document.getElementById(`report-error-box_${name.split('_')[1]}`);
-                            errorBox.classList.add('input-error');
-                            if (!firstErrorElement) firstErrorElement = errorBox;
-                        }
-                    }
-                }
-
-                if (isEmpty) {
-                    isValid = false;
-                    input.classList.add('input-error');
-                    if (!firstErrorElement && input.type !== 'radio') firstErrorElement = input;
-                }
-            });
-            
-            // 3. クーポンとお支払い方法のチェック
-            if (document.getElementById('coupon').value === '') {
-                isValid = false;
-                document.getElementById('coupon').classList.add('input-error');
-                if (!firstErrorElement) firstErrorElement = document.getElementById('coupon');
-            }
-            if (document.getElementById('payment_method').value === '') {
-                isValid = false;
-                document.getElementById('payment_method').classList.add('input-error');
-                if (!firstErrorElement) firstErrorElement = document.getElementById('payment_method');
-            }
-
-
-            if (!isValid) {
-                showToast("必須項目をすべて入力してください。");
-                if (firstErrorElement) {
-                    firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-
-            return isValid;
-        }
-
-        /**
-         * ----------------------------------------------------
-         * イベントリスナー
-         * ----------------------------------------------------
-         */
-
-        // 初期対象者セットの追加
-        addTargetSet();
-        updateQuote();
-
-
-        // 対象者追加ボタン
-        addTargetBtn.addEventListener('click', () => {
-            addTargetSet();
-            updateQuote();
-        });
-
-        // 対象者削除ボタン
-        targetsContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-target')) {
-                const id = e.target.dataset.id;
-                document.getElementById(id).remove();
-                // targetCountは減らさない（IDの重複を防ぐため）
-                updateQuote();
-            }
-        });
-
-        // フォーム入力時の見積り更新（共通処理）
-        form.addEventListener('input', (e) => {
-            if (e.target.id === 'introducer_name') {
-                 // 紹介者入力時、追加ボタンを有効化
-                addIntroducerBtn.disabled = e.target.value.trim() === '';
-            } else if (!e.target.classList.contains('report-radio')) {
-                // ラジオボタン以外で、フォーム全体の更新をトリガー
-                updateQuote();
-            }
-        });
-        
-        // 同意事項のチェックボックスは別でリスナーを設定
-        document.getElementById('agree_policy').addEventListener('change', updateQuote);
-        document.getElementById('agree_privacy').addEventListener('change', updateQuote);
-
-        // 紹介割引追加ボタン
-        addIntroducerBtn.addEventListener('click', () => {
-            const name = introducerNameInput.value.trim();
-            if (name && !isIntroducerAdded) {
-                isIntroducerAdded = true;
-                introducerDisplay.textContent = `ご紹介者: ${name} (適用済み -500円)`;
-                addIntroducerBtn.textContent = '解除する';
-                addIntroducerBtn.classList.add('btn-clear');
-                addIntroducerBtn.classList.remove('btn-primary');
-            } else if (isIntroducerAdded) {
-                isIntroducerAdded = false;
-                introducerDisplay.textContent = '';
-                addIntroducerBtn.textContent = '追加する';
-                addIntroducerBtn.classList.remove('btn-clear');
-                addIntroducerBtn.classList.add('btn-primary');
-            }
-            updateQuote();
-            addIntroducerBtn.disabled = !isIntroducerAdded && name === '';
-        });
-
-
-        // クリアボタン
-        document.getElementById('clear-btn').addEventListener('click', () => {
-            if (confirm("入力内容をすべてクリアしますか？")) {
-                form.reset();
-                // 動的に追加された対象者をクリア
-                while (targetsContainer.firstChild) {
-                    targetsContainer.removeChild(targetsContainer.firstChild);
-                }
-                targetCount = 0;
-                addTargetSet(); // 最初のセットを再生成
-
-                // 紹介者割引の状態リセット
-                isIntroducerAdded = false;
-                introducerDisplay.textContent = '';
-                addIntroducerBtn.textContent = '追加する';
-                addIntroducerBtn.classList.remove('btn-clear');
-                addIntroducerBtn.classList.add('btn-primary');
-                addIntroducerBtn.disabled = true;
-
-                updateQuote();
-                // エラー表示もリセット
-                document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-                showToast("フォームの内容をクリアしました。");
-            }
-        });
-
-        // コピーボタン
-        document.getElementById('copy-btn').addEventListener('click', () => {
-            if (validateForm()) {
-                const quoteText = generateQuote();
-                copyToClipboard(quoteText);
-            }
-        });
-
-        // LINEに貼り付けて予約するボタン
-        document.getElementById('line-btn').addEventListener('click', () => {
-            if (validateForm()) {
-                const quoteText = generateQuote();
-                if (copyToClipboard(quoteText)) {
-                    // クリップボードにコピー成功後、LINEアプリを起動
-                    // アプリ内ブラウザでLINEアプリへの遷移が制限される場合があるため、target="_top"で試みる
-                    setTimeout(() => {
-                         window.open(LINE_URL, '_blank');
-                    }, 500); // コピーメッセージ表示後に遷移
-                }
-            }
-        });
-    </script>
+ <!-- Header -->
+ <header class="bg-[#EAE6E1] p-4 shadow-md sticky top-0 z-50">
+  <div class="max-w-4xl mx-auto flex justify-between items-center">
+   <h1 class="text-xl font-bold text-[#776163] tracking-widest">Therapist Mii</h1>
+   <!-- モバイル向けメニューボタン（今回は不要なため省略） -->
+  </div>
+ </header>
+
+ <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+  <!-- フォームコンテナ (ふわっと表示の対象) -->
+  <div id="form-content" class="form-container opacity-0">
+   <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-center text-[#776163] pt-4">ヒーリングお見積り＆ご予約</h2>
+
+   <form id="healing-form" class="space-y-8">
+    <!-- 1. 同意事項 -->
+    <section class="p-4 rounded-lg border border-gray-200">
+     <h3 class="text-lg font-bold mb-3 text-[#776163]">同意事項<span class="required-star">*</span></h3>
+     <div class="space-y-2">
+      <label class="flex items-start cursor-pointer">
+       <input type="checkbox" id="agree_policy" name="agree_policy" class="mt-1 form-checkbox h-5 w-5 text-[#E4C1B5] rounded border-gray-300 focus:ring-[#776163]">
+       <span class="ml-2 text-sm">セッションポリシー、注意事項に<a href="https://spiritual-therapist-mii.studio.site/policy" target="_blank" class="text-[#ad9196] hover:underline">同意します。</a></span>
+      </label>
+      <label class="flex items-start cursor-pointer">
+       <input type="checkbox" id="agree_privacy" name="agree_privacy" class="mt-1 form-checkbox h-5 w-5 text-[#E4C1B5] rounded border-gray-300 focus:ring-[#776163]">
+       <span class="ml-2 text-sm">プライバシーポリシーに<a href="https://spiritual-therapist-mii.studio.site/privacypolicy" target="_blank" class="text-[#ad9196] hover:underline">同意します。</a></span>
+      </label>
+      <div id="agreement-error-box" class="border border-transparent rounded p-1"></div>
+     </div>
+    </section>
+
+    <!-- 2. ヒーリング対象者セクション -->
+    <section class="space-y-6">
+     <h3 class="text-xl font-bold text-[#776163]">ヒーリング対象者<span class="required-star">*</span></h3>
+     <p class="text-sm text-gray-600">ヒーリングを受けたい方の情報をご記入ください。</p>
+     
+     <div id="targets-container" class="space-y-6">
+      <!-- 動的に追加される対象者フォームがここに入ります -->
+     </div>
+
+     <button type="button" id="add-target-btn" class="w-full sm:w-auto px-4 py-2 text-sm rounded-lg btn-primary hover:bg-[#ad9196] hover:text-white transition duration-200">
+      対象者を追加
+     </button>
+    </section>
+
+    <!-- 3. おうちヒーリング所在地 -->
+    <section class="p-4 rounded-lg border border-gray-200">
+     <label for="location" class="block text-lg font-bold mb-2 text-[#776163]">おうちヒーリングの場合、自宅所在地（番地不要）</label>
+     <input type="text" id="location" name="location" placeholder="例: 千葉県成田市飯田町" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
+     <p class="text-xs text-gray-500 mt-1">「おうちヒーリング」をご希望の場合にご記入ください。遠隔にておこないます。</p>
+    </section>
+
+    <!-- 4. 割引と支払い -->
+    <section class="space-y-6 p-4 rounded-lg border border-gray-200">
+     <h3 class="text-xl font-bold text-[#776163]">お支払いについて</h3>
+     
+     <!-- クーポン -->
+     <div>
+      <label for="coupon" class="block text-lg font-bold mb-2 text-[#776163]">クーポン<span class="required-star">*</span></label>
+      <p class="text-sm text-gray-600 mb-2">クーポンの有無を選択してください。</p>
+      <select id="coupon" name="coupon" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
+       <option value="">選択してください</option>
+       <option value="none">クーポン無し</option>
+       <option value="5">5％OFFクーポン</option>
+       <option value="10">10％OFFクーポン</option>
+       <option value="15">15％OFFクーポン</option>
+       <option value="20">20％OFFクーポン</option>
+       <option value="25">25％OFFクーポン</option>
+       <option value="30">30％OFFクーポン</option>
+      </select>
+     </div>
+
+     <!-- 紹介割引 -->
+     <div>
+      <label class="block text-lg font-bold mb-2 text-[#776163]">紹介割引</label>
+      <p class="text-sm text-gray-600 mb-2">ご紹介くださった方と紹介された方を対象に割引できます。他クーポン併用可 (-500円)</p>
+      <div class="flex space-x-2">
+       <input type="text" id="introducer_name" placeholder="紹介者のお名前" class="flex-grow p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
+       <button type="button" id="add-introducer-btn" class="flex-shrink-0 px-4 py-3 text-sm rounded-lg btn-primary hover:bg-[#ad9196] hover:text-white transition duration-200 disabled:opacity-50" disabled>
+        追加する
+       </button>
+      </div>
+      <div id="introducer-display" class="mt-2 text-[#776163] font-semibold"></div>
+     </div>
+
+     <!-- お支払い方法 -->
+     <div>
+      <label for="payment_method" class="block text-lg font-bold mb-2 text-[#776163]">お支払い方法<span class="required-star">*</span></label>
+      <select id="payment_method" name="payment_method" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]">
+       <option value="">選択してください</option>
+       <option value="銀行振込">銀行振込</option>
+       <option value="Paypay">Paypay</option>
+       <option value="Paypal">Paypal</option>
+      </select>
+     </div>
+    </section>
+
+    <!-- 5. 備考 -->
+    <section class="p-4 rounded-lg border border-gray-200">
+     <label for="notes" class="block text-lg font-bold mb-2 text-[#776163]">備考</label>
+     <p class="text-sm text-gray-600 mb-2">ご希望・ご質問があればご記入ください。</p>
+     <textarea id="notes" name="notes" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:border-[#776163]"></textarea>
+    </section>
+
+    <!-- 6. お見積り表示エリア -->
+    <section class="bg-[#F9F7F5] p-6 rounded-lg shadow-inner">
+     <h3 class="text-xl font-bold mb-4 text-[#776163]">■ お見積り</h3>
+     <div id="quote-output" class="whitespace-pre-wrap text-sm leading-relaxed">
+      <p class="text-center text-gray-500">上記フォームにご入力いただくと、ここに自動でお見積りが表示されます。</p>
+     </div>
+    </section>
+    
+    <section class="p-4 rounded-lg border border-gray-200">
+     <h4 class="text-lg font-bold mb-3 text-[#776163]">【LINEで予約する際の手順】</h4>
+     <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+      <li>ご確認いただけましたら、コピーボタンを押してください。</li>
+      <li>「LINEに貼り付けて予約する」ボタンを押し、起動したLINEに貼り付けて送信ください。</li>
+     </ol>
+    </section>
+
+    <!-- 7. ページ下部機能ボタン -->
+    <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
+     <button type="button" id="clear-btn" class="w-full sm:w-1/3 py-3 rounded-lg text-lg font-bold btn-clear hover:bg-[#ad9196] hover:text-white">
+      クリア
+     </button>
+     <button type="button" id="copy-btn" class="w-full sm:w-1/3 py-3 rounded-lg text-lg font-bold btn-primary">
+      コピー
+     </button>
+     <button type="button" id="line-btn" class="w-full sm:w-1/3 py-3 rounded-lg text-lg font-bold btn-primary">
+      LINEに貼り付けて予約する
+     </button>
+    </div>
+   </form>
+  </div>
+  
+  <!-- Toast Message (Popup) -->
+  <div id="toast" class="toast-message hidden" role="alert"></div>
+
+ </main>
+
+ <!-- Footer -->
+ <footer class="bg-[#EAE6E1] mt-12 p-8 text-sm">
+  <div class="max-w-4xl mx-auto space-y-8">
+   <!-- はじめての方へセクション -->
+   <div class="p-4 bg-white rounded-lg shadow-inner border border-gray-200">
+    <h4 class="text-lg font-bold mb-2 text-[#776163]">はじめての方へ</h4>
+    <p class="text-gray-700 mb-4">はじめての方は、以下のフォームにご記入お願いいたします。<br>リピーター様も未入力の方はご記入お願いいたします。</p>
+    <a href="https://spiritual-therapist-mii.studio.site/form" target="_blank" class="inline-block px-6 py-2 rounded-lg text-sm font-bold btn-primary hover:bg-[#ad9196] hover:text-white">
+     はじめての方のフォーム
+    </a>
+   </div>
+
+   <!-- リンク一覧 -->
+   <nav class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+    <a href="https://spiritual-therapist-mii.studio.site/" class="text-[#776163] hover:text-[#ad9196]">HOME</a>
+    <a href="https://spiritual-therapist-mii.studio.site/menu" class="text-[#776163] hover:text-[#ad9196]">メニュー一覧</a>
+    <a href="https://spiritual-therapist-mii.studio.site/reading" class="text-[#776163] hover:text-[#ad9196]">リーディング</a>
+    <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="text-[#776163] hover:text-[#ad9196]">未来ナビ</a>
+    <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="text-[#776163] hover:text-[#ad9196]">アートセラピー</a>
+    <a href="https://spiritual-therapist-mii.studio.site/color-card" class="text-[#776163] hover:text-[#ad9196]">カラーカード</a>
+    <a href="https://spiritual-therapist-mii.studio.site/healing" class="text-[#776163] hover:text-[#ad9196]">ヒーリング</a>
+    <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="text-[#776163] hover:text-[#ad9196]">対面リーディング</a>
+   </nav>
+
+   <!-- コピーライト -->
+   <div class="text-center pt-4 border-t border-gray-300 mt-4">
+    <p class="text-gray-600">© 2025 by Therapist Mii. All rights reserved.</p>
+   </div>
+  </div>
+ </footer>
+
+ <script>
+ // ページロード時にふわっと表示
+ window.onload = () => {
+  document.body.style.opacity = 1;
+  document.getElementById('form-content').style.opacity = 1;
+ };
+
+ const form = document.getElementById('healing-form');
+ const targetsContainer = document.getElementById('targets-container');
+ const addTargetBtn = document.getElementById('add-target-btn');
+ const introducerNameInput = document.getElementById('introducer_name');
+ const addIntroducerBtn = document.getElementById('add-introducer-btn');
+ const introducerDisplay = document.getElementById('introducer-display');
+ const quoteOutput = document.getElementById('quote-output');
+ const LINE_URL = "https://line.me/ti/p/Kv76GQK_UI";
+
+ let targetCount = 0;
+ let isIntroducerAdded = false;
+
+ // ----------------------------------------------------
+ // ユーティリティ関数
+ // ----------------------------------------------------
+
+ /**
+ * カスタムToastメッセージを表示する
+ * @param {string} message - 表示するメッセージ
+ */
+ function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  toast.style.opacity = 1;
+
+  setTimeout(() => {
+   toast.style.opacity = 0;
+   setTimeout(() => {
+    toast.classList.add('hidden');
+   }, 300);
+  }, 3000);
+ }
+
+ /**
+ * クリップボードにテキストをコピーする
+ * @param {string} text - コピーするテキスト
+ */
+ function copyToClipboard(text) {
+  try {
+   // execCommand('copy')は非推奨だがiframe内で動作しやすいため採用
+   const textarea = document.createElement('textarea');
+   textarea.value = text;
+   textarea.style.position = 'fixed';
+   textarea.style.left = '-9999px';
+   document.body.appendChild(textarea);
+   textarea.select();
+   document.execCommand('copy');
+   document.body.removeChild(textarea);
+   showToast("お見積り内容をクリップボードにコピーしました。");
+   return true;
+  } catch (err) {
+   console.error('Failed to copy text: ', err);
+   showToast("コピーに失敗しました。お手数ですが手動でコピーしてください。");
+   return false;
+  }
+ }
+
+ /**
+ * 数値をカンマ区切り文字列に変換する
+ * @param {number} num 
+ */
+ function formatPrice(num) {
+  return num.toLocaleString();
+ }
+
+ /**
+ * ----------------------------------------------------
+ * フォーム要素の動的生成
+ * ----------------------------------------------------
+ */
+
+ const menuOptions = {
+  'omakase': { name: 'おまかせヒーリング', time: '30分', price: 5000 },
+  'mental': { name: 'メンタルヒーリング', time: '30分', price: 5000 },
+  'energy': { name: 'エネルギートリートメント', time: '30分', price: 5000 },
+  'head': { name: 'ヘッドヒーリング', time: '30分', price: 5000 },
+  'one_min': { name: '1分ヒーリング', time: '1分', price: 200 }
+ };
+
+ // ユーザーの要望に合わせてreportOptionsを更新
+ const reportOptions = [
+  { id: 'report_0', name: '報告不要', price: 0, desc: '報告書は作成しません。' },
+  { id: 'report_mini', name: 'ミニ報告', price: 2000, desc: '簡単な結果報告をいたします。' },
+  { id: 'report_1part', name: '1部位鑑定書', price: 5000, desc: '特定の1部位に焦点を当てた鑑定書です。' },
+  // { id: 'report_full', name: '鑑定書', price: 15000, desc: '詳細な総合鑑定書です。' }, // 削除
+  { id: 'report_aura', name: 'オーラアート', price: 10000, desc: '現在のオーラを絵でお伝えします。' }, // 価格と説明を変更
+  { id: 'report_full_art', name: '鑑定書＋オーラアート', price: 16000, desc: '詳細な鑑定書とオーラアートのセットです。' } // 価格を変更
+ ];
+
+ /**
+ * 新しい対象者フォームのセットを生成・追加する
+ */
+ function addTargetSet() {
+  targetCount++;
+  const index = targetCount;
+  const targetId = `target_${index}`;
+  
+  const div = document.createElement('div');
+  div.id = targetId;
+  div.className = 'p-4 border border-[#EAE6E1] rounded-lg bg-white shadow-sm space-y-4 relative';
+  div.innerHTML = `<br>
+  <div class="flex justify-between items-start">
+   <h4 class="text-md font-bold text-[#776163]">対象者 #${index}</h4>
+   ${index > 1 ? `<button type="button" class="text-red-500 hover:text-red-700 text-sm delete-target" data-id="${targetId}">削除</button>` : ''}
+  </div>
+  
+  <p class="text-sm font-bold text-[#776163]">ヒーリングを受けたい方の名前と、関係、年齢をお書きください。</p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+   <!-- お名前 (必須) -->
+   <div>
+    <label for="name_${index}" class="block text-sm font-medium">お名前<span class="required-star">*</span></label>
+    <input type="text" id="name_${index}" data-required="true" placeholder="お名前" class="w-full p-2 border border-gray-300 rounded-lg required-field">
+   </div>
+   <!-- 関係 -->
+   <div>
+    <label for="relation_${index}" class="block text-sm font-medium">関係 (初めての方)</label>
+    <input type="text" id="relation_${index}" placeholder="例：本人" class="w-full p-2 border border-gray-300 rounded-lg">
+   </div>
+   <!-- 年齢 -->
+   <div>
+    <label for="age_${index}" class="block text-sm font-medium">年齢 (初めての方)</label>
+    <input type="number" id="age_${index}" placeholder="年齢" class="w-full p-2 border border-gray-300 rounded-lg">
+   </div>
+  </div>
+  
+  <!-- メニュー選択 (必須) -->
+  <div>
+   <label for="menu_${index}" class="block text-sm font-bold mb-1 text-[#776163]">メニュー選択<span class="required-star">*</span></label>
+   <select id="menu_${index}" data-required="true" class="w-full p-2 border border-gray-300 rounded-lg required-field menu-select">
+    <option value="">選択してください</option>
+    ${Object.keys(menuOptions).map(key => {
+     const opt = menuOptions[key];
+     return `<option value="${key}" data-price="${opt.price}">${opt.name} ${opt.time} ${formatPrice(opt.price)}円</option>`;
+    }).join('')}
+   </select>
+  </div>
+  
+  <!-- 1分ヒーリング選択時のみ表示 -->
+  <div id="one_min_fields_${index}" class="space-y-4 p-3 border border-dashed border-[#ad9196] rounded-lg hidden">
+   <!-- ご希望日 -->
+   <div>
+    <label for="dates_${index}" class="block text-sm font-medium">ご希望日（複数記入可）</label>
+    <input type="text" id="dates_${index}" placeholder="例: 1月1日, 1月2日" class="w-full p-2 border border-gray-300 rounded-lg">
+   </div>
+   <!-- 希望分数 -->
+   <div>
+    <label for="duration_${index}" class="block text-sm font-medium">希望分数</label>
+    <select id="duration_${index}" class="w-full p-2 border border-gray-300 rounded-lg duration-select">
+     ${Array.from({ length: 10 }, (_, i) => i + 1).map(min => `<option value="${min}">${min}分</option>`).join('')}
+    </select>
+   </div>
+  </div>
+  
+  <!-- 報告書タイプ (必須) -->
+  <div id="report_fields_${index}" class="report-fields-container">
+   <h5 class="text-sm font-bold mt-4 mb-2">報告タイプを選択してください<span class="required-star">*</span></h5>
+   ${reportOptions.map((opt, i) => `
+   <label class="flex items-start mb-2 cursor-pointer">
+    <input type="radio" name="report_${index}" value="${opt.id}" data-price="${opt.price}" class="mt-1 form-radio h-4 w-4 text-[#E4C1B5] rounded-full required-field report-radio" ${i === 0 ? 'checked' : ''}>
+    <span class="ml-2 text-sm">
+     ${opt.name}: <span class="font-semibold">${formatPrice(opt.price)}円</span>
+     <span class="text-xs text-gray-500 block">${opt.desc}</span>
+    </span>
+   </label>
+   `).join('')}
+   <div id="report-error-box_${index}" class="border border-transparent rounded p-1"></div>
+  </div>
+  `;
+  targetsContainer.appendChild(div);
+
+  // イベントリスナーを設定
+  const menuSelect = div.querySelector(`#menu_${index}`);
+  menuSelect.addEventListener('change', updateFormState);
+  div.querySelectorAll('.report-radio').forEach(radio => radio.addEventListener('change', updateQuote));
+  div.querySelector('.duration-select')?.addEventListener('change', updateQuote);
+  div.querySelector(`#dates_${index}`)?.addEventListener('input', updateQuote);
+  div.querySelector(`#name_${index}`)?.addEventListener('input', updateQuote);
+ }
+
+ /**
+ * フォームの状態（1分ヒーリング関連フィールドの表示/非表示）を更新する
+ */
+ function updateFormState(event) {
+  const index = event.target.id.split('_')[1];
+  const menuValue = event.target.value;
+  const isOneMin = menuValue === 'one_min';
+
+  const oneMinFields = document.getElementById(`one_min_fields_${index}`);
+  const reportFields = document.getElementById(`report_fields_${index}`);
+  const reportRadios = reportFields.querySelectorAll('.report-radio');
+  
+  // 1分ヒーリング関連フィールドの表示/非表示
+  if (isOneMin) {
+   oneMinFields.classList.remove('hidden');
+   reportFields.classList.add('hidden');
+   
+   // 1分ヒーリングの場合、報告書は非表示（必須チェックからも除外）
+   reportRadios.forEach(radio => radio.setAttribute('data-required', 'false'));
+  } else {
+   oneMinFields.classList.add('hidden');
+   reportFields.classList.remove('hidden');
+   
+   // それ以外の場合、報告書は表示（必須チェックの対象）
+   reportRadios.forEach(radio => radio.setAttribute('data-required', 'true'));
+  }
+  
+  updateQuote();
+ }
+
+ /**
+ * ----------------------------------------------------
+ * 計算と見積り生成
+ * ----------------------------------------------------
+ */
+
+ /**
+ * フォームデータを集計し、お見積りテキストを生成する
+ */
+ function generateQuote() {
+  const data = {
+   targets: [],
+   introducer: isIntroducerAdded ? introducerNameInput.value.trim() : '',
+   coupon: document.getElementById('coupon').value,
+   paymentMethod: document.getElementById('payment_method').value,
+   location: document.getElementById('location').value.trim(),
+   notes: document.getElementById('notes').value.trim(),
+   totalBasePrice: 0,
+   totalDiscount: 0,
+   finalPrice: 0,
+  };
+
+  // 1. 対象者ごとの集計
+  for (let i = 1; i <= targetCount; i++) {
+   const targetDiv = document.getElementById(`target_${i}`);
+   if (!targetDiv) continue; // 削除された対象者はスキップ
+
+   const name = document.getElementById(`name_${i}`).value.trim();
+   const relation = document.getElementById(`relation_${i}`).value.trim();
+   const age = document.getElementById(`age_${i}`).value.trim();
+   const menuKey = document.getElementById(`menu_${i}`).value;
+
+   let targetPrice = 0;
+   let details = '';
+   let reportType = '';
+
+   if (menuKey && menuOptions[menuKey]) {
+    const menu = menuOptions[menuKey];
+    targetPrice += menu.price;
+
+    if (menuKey === 'one_min') {
+     // 1分ヒーリングの場合
+     const durationSelect = document.getElementById(`duration_${i}`);
+     const duration = parseInt(durationSelect ? durationSelect.value : 1);
+     targetPrice = menu.price * duration; // 200円 * 分数
+     details = `${menu.name} ${duration}分 ${formatPrice(targetPrice)}円`;
+
+     const dates = document.getElementById(`dates_${i}`).value.trim();
+     details += `\nご希望日：${dates || '未記入'}`;
+     reportType = '報告書なし (1分ヒーリング)';
+    } else {
+     // 通常メニューの場合
+     details = `${menu.name} ${menu.time} ${formatPrice(menu.price)}円`;
+
+     const selectedReport = targetDiv.querySelector(`input[name="report_${i}"]:checked`);
+     if (selectedReport) {
+      const reportPrice = parseInt(selectedReport.dataset.price || 0);
+      targetPrice += reportPrice;
+      reportType = reportOptions.find(r => r.id === selectedReport.value)?.name || selectedReport.value;
+      details += `\n報告書：${reportType} ${reportPrice > 0 ? formatPrice(reportPrice) + '円' : '0円'}`;
+     } else {
+      details += '\n報告書：未選択';
+     }
+    }
+   }
+
+   data.targets.push({
+    name: name,
+    relation: relation,
+    age: age,
+    menu: menuKey ? details : 'メニュー未選択',
+    reportType: reportType,
+    price: targetPrice
+   });
+
+   data.totalBasePrice += targetPrice;
+  }
+
+  // 2. 割引の計算
+  let couponDiscount = 0;
+  const couponRate = parseInt(data.coupon || 0);
+  if (couponRate > 0) {
+   couponDiscount = Math.floor(data.totalBasePrice * (couponRate / 100));
+  }
+
+  const introducerDiscount = data.introducer ? 500 : 0;
+  data.totalDiscount = couponDiscount + introducerDiscount;
+  data.finalPrice = Math.max(0, data.totalBasePrice - data.totalDiscount);
+
+  // 3. お見積りテキストの生成
+  let quoteText = `■ ${document.getElementById('name_1').value.trim() || 'お名前'} 様\n\n`;
+  quoteText += `【ヒーリングお見積り】\n`;
+
+  data.targets.forEach((t, index) => {
+   quoteText += `\n`;
+   quoteText += `①${index + 1} ${t.name || '未記入'}様\n`;
+   if (t.age || t.relation) {
+    quoteText += ` ・年齢: ${t.age || '未記入'}歳\n`;
+    quoteText += ` ・関係: ${t.relation || '未記入'}\n`;
+   }
+   quoteText += ` ・${t.menu.replace(/\n/g, '\n ・')}\n`; // 報告書タイプもインデント
+  });
+
+  quoteText += `\n—\n`;
+  quoteText += `・クーポン割引：− ${formatPrice(couponDiscount)} 円 (${couponRate}% OFF)\n`;
+  quoteText += `・紹介割引：− ${formatPrice(introducerDiscount)} 円\n`;
+  quoteText += `--------------------------------\n`;
+  quoteText += `合計金額：${formatPrice(data.finalPrice)} 円\n`;
+  quoteText += `--------------------------------\n\n`;
+
+  quoteText += `【入力内容】\n`;
+  quoteText += `■ お支払い方法: ${data.paymentMethod || '未選択'}\n`;
+  quoteText += `■ ご紹介者: ${data.introducer || 'なし'}\n`;
+  quoteText += `■ 自宅所在地: ${data.location || 'なし'}\n`;
+  quoteText += `■ 備考: ${data.notes || 'なし'}\n\n`;
+
+  quoteText += `【ご提出いただくもの】\n`;
+  quoteText += `（リピーター様は不要です）\n`;
+  quoteText += `目元の写真\n`;
+  quoteText += `手書きのお名前\n`;
+  
+  return quoteText;
+ }
+
+ /**
+ * お見積りテキストを更新し、表示エリアに反映する
+ */
+ function updateQuote() {
+  quoteOutput.textContent = generateQuote();
+ }
+
+ /**
+ * ----------------------------------------------------
+ * バリデーション
+ * ----------------------------------------------------
+ */
+
+ /**
+ * バリデーションを実行し、エラーがあれば表示する
+ * @returns {boolean} - バリデーション結果
+ */
+ function validateForm() {
+  let isValid = true;
+  let firstErrorElement = null;
+
+  // すべてのエラー表示をリセット
+  document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+  document.getElementById('agreement-error-box').classList.remove('input-error');
+
+  // 1. 同意事項のチェック
+  const agreePolicy = document.getElementById('agree_policy').checked;
+  const agreePrivacy = document.getElementById('agree_privacy').checked;
+
+  if (!agreePolicy || !agreePrivacy) {
+   isValid = false;
+   document.getElementById('agreement-error-box').classList.add('input-error');
+   if (!firstErrorElement) firstErrorElement = document.getElementById('agreement-error-box');
+  }
+  
+  // 2. 必須入力フィールドのチェック
+  document.querySelectorAll('.required-field[data-required="true"]').forEach(input => {
+   let isEmpty = false;
+   if (input.type === 'text' || input.tagName === 'SELECT' || input.type === 'number') {
+    if (input.value.trim() === '') {
+     isEmpty = true;
+    }
+   } else if (input.type === 'radio') {
+    // ラジオボタンのチェック (同じname属性を持つグループ全体で一つでもチェックされていればOK)
+    const name = input.name;
+    const group = document.querySelectorAll(`input[name="${name}"][data-required="true"]`);
+    const isGroupChecked = Array.from(group).some(radio => radio.checked);
+    
+    if (!isGroupChecked) {
+     isEmpty = true;
+     // ラジオボタンは親コンテナに枠を表示
+     const container = input.closest('.report-fields-container');
+     if (container) {
+      const errorBox = document.getElementById(`report-error-box_${name.split('_')[1]}`);
+      errorBox.classList.add('input-error');
+      if (!firstErrorElement) firstErrorElement = errorBox;
+     }
+    }
+   }
+
+   if (isEmpty) {
+    isValid = false;
+    input.classList.add('input-error');
+    if (!firstErrorElement && input.type !== 'radio') firstErrorElement = input;
+   }
+  });
+  
+  // 3. クーポンとお支払い方法のチェック
+  if (document.getElementById('coupon').value === '') {
+   isValid = false;
+   document.getElementById('coupon').classList.add('input-error');
+   if (!firstErrorElement) firstErrorElement = document.getElementById('coupon');
+  }
+  if (document.getElementById('payment_method').value === '') {
+   isValid = false;
+   document.getElementById('payment_method').classList.add('input-error');
+   if (!firstErrorElement) firstErrorElement = document.getElementById('payment_method');
+  }
+
+
+  if (!isValid) {
+   showToast("必須項目をすべて入力してください。");
+   if (firstErrorElement) {
+    firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+   }
+  }
+
+  return isValid;
+ }
+
+ /**
+ * ----------------------------------------------------
+ * イベントリスナー
+ * ----------------------------------------------------
+ */
+
+ // 初期対象者セットの追加
+ addTargetSet();
+ updateQuote();
+
+
+ // 対象者追加ボタン
+ addTargetBtn.addEventListener('click', () => {
+  addTargetSet();
+  updateQuote();
+ });
+
+ // 対象者削除ボタン
+ targetsContainer.addEventListener('click', (e) => {
+  if (e.target.classList.contains('delete-target')) {
+   const id = e.target.dataset.id;
+   document.getElementById(id).remove();
+   // targetCountは減らさない（IDの重複を防ぐため）
+   updateQuote();
+  }
+ });
+
+ // フォーム入力時の見積り更新（共通処理）
+ form.addEventListener('input', (e) => {
+  if (e.target.id === 'introducer_name') {
+   // 紹介者入力時、追加ボタンを有効化
+   addIntroducerBtn.disabled = e.target.value.trim() === '';
+  } else if (!e.target.classList.contains('report-radio')) {
+   // ラジオボタン以外で、フォーム全体の更新をトリガー
+   updateQuote();
+  }
+ });
+ 
+ // 同意事項のチェックボックスは別でリスナーを設定
+ document.getElementById('agree_policy').addEventListener('change', updateQuote);
+ document.getElementById('agree_privacy').addEventListener('change', updateQuote);
+
+ // 紹介割引追加ボタン
+ addIntroducerBtn.addEventListener('click', () => {
+  const name = introducerNameInput.value.trim();
+  if (name && !isIntroducerAdded) {
+   isIntroducerAdded = true;
+   introducerDisplay.textContent = `ご紹介者: ${name} (適用済み -500円)`;
+   addIntroducerBtn.textContent = '解除する';
+   addIntroducerBtn.classList.add('btn-clear');
+   addIntroducerBtn.classList.remove('btn-primary');
+  } else if (isIntroducerAdded) {
+   isIntroducerAdded = false;
+   introducerDisplay.textContent = '';
+   addIntroducerBtn.textContent = '追加する';
+   addIntroducerBtn.classList.remove('btn-clear');
+   addIntroducerBtn.classList.add('btn-primary');
+  }
+  updateQuote();
+  addIntroducerBtn.disabled = !isIntroducerAdded && name === '';
+ });
+
+
+ // クリアボタン
+ document.getElementById('clear-btn').addEventListener('click', () => {
+  if (confirm("入力内容をすべてクリアしますか？")) {
+   form.reset();
+   // 動的に追加された対象者をクリア
+   while (targetsContainer.firstChild) {
+    targetsContainer.removeChild(targetsContainer.firstChild);
+   }
+   targetCount = 0;
+   addTargetSet(); // 最初のセットを再生成
+
+   // 紹介者割引の状態リセット
+   isIntroducerAdded = false;
+   introducerDisplay.textContent = '';
+   addIntroducerBtn.textContent = '追加する';
+   addIntroducerBtn.classList.remove('btn-clear');
+   addIntroducerBtn.classList.add('btn-primary');
+   addIntroducerBtn.disabled = true;
+
+   updateQuote();
+   // エラー表示もリセット
+   document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+   showToast("フォームの内容をクリアしました。");
+  }
+ });
+
+ // コピーボタン
+ document.getElementById('copy-btn').addEventListener('click', () => {
+  if (validateForm()) {
+   const quoteText = generateQuote();
+   copyToClipboard(quoteText);
+  }
+ });
+
+ // LINEに貼り付けて予約するボタン
+ document.getElementById('line-btn').addEventListener('click', () => {
+  if (validateForm()) {
+   const quoteText = generateQuote();
+   if (copyToClipboard(quoteText)) {
+    // クリップボードにコピー成功後、LINEアプリを起動
+    // アプリ内ブラウザでLINEアプリへの遷移が制限される場合があるため、target="_top"で試みる
+    setTimeout(() => {
+     window.open(LINE_URL, '_blank');
+    }, 500); // コピーメッセージ表示後に遷移
+   }
+  }
+ });
+ </script>
 </body>
 </html>
