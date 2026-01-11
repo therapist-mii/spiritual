@@ -82,12 +82,26 @@
         /* ボタンの共通スタイル */
         .diag-button {
             padding: 1rem;
-            border-radius: 0.5rem;
+            border-radius: 9999px; /* 角丸を強く（pill shape） */
             font-weight: 600;
             transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .diag-button:hover {
+            transform: translateY(-1px);
+        }
+
+        /* LINEボタンのスタイル */
+        .btn-line {
+            background-color: #06C755;
+            color: white;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .btn-line:hover {
+            background-color: #05b64d;
             transform: translateY(-1px);
         }
     </style>
@@ -108,28 +122,31 @@
 
     <!-- フッター -->
     <footer class="bg-header-footer-bg p-6 mt-auto">
-        <div class="max-w-3xl mx-auto text-sm text-accent-text">
-            <nav class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3 mb-4">
-                <a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-black transition duration-150">HOME</a>
-                <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-black transition duration-150">メニュー一覧</a>
-                <a href="https://spiritual-therapist-mii.studio.site/reading" class="hover:text-black transition duration-150">リーディング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/mirai-navi" class="hover:text-black transition duration-150">未来予報</a>
-                <a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="hover:text-black transition duration-150">アートセラピー</a>
-                <a href="https://spiritual-therapist-mii.studio.site/color-card" class="hover:text-black transition duration-150">カラーカード</a>
-                <a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-black transition duration-150">ヒーリング</a>
-                <a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="hover:text-black transition duration-150">対面リーディング</a>
-
-                <a href="https://therapist-mii.github.io/spiritual/shindan_c.html" class="hover:text-black transition duration-150">おすすめメニュー診断　色を選んで診断する</a>
-                <a href="https://therapist-mii.github.io/spiritual/shindan.html" class="hover:text-black transition duration-150">おすすめメニュー診断　質問に答えて診断する</a>
-                <a href="https://spiritual-therapist-mii.studio.site/review-01" class="hover:text-black transition duration-150">お客様の声</a>
-                <a href="https://spiritual-therapist-mii.studio.site/q-a" class="hover:text-black transition duration-150">Q&A</a>
-                <a href="https://spiritual-therapist-mii.studio.site/sitemap#profile" class="hover:text-black transition duration-150">プロフィール</a>
-                <a href="https://spiritual-therapist-mii.studio.site/contact" class="hover:text-black transition duration-150">お問い合わせ</a>
-                <a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-black transition duration-150">無料で今必要なメッセージを受け取る</a>
-                <a href="https://www.instagram.com/mii_shindou/" class="hover:text-black transition duration-150">Instagram</a>
-
+        <div class="max-w-4xl mx-auto text-sm">
+            <nav class="flex flex-col items-center space-y-4">
+                <!-- リンク群 -->
+                <div class="flex flex-wrap justify-center gap-4 sm:gap-6 text-base text-[#776163]">
+                    <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">メニュー</a>
+                    <span class="text-gray-400 select-none">|</span>
+                    <a href="https://spiritual-therapist-mii.studio.site/flow" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">セッションの流れ</a>
+                    <span class="text-gray-400 select-none">|</span>
+                    <a href="https://spiritual-therapist-mii.studio.site/review" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">お客様の声</a>
+                    <span class="text-gray-400 select-none">|</span>
+                    <a href="https://spiritual-therapist-mii.studio.site/q-a" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">よくあるご質問</a>
+                    <span class="text-gray-400 select-none">|</span>
+                    <a href="https://spiritual-therapist-mii.studio.site/about-me" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">私について</a>
+                </div>
+                
+                <!-- LINEボタン（フッター用） -->
+                <div class="mt-4">
+                    <a href="https://line.me/ti/p/Kv76GQK_UI" target="_blank"
+                       class="btn-line py-2 px-6 rounded-full text-sm font-bold shadow-md hover:shadow-lg flex items-center">
+                        <img src="https://github.com/therapist-mii/spiritual/raw/main/images/line100.png" alt="LINE" class="w-5 h-5 mr-2">
+                        予約・お問合せ
+                    </a>
+                </div>
             </nav>
-            <p class="text-center mt-4 text-xs">© 2024 by Therapist Mii. All rights reserved.</p>
+            <p class="text-center mt-8 text-xs text-gray-500">© 2024 by Therapist Mii. All rights reserved.</p>
         </div>
     </footer>
 
@@ -209,14 +226,14 @@
                 Q7: { A: 'Q3', B: '対面リーディング' },
             },
 
-            // メニュー詳細と予約リンク
+            // メニュー詳細 (予約リンクはrenderResultでLINE固定にするため未使用だが残置)
             menuDetails: {
-                'リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/reading', reserve: 'https://therapist-mii.github.io/spiritual/reading-r.html' },
-                '未来予報': { detail: 'https://spiritual-therapist-mii.studio.site/mirai-navi', reserve: 'https://therapist-mii.github.io/spiritual/mirainavi-r.html' },
-                'アートセラピー': { detail: 'https://spiritual-therapist-mii.studio.site/art-therapy', reserve: 'https://therapist-mii.github.io/spiritual/art_therapy_r.html' },
-                'カラーカード': { detail: 'https://spiritual-therapist-mii.studio.site/color-card', reserve: 'https://therapist-mii.github.io/spiritual/color_card-r.html' },
-                'ヒーリング': { detail: 'https://spiritual-therapist-mii.studio.site/healing', reserve: 'https://therapist-mii.github.io/spiritual/healing-r.html' },
-                '対面リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/f2f_reading', reserve: 'https://therapist-mii.github.io/spiritual/f2f_reading-r.html' }
+                'リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/reading' },
+                '未来予報': { detail: 'https://spiritual-therapist-mii.studio.site/mirai-navi' },
+                'アートセラピー': { detail: 'https://spiritual-therapist-mii.studio.site/art-therapy' },
+                'カラーカード': { detail: 'https://spiritual-therapist-mii.studio.site/color-card' },
+                'ヒーリング': { detail: 'https://spiritual-therapist-mii.studio.site/healing' },
+                '対面リーディング': { detail: 'https://spiritual-therapist-mii.studio.site/f2f_reading' }
             },
 
             // 結果テキスト (理由とメッセージ)
@@ -365,7 +382,7 @@
                 const optionText = data.options[key];
                 html += `
                     <button 
-                        class="diag-button w-full text-left bg-white text-black border border-accent-text hover:bg-header-footer-bg hover:border-black shadow-md"
+                        class="diag-button w-full text-left bg-white text-black border border-accent-text hover:bg-header-footer-bg hover:border-black shadow-md p-4 rounded-lg"
                         onclick="handleAnswer('${qid}', '${key}')"
                     >
                         <span class="font-bold text-accent-text mr-2">${key}.</span>
@@ -431,8 +448,10 @@
                         <a href="${links.detail}" target="_blank" class="diag-button w-full sm:w-1/2 bg-action-button text-white hover:bg-pink-400">
                             メニュー詳細を見る
                         </a>
-                        <a href="${links.reserve}" target="_blank" class="diag-button w-full sm:w-1/2 bg-action-button text-white hover:bg-pink-400">
-                            予約する
+                        <!-- LINE予約ボタンに変更 -->
+                        <a href="https://line.me/ti/p/Kv76GQK_UI" target="_blank" class="diag-button w-full sm:w-1/2 btn-line text-white shadow-lg hover:shadow-xl">
+                            <img src="https://github.com/therapist-mii/spiritual/raw/main/images/line100.png" alt="LINE" class="w-6 h-6 mr-2">
+                            予約・お問合せ
                         </a>
                     </div>
                     
@@ -493,43 +512,6 @@
                 // 履歴が空になったらQ1から再開
                 handleRestart();
             } else {
-                // 1つ前の質問IDを取得してレンダリング
-                currentQuestionId = answerHistory[answerHistory.length - 1].qid;
-                // ただし、戻った先の質問は、再回答を受け付ける前に、その前の質問（currentQuestionIdの親）に戻る必要があるため、
-                // answerHistoryを1つpopした後に、その時点の最後のqidでrenderQuestionを呼ぶのが正しい。
-                // 1つ前の質問に戻るには、履歴をpopして、その前のqidのルートを再計算しては意味がないため、
-                // 単純に最後の要素をpopして、そのpopされた要素のqidの*親*を計算するのは煩雑。
-
-                // 正しいロジック：
-                // 1. 履歴の最後の要素（現在の質問に到達するための回答）をpopする。
-                const lastEntry = answerHistory.pop(); 
-                
-                // 2. 履歴が空ならQ1に戻る
-                if (!lastEntry) {
-                    handleRestart();
-                    return;
-                }
-                
-                // 3. 戻る先の質問ID（lastEntryのqid）を特定する
-                // 正しいのは、**現在の質問のID**をセットし直すこと。
-                currentQuestionId = lastEntry.qid;
-                renderQuestion(currentQuestionId);
-
-                // *補足*: 厳密な履歴管理としては、
-                // 1. 戻るボタンが押されたら、現在の質問を呼び出した回答（履歴の最後）をpopする。
-                // 2. pop後のanswerHistoryの長さが0ならQ1。
-                // 3. そうでなければ、pop後の最後の要素が持つqidの**次のステップ**を計算し、その結果が**現在の質問**になるようにすべき。
-                // 簡略化のため、ここでは「戻るボタンは常に1つ前の質問画面に戻る」という挙動を採用し、
-                // 履歴の最後の要素が、前の質問を特定する情報としてのみ使われるようにします。
-                
-                // Q7からの戻りなど、QIDがルート上複数回出現する場合（Q3からQ6への分岐が2つあるなど）
-                // 完全に正確な復元ロジックは非常に複雑になるため、
-                // ここでは「現在の質問が QX なら、戻るボタンを押した時に QX の直前の質問を再レンダリングする」
-                // というシンプルな方式を採用します。
-                
-                // *最もシンプルな対応*：
-                // Q1に戻るまで、ただ単に前の質問を再レンダリングし続ける。
-                
                 const previousQid = answerHistory.length > 0 
                     ? answerHistory[answerHistory.length - 1].qid 
                     : 'Q1';
@@ -555,6 +537,3 @@
     </script>
 </body>
 </html>
-
-
-
