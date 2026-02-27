@@ -1,470 +1,927 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BGR45N6NR8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-BGR45N6NR8');
-</script>
-<!-- Google tag (gtag.js) -->
-
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>色彩心理からのおすすめメニュー診断</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts Noto Serif JP -->
+    <!-- ファビコン -->
+    <link rel="icon" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
+    
+    <!-- Google Fonts: Noto Serif JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://github.com/therapist-mii/spiritual/raw/main/images/favicon.png">
-
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Noto Serif JP"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            text: '#776163',
+                            header: '#EAE6E1',
+                            btn1: '#E4C1B5',
+                            btn2: '#7a736a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        /* フォント設定 */
         body {
             font-family: 'Noto Serif JP', serif;
-            background-color: #FFFFFF; /* 背景白 */
-            color: #000000; /* 文字黒 */
-        }
-        /* カスタムカラーの定義 */
-        .color-card {
-            aspect-ratio: 1 / 1; /* 正方形 */
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* ふわっとしたシャドウ */
-            transition: transform 0.1s, box-shadow 0.1s;
-            border-radius: 8px; /* 角丸 */
-            position: relative;
-        }
-        .color-card.selected {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 4px #776163, 0 8px 20px rgba(0, 0, 0, 0.2); /* 選択時の強調と枠線 */
-        }
-        .color-card-number {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #776163; /* 目立たせたい色 */
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            width: 3rem;
-            height: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-color: #FFFFFF;
+            color: #333333;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .diagnosis-area {
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            transform: translateY(20px);
-            animation: fadeIn 1s forwards;
-            background-color: #FFFFFF;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05); /* 結果エリアもふわっと */
+        .fade-in {
+            animation: fadeIn 1.2s ease-in-out forwards;
         }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+
         @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        /* モバイルでの6列グリッド */
-        @media (max-width: 640px) {
-            .color-grid {
-                grid-template-columns: repeat(6, minmax(0, 1fr));
-            }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(8px); }
         }
-        /* デスクトップでは5列に調整 */
-        @media (min-width: 641px) {
-            .color-grid {
-                grid-template-columns: repeat(8, minmax(0, 1fr));
-            }
+
+        .color-card {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+            cursor: pointer;
         }
-        /* ボタンのスタイル */
-        .btn-primary {
-            background-color: #E4C1B5;
-            color: white;
-            transition: background-color 0.2s, transform 0.2s;
+
+        .color-card:active {
+            transform: scale(0.9);
         }
-        .btn-primary:hover {
-            background-color: #d1b0a3;
-            transform: translateY(-1px);
+
+        .color-card.selected {
+            transform: scale(0.85);
+            box-shadow: 0 0 0 2px #776163;
+            opacity: 0.8;
         }
-        .btn-secondary {
-            background-color: #7a736a;
-            color: white;
-            transition: background-color 0.2s, transform 0.2s;
+
+        /* ふわっと表示されるボタンコンテナ */
+        .show-btn {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        .btn-secondary:hover {
-            background-color: #6a645d;
-            transform: translateY(-1px);
-        }
-        /* LINEボタンのスタイル */
-        .btn-line {
-            background-color: #06C755;
-            color: white;
-            transition: background-color 0.2s, transform 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-line:hover {
-            background-color: #05b64d;
-            transform: translateY(-1px);
-        }
-        .emphasis-text {
-            color: #776163;
+
+        .hide-btn {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(10px) !important;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="bg-[#EAE6E1] p-4 text-center shadow-md">
-        <h1 class="text-xl sm:text-2xl font-bold emphasis-text">色彩心理からのおすすめメニュー診断</h1>
+    <!-- ヘッダー -->
+    <header class="bg-brand-header py-4 shadow-sm z-10 sticky top-0">
+        <h1 class="text-center text-[15px] sm:text-base tracking-widest text-brand-text font-bold">色彩心理からのおすすめメニュー診断</h1>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
-        <div class="max-w-4xl mx-auto">
-
-            <!-- Instruction -->
-            <p class="text-center mb-6 text-base sm:text-lg emphasis-text">
+    <!-- メインコンテンツ -->
+    <main class="flex-grow w-full max-w-md mx-auto px-2 py-6 flex flex-col items-center">
+        
+        <!-- 診断画面 -->
+        <div id="view-select" class="w-full fade-in">
+            <p class="text-[13px] text-center mb-6 leading-relaxed">
                 色を気になる順に3色選んでください。<br>
                 選んだ色をもう一度タップすると解除できます。
             </p>
 
-            <!-- Selected Color Palette -->
-            <div id="palette-container" class="mb-8 p-3 flex justify-center items-center space-x-4 sm:space-x-6 border-b border-gray-200">
-                <div id="palette-1" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-gray-300 shadow-inner"></div>
-                <div id="palette-2" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-gray-300 shadow-inner"></div>
-                <div id="palette-3" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-gray-300 shadow-inner"></div>
+            <!-- 選択された色のパレット -->
+            <div class="flex justify-center gap-3 mb-6">
+                <div id="palette-0" class="w-12 h-12 rounded-sm border border-gray-200 shadow-sm bg-gray-50 flex items-center justify-center text-xs text-gray-300 transition-colors duration-300">1</div>
+                <div id="palette-1" class="w-12 h-12 rounded-sm border border-gray-200 shadow-sm bg-gray-50 flex items-center justify-center text-xs text-gray-300 transition-colors duration-300">2</div>
+                <div id="palette-2" class="w-12 h-12 rounded-sm border border-gray-200 shadow-sm bg-gray-50 flex items-center justify-center text-xs text-gray-300 transition-colors duration-300">3</div>
             </div>
 
-            <!-- Color Selection Grid (Responsive 6/8 columns) -->
-            <div id="color-grid" class="color-grid grid gap-3 mb-8">
-                <!-- Color Cards will be injected here by JavaScript -->
+            <!-- 色グリッド (横6列) -->
+            <div id="color-grid" class="grid grid-cols-6 gap-1 mb-8">
+                <!-- JavaScriptで生成 -->
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <button id="diagnose-button" disabled
-                        class="btn-primary py-3 px-8 rounded-full text-lg font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
-                    色を３色選んで、メニュー診断する
-                </button>
-                <button id="reset-button"
-                        class="btn-secondary py-3 px-8 rounded-full text-lg font-bold shadow-md">
-                    はじめからやり直す
+            <!-- 診断ボタン -->
+            <div id="btn-diagnose-container" class="hide-btn w-full">
+                <button id="btn-diagnose" class="w-full py-4 bg-brand-text text-white rounded shadow-md tracking-widest text-lg font-bold">
+                    メニュー診断する
                 </button>
             </div>
+        </div>
 
-            <!-- Diagnosis Result Area (Initially Hidden) -->
-            <div id="result-area" class="mt-10 hidden">
-                <div class="diagnosis-area">
-                    <h2 class="text-2xl font-bold mb-4 text-center emphasis-text border-b pb-2 border-gray-100">診断結果</h2>
-
-                    <!-- 色からのメッセージ -->
-                    <div class="mb-6 p-4 bg-gray-50 border-l-4 border-[#EAE6E1] rounded-lg">
-                        <h3 class="text-xl font-bold mb-2 emphasis-text">色からのメッセージ</h3>
-                        <p id="message-result" class="whitespace-pre-wrap text-base leading-relaxed"></p>
-                    </div>
-                    
-                    <!-- おすすめメニュー -->
-                    <div class="mb-6 p-4">
-                        <h3 class="text-xl font-bold mb-2 emphasis-text">おすすめメニュー</h3>
-                        <p id="menu-name-result" class="text-2xl font-bold text-[#E4C1B5] mb-4"></p>
-                        
-                        <h3 class="text-xl font-bold mb-2 emphasis-text border-t pt-4">おすすめ理由</h3>
-                        <p id="reason-result" class="text-base leading-relaxed"></p>
-                    </div>
-                    
-                    <!-- Result Buttons -->
-                    <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-3 mt-6">
-                        <a id="menu-detail-button" href="#" target="_blank"
-                           class="btn-primary py-3 px-6 rounded-full text-base font-bold text-center shadow-lg hover:shadow-xl">
-                            メニュー詳細を見る
-                        </a>
-                        <!-- LINE予約ボタン -->
-                        <a id="reservation-button" href="https://line.me/ti/p/Kv76GQK_UI" target="_blank"
-                           class="btn-line py-3 px-6 rounded-full text-base font-bold text-center shadow-lg hover:shadow-xl">
-                           <img src="https://github.com/therapist-mii/spiritual/raw/main/images/line100.png" alt="LINE" class="w-6 h-6 mr-2">
-                            予約・お問合せ
-                        </a>
-                    </div>
+        <!-- 診断結果画面 -->
+        <div id="view-result" class="w-full hidden">
+            <h2 class="text-xl text-center text-brand-text mb-6 font-bold tracking-widest">診断結果</h2>
+            
+            <div class="mb-8">
+                <h3 class="text-sm font-bold mb-3 text-brand-text border-b border-gray-200 pb-2">色からのメッセージ</h3>
+                <div id="result-messages" class="text-[14px] leading-loose space-y-4">
+                    <!-- メッセージ表示領域 -->
                 </div>
             </div>
 
+            <div class="mb-8">
+                <h3 class="text-sm font-bold mb-3 text-brand-text border-b border-gray-200 pb-2">おすすめメニュー</h3>
+                <div id="result-menu-name" class="text-lg text-brand-text font-bold mb-2"></div>
+                <div id="result-menu-reason" class="text-[14px] leading-loose"></div>
+            </div>
+
+            <div class="flex flex-col gap-3 mt-4">
+                <a id="link-detail" href="#" target="_blank" class="block w-full text-center py-3.5 bg-brand-btn1 text-white rounded shadow-md tracking-widest text-[15px]">メニュー詳細を見る</a>
+                <a id="link-review" href="#" target="_blank" class="block w-full text-center py-3.5 bg-brand-btn1 text-white rounded shadow-md tracking-widest text-[15px]">お客様の声を見る</a>
+                <a id="link-reserve" href="https://line.me/ti/p/Kv76GQK_UI" target="_blank" class="flex items-center justify-center w-full py-3.5 bg-[#06C755] text-white rounded shadow-md tracking-widest text-[15px]">
+                    <img src="https://github.com/therapist-mii/spiritual/raw/main/images/line100.png" alt="LINE" class="w-6 h-6 mr-2">
+                    予約する
+                </a>
+                <button id="btn-retry" class="w-full py-3.5 bg-brand-btn2 text-white rounded shadow-md tracking-widest text-[15px] mt-2">はじめからやり直す</button>
+            </div>
         </div>
+
     </main>
 
-     <!-- フッター -->
-    <footer class="bg-[#EAE6E1] p-6 mt-auto">
-        <div class="max-w-4xl mx-auto text-sm">
-            <nav class="flex flex-col items-center space-y-4">
-                <!-- リンク群 -->
-                <div class="flex flex-wrap justify-center gap-4 sm:gap-6 text-base text-[#776163]">
-                    <a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">メニュー</a>
-                    <span class="text-gray-400 select-none">|</span>
-                    <a href="https://spiritual-therapist-mii.studio.site/flow" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">セッションの流れ</a>
-                    <span class="text-gray-400 select-none">|</span>
-                    <a href="https://spiritual-therapist-mii.studio.site/review" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">お客様の声</a>
-                    <span class="text-gray-400 select-none">|</span>
-                    <a href="https://spiritual-therapist-mii.studio.site/q-a" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">よくあるご質問</a>
-                    <span class="text-gray-400 select-none">|</span>
-                    <a href="https://spiritual-therapist-mii.studio.site/about-me" class="hover:text-black transition duration-150 border-b border-transparent hover:border-gray-500">私について</a>
-                </div>
-                
-                <!-- LINEボタン（フッター用） -->
-                <div class="mt-4">
-                    <a href="https://line.me/ti/p/Kv76GQK_UI" target="_blank"
-                       class="btn-line py-2 px-6 rounded-full text-sm font-bold shadow-md hover:shadow-lg">
-                        <img src="https://github.com/therapist-mii/spiritual/raw/main/images/line100.png" alt="LINE" class="w-5 h-5 mr-2">
-                        予約・お問合せ
-                    </a>
-                </div>
-            </nav>
-            <p class="text-xs text-center text-gray-500 mt-8">© 2024 by Therapist Mii. All rights reserved.</p>
+    <!-- フッター -->
+    <footer class="bg-brand-header py-8 px-4 mt-auto">
+        <div class="max-w-md mx-auto">
+            <ul class="text-[11px] leading-loose text-center text-gray-700 flex flex-col gap-1 mb-6">
+                <li><a href="https://spiritual-therapist-mii.studio.site/" class="hover:text-brand-text">HOME</a></li>
+                <li><a href="https://spiritual-therapist-mii.studio.site/menu" class="hover:text-brand-text">メニュー一覧</a></li>
+                <li><a href="https://spiritual-therapist-mii.studio.site/reading" class="hover:text-brand-text">リーディング鑑定書</a></li>
+                <li><a href="https://spiritual-therapist-mii.studio.site/line-reading" class="hover:text-brand-text">LINEリーディング</a></li>
+                <li><a href="https://spiritual-therapist-mii.studio.site/art-therapy" class="hover:text-brand-text">アートセラピー</a></li>
+                <li><a href="https://spiritual-therapist-mii.studio.site/healing" class="hover:text-brand-text">ヒーリング</a></li>
+                <li><a href="https://spiritual-therapist-mii.studio.site/f2f_reading" class="hover:text-brand-text">対面リーディング</a></li>
+            </ul>
+            <div class="text-center text-[11px] text-gray-700 mb-6">
+                <p class="mb-1">＼メニュー名を送信 ／</p>
+                <a href="https://line.me/ti/p/Kv76GQK_UI" target="_blank" class="underline hover:text-brand-text">LINEで予約</a>
+            </div>
+            <p class="text-center text-[10px] text-gray-500">&copy; 2025 Therapist Mii. All rights reserved.</p>
         </div>
     </footer>
 
+    <!-- JavaScript ロジック -->
     <script>
-        const COLOR_DATA = {
-            "#FF0000": { menu: "未来予報", reason: "あなたの中にある力を、無理なく前へ進む形に整えてあげます。情熱を、ちゃんと未来につなげられるように。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["迷いがあっても、あなたの情熱は確かに灯っています。誠実に選び続ける力は、もう身についています。小さな一歩も価値ある前進です。", "血のめぐりのように、挑戦は自信を育てます。今日の一歩が明日の景色を変えます。失敗は熱を調整する合図、次に活かせます。", "あなたの内側には、誰にも負けない情熱という美しい炎が灯っています。その強いエネルギーは、あなた自身の道を力強く照らしてくれるでしょう。ご自身の熱い想いを大切にしてくださいね。", "今、心が熱く高まっているのですね。その強い感情は、あなたが真剣に向き合っている証拠です。無理に抑え込まないでください。あなたの情熱は、必ずあなたを支えてくれます。", "心の中に灯る炎が、あなたを守る温かい光となります。不安なときは、その情熱を思い出してください。あなたはいつでも、自分自身という確かな存在に支えられています。", "あなたの内に秘めた情熱は、無限の可能性を秘めています。自分を信じ、堂々と表現してください。エネルギーに満ちたあなたは、きっと素晴らしい未来を築けます。", "困難に直面しても、あなたの強い生命力と情熱が前進する力を与えてくれます。自信を持って、その活力を存分に発揮してください。", "「大丈夫、あなたは一人ではありません」。あなたの強い心と情熱が、どんな試練も乗り越える力になります。時には立ち止まっても、一歩踏み出す勇気を応援しています。", "力強く、前向きなあなたの存在自体が、周りに活力を与えています。疲れた時は、あなたの強い心の炎が消えないよう、少し休んでエネルギーをチャージしましょう。", "あなたの情熱は周囲を明るく照らす力を持っています。そのエネルギーを、周りの人を鼓舞するためにぜひ使ってみましょう。"] },
-            "#FFE4E1": { menu: "ヒーリング", reason: "まずはあなた自身が満たされる時間を。一度やさしさで心を包んであげましょう。", menuUrl: "https://spiritual-therapist-mii.studio.site/healing", messages: ["やわらかな優しさは弱さではありません。丁寧に向き合う姿勢が、あなたと周りを同時に支えています。静かな強さを誇ってください。", "小さな思いやりが空気を淡く甘く整えます。あなたの一言で、今日の景色はやさしく変わります。心配りは確かな貢献です。", "あなたの持つ柔らかな優しさは、あなた自身の心の美しさから溢れています。ご自身の感情に素直でいることは、何よりも尊い自己肯定へと繋がります。そのままのあなたで大丈夫ですよ。", "心が少し疲れたときは、この柔らかな色のように、そっと力を抜いてみましょう。優しさに包まれた空間で、あなたは守られています。どうか無理せず、まずはご自身を労ってください。", "あなたの存在そのものが、周りに温かい安らぎを広げています。優しさで満たされたこの色のように、心の平穏を取り戻しましょう。大丈夫、あなたは愛に包まれています。", "優しいピンクのように、あなたは温かい愛と優しさに包まれています。自分を大切にする心は、あなたの輝きを一層増します。ありのままの自分を愛してくださいね。", "この色は幸せな予感を運んできます。あなたの柔らかな笑顔は、周りの人も明るく照らします。心の安らぎを感じながら、素敵な出来事を引き寄せましょう。", "疲れた心にそっと寄り添うような、柔らかな色です。大丈夫ですよ、辛い時は無理せず、自分自身を一番に大切にしてあげてください。あなたの優しさは宝物です。", "心が穏やかになる薄ピンクの光に包まれて、深い安心感を感じてください。すべてを受け入れる受容の心が、あなたの心を静かに癒やしてくれます。どうぞごゆっくりお休みください。", "あなたは愛と優しさで満たされています。まずは自分自身に、たっぷりその優しさを注いであげることをおすすめします。"] },
-            "#FFB6C1": { menu: "カラーカード", reason: "あなたの「かわいさ」を否定しないであげるサポートをします。自然に、心がゆるむはず。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["あなたのやさしさは場をやわらげる力です。気づきを言葉にできる度に、自分を大切にできています。その姿勢は十分に美しいです。", "今日の自分に軽く微笑みを。完璧でなくて魅力的です。ひとつ手放すだけで、思った以上に身軽になり、新しい余白が生まれます。", "あなたの繊細で愛らしい感性は、この世界を美しく彩る才能です。ご自身の中にある素敵な部分を認め、大切にしてください。その感受性こそが、あなたの自信を育みます。", "寂しさや切なさを感じたときは、どうか一人で抱え込まないでください。あなたの心はとても純粋で美しい。その感情をそっと受け止め、優しくいたわってあげましょうね。", "温かい毛布に包まれるような安心感を、ご自身に与えてください。愛に満ちたこの色は、あなたの心を静かに落ち着かせます。いつでもあなたの心に寄り添っていますよ。", "あなたの素敵な個性は、愛と光に満ちています。この幸福の色のように、ご自身の魅力を再認識し、明るい未来を信じて進んでください。心から応援しています。", "ときめきに満ちたパステルピンクは、新しい喜びをもたらします。前向きな気持ちで、今日という日を楽しみましょう。あなたの優しい行動が、幸せの循環を生み出します。", "愛と優しさを感じさせるこの色は、あなたの心を温かく包み込みます。大丈夫です、ありのままの気持ちを大切にしてください。あなたの心の声に、そっと耳を傾けます。", "ほっと一息つけるような、癒やしのピンクです。穏やかな気持ちで、全てがうまくいくと信じましょう。あなたの周りは優しさに満ちています。安心してくださいね。", "自分の持つ愛らしさや無邪気さを恥ずかしがらずに受け入れて表現してみましょう。それが、今のあなたの大きな魅力になります。"] },
-            "#FF8A80": { menu: "ヒーリング", reason: "感じている想いを、ひとりで抱えなくていい時間です。胸のつかえが、そっとほどけていきます。", menuUrl: "https://spiritual-therapist-mii.studio.site/healing", messages: ["ため込んだ想いを、やさしく外に出せています。自分の声を信じるほど、世界は誠実に応えます。正直さはあなたの大きな力です。", "思い切って軽くなると、景色は一段明るくなります。手放しは負けではありません。次の余白と選択肢を増やす勇敢な行為です。", "あなたの勇気ある一歩は、周りに温かい光をもたらしています。人を想う優しい心と、行動力を誇りに思ってください。その温もりが、あなたをさらに輝かせてくれます。", "誰かのために頑張るあなたですが、まずはご自身を温めてください。あなたの優しさは、必ず周りに伝わっています。疲れた心に、そっと寄り添う温もりを感じてください。", "この温かい色が、あなたの心を優しく包み込みます。大丈夫、あなたは一人ではありません。困難な時も、この温もりを思い出してくださいね。きっと乗り越えられます。", "あなたの明るく親しみやすい性格は、周りを和ませる特別な魅力です。ご自身の創造性を信じて、新しいことに挑戦する勇気を持ちましょう。あなたらしく輝いてください。", "温かみのあるコーラルのように、周囲との繋がりを大切に、楽しい会話と新しい発見に満ちた一日を。前向きなエネルギーで、創造性を存分に発揮してください。", "「あなたの気持ちを理解していますよ」。温かい色が示すように、いつでもあなたの味方です。心を開いて、感じたままの素直な気持ちを表現してくれて大丈夫です。", "ほっこりとする暖かさが、あなたの心に平穏をもたらします。信頼できる人たちとの温かい繋がりを感じ、リラックスしてください。心配はいりませんよ。", "親しい人との温かい交流を大切にする時期です。不安や悲しみを感じたら、信頼できる人に気持ちを素直に伝えてみましょう。"] },
-            "#6B4226": { menu: "未来予報", reason: "焦らず歩けるペースを、一緒に見つけていきましょう。地に足が戻ってくる感覚が得られます。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["あなたの積み重ねは静かに強いです。目立たなくても確かな土台が、今日も周りを支えています。誠実な努力は揺るぎません。", "ゆっくり育つ根は嵐に強い。焦らず丁寧に続けるほど、成果は長持ちします。時間はあなたの味方、信じて進めます。", "あなたがこれまで歩んできた道のり、積み重ねた経験こそが、揺るぎない自信の根っこです。過去の努力を認め、その重厚な知恵を活かしてください。あなたは価値のある大切な存在です。", "人生の深みを知るあなたは、一人ではありません。この落ち着いた色のように、あなたの存在はどっしりと安定しています。心の重荷を少し降ろして、ゆっくり休んでください。", "大地に根を張る木のように、あなたは強く安定しています。過去の経験があなたを優しく支えています。この確かな色のように、ご自身の安定した基盤を信頼してくださいね。", "大地のように揺るぎないあなたの強さと堅実さは、素晴らしい魅力です。ご自身の努力と積み重ねてきた経験に自信を持ってください。あなたは確かな存在です。", "落ち着いたブラウンが、地に足の着いた行動を促します。焦らず、着実に目標に向かって進みましょう。安定感のあるあなたは、信頼を集める頼れる存在です。", "大地のように、しっかりとあなたの心を支えます。落ち着いた時間を持ち、心身の疲れを癒やしましょう。安心して自分のペースを取り戻してください。", "重厚な安心感をもたらすこの色は、あなたの土台がいかに堅固であるかを示しています。深くリラックスし、日々の安定を再確認してください。全ては順調です。", "焦らず、長期的な視点を持って計画を立てましょう。「地に足をつける」感覚を取り戻すために、体を動かしてみるのもおすすめです。"] },
-            "#C49E7D": { menu: "リーディング", reason: "あなたがすでに持っている豊かさに気づく時間です。やわらかく、自分を肯定できます。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["飾らない誠実さが、場にぬくもりを運びます。素朴さは魅力です。あなたの在り方が信頼という実りを着実に育てています。", "手の届く範囲を整えるだけで、暮らしは穏やかに変わります。小さな快適を一つずつ。成果は静かに積み上がっていきます。", "あなたの持つ誠実さと穏やかな知性は、周りの人からの信頼を深めています。ご自身の判断力を信じて、安心して進んでください。あなたの静かな強さが、未来を切り開きます。", "時には、物思いに耽る静かな時間も大切です。この落ち着いた色が、あなたの思考に深みを与えます。心の整理をする時間として、ご自身の内面とゆっくり向き合ってみてください。", "自然体のあなたが一番魅力的です。この穏やかな色が示すように、肩の力を抜いてくださいね。あなたの周りには、信頼できる安心感に満ちた空間があります。", "飾らないあなたの自然体の魅力は、周りの人々を穏やかな気持ちにさせます。ありのままの自分でいることが、最高の自己肯定感に繋がります。心を解放してください。", "穏やかで優しいこの色は、日々の小さな幸せに気づかせてくれます。心にゆとりを持ち、自然の流れに身を任せてみましょう。平和な気持ちで、豊かな一日を。", "木漏れ日のような暖かさで、あなたの心をそっと包みます。頑張りすぎなくて大丈夫ですよ。安らぎを感じる自分の場所で、心穏やかにお過ごしください。", "自然の力を感じるこの色は、深い安らぎと安定をもたらします。心身を緩め、リラックスしてください。素朴な安心感の中で、穏やかな時間をお楽しみください。", "これまでの経験や知識を活かし、周りの人に優しく伝えてみましょう。芸術鑑賞や読書など、心を豊かにする時間を持つことが大切です。"] },
-            "#D35400": { menu: "未来予報", reason: "今ある勢いを大切にしながら、無理なく前へ進む道を一緒に整えます。迷っても大丈夫。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["勇気は派手でなくて構いません。現実的な一歩を重ねるあなたは強いです。結果より続ける力、その価値は確かです。", "好奇心の火を少し足しましょう。試して合わなければ戻せばいい。柔軟さこそがあなたの推進力、安心して挑めます。", "あなたの挑戦する姿勢は、周りの人たちを温かく奮い立たせる力を持っています。失敗を恐れず、情熱を持って進む姿こそ、あなたの最高の魅力と自信の源です。", "時には道に迷うこともあるでしょう。しかし、あなたの内側には、この炎の色のような強いエネルギーが宿っています。その熱い気持ちを信じ、諦めないでくださいね。", "活動的でありながらも、この色は地に足の着いた安定感をもたらします。ご自身の直感とエネルギーを信じ、力強く、そして穏やかなあなたが、あなた自身を守ります。", "あなたの持つエネルギーは、周りを明るく照らす太陽のようです。果敢な行動力と創造性を信じ、新しい挑戦を楽しんでください。あなたの未来は明るいです。", "元気が出るオレンジが、ポジティブな気持ちを後押しします。活動的な一日を予感させ、喜びをもたらします。積極的に人や物事に関わり、ワクワクを追求しましょう。", "「頑張っているあなたを、心から応援しています」。温かい光のように、あなたの心に寄り添います。前に進む勇気とエネルギーを、この色がそっと与えてくれます。", "暖かく包み込むオレンジ色は、心の活力と安心感を与えます。困難を乗り越える力があなたにはあります。安心して、自分のペースで進んでください。", "あなたには、変化を起こすための集中力とエネルギーがあります。情熱を一点に集中させ、目標を突破する力を信じてください。"] },
-            "#FF9800": { menu: "カラーカード", reason: "あなたの明るさがもっと自然に輝けるように、軽く背中を押すお手伝いをします。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["あなたの明るさは、人の背中をそっと押します。その力をどうぞ自分にも向けてください。自分への励ましは最強の味方です。", "予定に遊び心をひと匙。余白があるほど偶然の良い巡りが入りやすくなります。軽やかさは成果を遠ざけず、むしろ近づけます。", "あなたの明るい笑顔と親しみやすさは、周囲を照らす太陽のような存在です。ご自身のポジティブな影響力を認め、人との繋がりを大切にしてください。あなたは素晴らしい大切な存在ですよ。", "心が疲れたときは、温かい光に包まれるイメージをしてください。あなたの明るい性質は、どんな時もあなた自身を照らす力となります。少し休んで、また一緒に輝きましょう。", "太陽の温かさが、あなたに安心感を与えてくれます。この色のように、あなたの周りは明るいエネルギーで満たされています。心配はいりません。いつでも光はそこにありますよ。", "あなたの明るく開放的な心は、周りの人を魅了します。自分らしさを臆せず表現し、人生を楽しみ尽くすことに自信を持ってください。あなたの笑顔が最高です。", "陽気なオレンジで、最高の気分で一日をスタートしましょう。好奇心と遊び心を持って、新しい体験を楽しみましょう。心を開放して、喜びを感じる一日に。", "心躍るオレンジのように、あなたの毎日に笑顔と楽しさが溢れるように願っています。辛い時も、前向きな気持ちをそっと支えます。いつでも頼ってください。", "温かい太陽の光のようなこの色は、心の壁を取り払い、安心感を与えます。親しみやすい雰囲気の中で、リラックスし、自分らしくいられる喜びを感じてください。", "人生は心から楽しむためにあります。あなたの持つ明るさで、周りの人にも喜びを分けてあげてください。"] },
-            "#FFCC80": { menu: "カラーカード", reason: "“そのまま話していいんだ”って、安心できる心を取り戻すサポートになります。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["あなたの穏やかなあたたかさは、場をゆるめる力です。目立たなくても周囲は助かっています。その気配りは立派な才能です、胸を張ってください。", "予定に余白を残すあなたの判断は賢明です。ゆるい光が集中を助けます。小さな工夫が積み重なり、思った以上の実りに変わっていきます。", "あなたの素直な感性は、周りに温かい幸福感を与えています。自分自身の無邪気さや、人を愛する優しい心を大切にしてください。その優しさが、あなたの自信に繋がります。", "優しさに満ちたこの色は、あなたの疲れた心をそっと癒します。人に優しくできるあなたは、まずご自身を優しく包んであげてください。いつでもあなたの心に寄り添っていますよ。", "お母さんの温もりを感じるような、優しい安心感があなたを包んでいます。この柔らかな光を信頼してくださいね。心地よい安らぎが、あなたを深くリラックスさせてくれます。", "優しいアプリコットのように、あなたは温かく心地よい魅力を持っています。周りの優しさを受け止め、自分自身の素晴らしさを心から認めてください。あなたは特別です。", "幸福感に満ちたアプリコットカラーが、穏やかで楽しい時間をもたらします。心地よい気持ちで、日常の小さな幸せをたくさん見つけましょう。今日も良い一日に。", "「優しさに満ちたあなたに、そっと寄り添います」。喜びと安らぎのアプリコットが、あなたの心を温かく癒やします。無理せず、心の声を大切にしてください。", "柔らかな温もりを持つこの色は、全てを受け入れるような安心感をもたらします。心地よい空間で、心からリラックスし、深い安らぎを感じてください。", "あなたの親しみやすさは、大きな魅力です。心を開いて、周りの人との会話や交流を楽しんでみてください。"] },
-            "#F4A261": { menu: "対面リーディング", reason: "あなたの魅力がちゃんと「伝わる形」で表に出せるよう、そっと寄り添います。", menuUrl: "https://spiritual-therapist-mii.studio.site/f2f_reading", messages: ["たしかな地色を持つあなたは、現実を丁寧に動かせます。派手さはなくても実行力は本物です。積み重ねるほど信頼は濃く育ちます。", "今日の一歩は、砂の小道に確かな跡を残します。試して合わなければ修正すればよいだけ。柔軟さが成果を連れてきます。", "あなたの社交性とオープンな心は、新しい世界を広げる鍵です。自分らしさを表現することを恐れず、積極的に人との交流を楽しんでください。あなたの魅力は無限大ですよ。", "時には、心がざわつくこともあるでしょう。その気持ちを正直に認めてあげてください。この温かい色が、あなたの心に穏やかな解放感をもたらしてくれますよ。", "この温もりは、心の寂しさを和らげ、あなたを孤独から守ります。大丈夫、あなたは広い世界と繋がっています。安心して、周りの人との交流を楽しんでくださいね。", "砂漠のように広がるあなたの無限の可能性を信じましょう。自由な発想とインスピレーションを大切に、自分だけの道を自信を持って切り拓いてください。あなたには力があります。", "好奇心を刺激するサンドオレンジは、新しい冒険への第一歩を後押しします。自立心を持って、自分の人生を自由に創造していきましょう。素晴らしい旅になります。", "「あなたの自由な発想を、私は尊重します」。孤独を感じた時も、この色があなたの心にインスピレーションと希望の光を灯します。いつでも味方です。", "自然体の安心感を与えるこの色は、心の自由を許し、深くリラックスさせます。ありのままの自分でいることの心地よさを再確認し、穏やかな気持ちでお過ごしください。", "あなたは、自信を持って輝くことができます。あなたの個性を隠さず、積極的に表現することに意識を向けてください。"] },
-            "#F9A825": { menu: "リーディング", reason: "あなたが感じている「気づき」は大切なものです。それを信じられるように、静かに見守ります。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["あなたの視点には金色のひらめきがあります。気づきを言葉にするたび、周囲の理解も深まります。自分の直感を信頼して大丈夫です。", "ひとつ明るい選択が、連鎖して空気を変えます。好奇心に小さく賭けましょう。楽しさは集中を呼び、集中は結果を連れてきます。", "あなたの前向きな知恵とユーモアは、周囲に温かい活力を与えています。自分自身の持つ明るい才能を認め、存分に発揮してください。あなたは、周囲を笑顔にする素晴らしい力を持っています。", "不安な気持ちが襲ってきたら、この明るい光を心に描いてください。あなたの知性が、問題を解決する道筋を照らしてくれます。焦らず、ご自身の能力を信頼してくださいね。", "この輝きは、困難な状況でも希望を見出す力をあなたに与えます。心が明るく満たされる安心感を抱いてください。あなたの未来は、光に満ちていますよ。", "太陽のような輝かしい才能と知性を持っています。ご自身のアイデアと能力に絶大な自信を持ち、目標達成に向けて力強く進んでください。成功はすぐそこです。", "希望に満ちたゴールデンイエローは、最高の未来を予感させます。創造的な発想で、今日一日を輝かせましょう。ポジティブなエネルギーで幸運を引き寄せます。", "「あなたの可能性は無限大です。諦めないでください」。知性と希望の色が、あなたの努力を認め、讃えます。つらい時も必ず光は差し込みます。心の支えになります。", "豊かさと安心感をもたらすこの色は、あなたの基盤が確固たるものであることを示します。自信を持って、将来への希望を抱き、穏やかな気持ちで日々をお過ごしください。", "あなたは、物事の本質を見抜く力を持っています。深く考え、あなたの明晰な洞察力を信じて行動することをおすすめします。"] },
-            "#FDD835": { menu: "未来予報", reason: "ふっと湧いたアイデアを形にするのを、優しく手を添えながら支えます。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["無邪気さと誠実さを併せ持つあなたは、人に希望を分けられます。遠慮のいらない笑顔は力です。自分の明るさを信じてください。", "遊び心を予定に混ぜると、ひらめきが加速します。正解は一つではありません。試行の総数が、安心の土台を厚くしてくれます。", "あなたの生まれ持った個性と知性は、あなただけの宝物です。自分自身の独創性を信じ、それを表現してください。あなたは唯一無二の、とても大切な存在です。", "もし心が曇ってしまったら、この明るい色を思い出してください。あなたの内なる知恵が、解決策を優しく導き出します。自分自身と対話する時間を大切にしてくださいね。", "光に満ちたこの色は、あなたに明るい未来をもたらします。不安を乗り越えるエネルギーを、この輝きから受け取ってください。希望は常にあなたのそばにありますよ。", "あなたの明るい笑顔とユーモアは、周りの人々に幸福をもたらします。自分自身の魅力を最大限に活かし、コミュニケーションを楽しんでください。あなたは皆の太陽です。", "ハッピーな黄色で、心から楽しい一日を過ごしましょう。ポジティブなエネルギーを周りに分け与え、最高の気分で行動できます。喜びに満ちた最高の体験を。", "「あなたの笑顔が、私にとっての救いです」。明るい黄色のように、あなたの心に光を灯したい。つらい気持ちも共有し、一緒に乗り越えるサポートをさせてください。", "希望と安心感を与えるこの色は、心の曇りを払い、穏やかな気持ちをもたらします。明るい未来を信じ、リラックスしてください。心配はいりませんよ。", "あなたの内側には、無限の可能性を秘めた閃きがあります。その大切なアイデアを、ぜひ行動に移してみましょう。"] },
-            "#ffffe6": { menu: "リーディング", reason: "どんな未来を描いてもいいんだよ、と安心して思える時間になります。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["あなたの繊細さは弱点ではなく、微細な変化を捉える力です。気づける人は、優しく正確に配慮できます。その資質は希少で尊いです。", "白に一滴の光を溶かすように、少しの前向きが場を明るくします。静かな決意は長持ちします。静けさごと味方につけましょう。", "あなたの素直な感受性は、この世界を優しく受け止める力です。ご自身の純粋な心を認め、大切にしてください。ありのままのあなたが、一番優しく輝いています。", "心が疲れたときは、無理せず立ち止まりましょう。この優しい色が、あなたの心をそっと洗い流してくれます。静かな時間の中で、ご自身を深く癒してあげてください。", "まるで天からの光のような、清らかな安心感があなたを包んでいます。心配や不安を手放し、この静かな平穏の中で心を休ませてくださいね。", "控えめながらも洗練されたあなたの個性は、穏やかな美しさを持っています。完璧でなくて大丈夫です。ありのままの自分の調和を大切に、優雅な心で過ごしてください。", "落ち着いたクリーム色が、心地よい調和を生み出します。シンプルに考え、心穏やかな時間を過ごしましょう。前向きな気持ちで、優雅に一日を楽しみましょう。", "「あなたのペースで、ゆっくりで大丈夫ですよ」。優しい色が、あなたの心を穏やかに包み込みます。焦らず、自然体でいることが、何よりも大切です。", "心の安らぎをもたらすこの色は、安心感と静けさを与えます。余計な力を抜き、リラックスしてください。静かで穏やかな時間が、あなたを癒やします。", "あなたの前には、無限の可能性が広がっています。固定観念を捨て、自由に理想の未来を描いてみましょう。"] },
-            "#DCE775": { menu: "未来予報", reason: "大きな成果ではなく、育っていく途中を一緒に見つめる時間です。あなたの歩みは大丈夫。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["芽吹きを見守るように、あなたは変化を育てています。ゆるやかな成長は強靭です。昨日より少し楽になったなら、それは確かな前進です。", "学びをひとつ記録すると、自分への信頼が増えます。未完成でいる勇気が、伸びしろを広げます。今日も試す価値があります。", "あなたの持つ新鮮な発想と穏やかな調和の精神は、未来への希望を育みます。ご自身の成長力を信じ、新しい変化を恐れずに受け入れてくださいね。", "変化を恐れないでください。あなたの心には、この若々しい色のように、常に成長し続ける力が宿っています。少しずつ、ご自身のペースで進んでいきましょうね。", "自然の恵みのような、穏やかで心地よい安心感があなたを包んでいます。あなたの持つ回復力を信じてください。心と身体の健康を、一番に考えましょう。", "穏やかな緑色のように、あなたは着実に成長し続けています。自分自身の努力を認め、希望を持って前に進むことに自信を持ってください。あなたの未来は明るいです。", "癒やしのパステルグリーンが、心身の調和を整えます。新しい可能性に希望を持ち、穏やかな気持ちで一歩ずつ進みましょう。心地よい成長を感じる一日に。", "「あなたの心の健康が、私にとって一番大切です」。優しく癒やすこの色が、あなたの心の疲れをそっと取り除きます。無理せず、自分を大切にしてください。", "自然の中にいるような安心感が、あなたの心を静めます。深呼吸をして、ストレスを手放しましょう。穏やかな気持ちで、心地よい安らぎを感じてください。", "急いで結果を出そうとせず、今の努力が未来の大きな実りにつながると信じて、日々の小さな変化を楽しんでください。"] },
-            "#EC407A": { menu: "対面リーディング", reason: "抱えている愛がのびのび広がれるように、心とエネルギーをそっと整えます。", menuUrl: "https://spiritual-therapist-mii.studio.site/f2f_reading", messages: ["あなたの率直さは、心の強さです。好きを大切にする姿勢が、自己尊重を太くします。遠慮せず、自分の感情に席を用意してください。", "思いを伝えると、関係は鮮やかに整います。丁寧に境界線を引くことは、絆を守る行為です。あなたの選択は健やかです。", "あなたの持つ愛情深さと、情熱的な魅力は、多くの人を温かく引きつけます。ご自身の感情に正直であり、その豊かな表現力を誇りに思ってくださいね。", "時には、胸が締め付けられるような切ない感情もあるでしょう。その感情も、あなたの深い愛情の証です。ご自身の心に寄り添い、優しく抱きしめてあげてください。", "この深い愛の色は、あなたが満たされていることを示しています。自分自身への深い愛情と、周りからの愛を感じてください。あなたは愛される、大切な存在です。", "燃えるような愛の情熱が、あなたのエネルギー源です。ご自身の魅力と女性性を心から肯定し、自信を持って輝いてください。あなたは愛される存在です。", "情熱的なピンクが、行動力と前向きな気持ちを呼び起こします。愛を持って、周囲と自分自身に接しましょう。ワクワクする素晴らしい一日に。", "「あなたの感情を大切にしてください。愛しています」。情熱的なこの色が、あなたの心に力強いエールを送ります。自分を愛する心を、いつまでも忘れないで。", "愛に満ちたこの色は、深い安心感と幸福感を与えます。誰かに頼ることは弱さではありません。心を開放して、愛に包まれリラックスしてください。", "あなたは、深い愛と喜びに満たされた存在です。その愛のエネルギーを解放し、人生を情熱的に楽しむことを自分に許可してあげてください。"] },
-            "#F48FB1": { menu: "カラーカード", reason: "自分をていねいに扱う感覚を、やさしく思い出せる時間になります。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["柔らかい語り口は、場の安全をつくります。あなたの配慮は目に見えにくくても、確かに届いています。自分の優しさを認めてください。", "小さなありがとうを口にするほど、心は軽くなります。感謝は循環します。今日の一言が、明日の関係をやわらかく整えます。", "あなたの持つ優しい美しさと、人を思いやる心は、周りをそっと癒しています。ご自身の繊細な感性を大切にし、心の豊かさを育ててくださいね。", "心が傷ついたときは、この柔らかな色のように、ご自身を優しく労ってください。あなたの痛みは、誰かを想う心の深さの証です。無理せず、まずは自分を癒しましょうね。", "母親の愛情のような、深い安心感があなたを包んでいます。あなたは愛に守られていますよ。この心地よい安らぎの中で、心を深くリラックスさせてください。", "生まれたての優しさを持つベビーピンクのように、あなたの純粋な心は素晴らしい宝物です。自分自身の夢を大切にし、自信を持って輝く未来を創ってください。", "優しさに溢れたベビーピンクで、心地よい一日を始めましょう。小さな幸せを見つけ、心から笑う時間を大切に。純粋な喜びを感じる素敵な体験を。", "「あなたの優しい心に、心から感謝しています」。辛い時は、この柔らかな色があなたの心を優しく癒やします。どうか無理せず、自分を大切にしてください。", "無条件の愛と安心感をもたらすこの色は、深いリラックスを促します。純粋な心で、全てを受け入れ、穏やかな気持ちで安らぎを感じてください。", "あなたは、優雅で洗練された美しさを持っています。自分自身を最高に美しく、丁寧に扱ってあげてください。"] },
-            "#F8BBD0": { menu: "ヒーリング", reason: "いまのあなたを、そのまま休ませていい。ここでは何も頑張らなくて大丈夫です。", menuUrl: "https://spiritual-therapist-mii.studio.site/healing", messages: ["あなたの気遣いは淡い花びらのように周囲を包みます。目立たなくても効果は深いです。育ててきた優しさを、自分に向けても大丈夫です。", "予定にやわらかい余白を残しましょう。小さな休息が創造性を呼び、人にも自分にも優しい選択を増やします。穏やかさは立派な前進です。", "あなたの純粋さと、人を惹きつける愛らしい魅力は、あなたの最大の強みです。ありのままのあなたを愛し、その無垢な心を守ってください。あなたは愛らしい大切な存在です。", "もし、心が疲れてしまったら、この穏やかな色に身を委ねてください。あなたの繊細な心を、優しく守り、包み込みます。ご自身の心の声にそっと耳を傾けましょう。", "この柔らかな温もりは、心の安全地帯です。純粋な安心感があなたを包み込みます。心配を手放し、この優しさに満たされた空間でゆっくり休んでくださいね。", "静かで繊細なあなたの内面の美しさは、唯一無二の魅力です。周りの目を気にせず、ご自身のペースで穏やかな時間を大切にしてください。あなたは十分に素晴らしい。", "静けさと穏やかさをもたらすこの色は、心の余裕を生み出します。焦らず、ゆっくりと、今日の計画を進めましょう。平和な気持ちで、一日を大切に。", "「静かに、あなたの心の声に耳を傾けます」。繊細な心を持つあなたに、無理強いはしません。心穏やかな時間を過ごし、ゆっくりと回復してくださいね。", "安らぎと平和をもたらすこの色は、深いリラックスへと誘います。何もかもを忘れて、静かな安心感に身を委ねてください。心ゆくまで休息しましょう。", "あなたは、優しさと癒やしの力に満ちています。疲れた自分を許し、温かい思いやりを注いでみましょう。"] },
-            "#FFF0F5": { menu: "リーディング", reason: "あなたが見ている夢は大切なものです。そのぬくもりを一緒に守ります。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["丁寧な言葉選びが、あなたの品をつくります。静かな思いやりは長く届きます。控えめさの奥にある芯の強さを誇ってください。", "ゆっくりで良いので、今日のToDoを一つだけ優しく完了しましょう。小さな成功体験は連鎖します。静かな達成感が明日を軽くします。", "あなたの穏やかな心と、調和を大切にする姿勢は、周りに平和をもたらします。ご自身の感情を静かに見つめ、心の奥底にある穏やかさを信じてくださいね。", "心が乱れたときは、この静かな色を思い浮かべてください。あなたの内側には、常に穏やかな海のような静けさがあります。深呼吸をして、心を鎮めていきましょう。", "すべてを受け入れるような、深い安心感があなたを包んでいます。この柔らかな空間で、心と体を休ませてください。あなたは、この静かな平和の中にいますよ。", "優雅なラベンダーのように、あなたは心に秘めた静かな強さを持っています。ご自身の美しさと優しさを肯定し、自信を持って日々を豊かに過ごしてください。", "穏やかな喜びに満ちた一日をもたらします。優美な気持ちで、周りの美しさに感謝しながら前向きに進みましょう。", "「優美なあなたに、静かな癒やしを送ります」。心の中の不安を和らげるように、そっと寄り添います。焦らなくて大丈夫、心の平穏を一番に考えましょう。", "静けさと安らぎをもたらすこの色は、心が落ち着くのを助けます。全てがうまくいくと信じ、深いリラックスを感じてください。安心して、穏やかな時間を。", "あなたの夢と、そこにある純粋な愛を信じてください。その気持ちが、あなたの未来を美しく彩るでしょう。"] },
-            "#FFFAFA": { menu: "カラーカード", reason: "心が軽くなる感覚を、そっと取り戻せる時間です。羽を休めてもいいからね。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["白い余白は、選べる自由の証です。無理に埋めなくて構いません。休む判断も実力です。あなたは場を整える力をすでに持っています。", "一歩進んでは止まり、景色を確かめましょう。見直しは後退ではありません。精度が上がるほど、次の行動が軽く速くなります。", "あなたの持つ純粋な可能性は無限大です。ご自身の清らかな心と、新しい始まりを創り出す力を信じてください。あなたは希望そのものの、大切な存在です。", "心が疲れ切ったときは、この清らかな色のように、すべてを一度ゼロに戻しましょう。あなたの心は、常に浄化され、新しい光を受け入れることができます。", "この清らかな色は、あなたに心の解放と究極の安心感をもたらします。すべての不安から解き放たれ、純粋な光の中で安らぎを感じてくださいね。", "純粋で無限の可能性を持つあなたの心は、何よりも美しいです。過去の経験はリセットし、新しい自分として自信を持って再出発してください。あなたは光そのものです。", "清々しい気持ちで、今日を新しいスタートにしましょう。ポジティブな気持ちで一歩踏み出すことで、最高の始まりを迎えます。目標に向かって誠実に進みましょう。", "「あなたの純粋な心は、決して曇ることはありません」。光のように、あなたの心を優しく包み込みます。辛い時も、希望を忘れずに、一緒に乗り越えましょう。", "全てを包み込む純粋な白は、心の平穏と清らかな安心感を与えます。心配事を手放し、心身をリフレッシュしてください。きっと大丈夫です。", "あなたは、無限の可能性と、純粋な光に満ちた存在です。過去の全てを許し、理想の未来を自由に描いていきましょう。"] },
-            "#E6E6FA": { menu: "リーディング", reason: "静けさの中にあるあなたの声を、いっしょに穏やかに受け取りましょう。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["あなたの落ち着きは、周囲の緊張をやさしくほどきます。柔らかな配色のように、関係を調和へ導く力があります。自覚して大切にしてください。", "頭に霧がかかったら、五分だけ静かな作業を。短い集中が弾みになります。心地よい香りを添えれば、継続のハードルは下がります。", "あなたの持つ優雅さと精神的な探求心は、あなたを深く高めます。ご自身の内面にある豊かさを認め、知的な探求を楽しんでくださいね。", "心が混乱したときは、この穏やかな色のように、頭の中を整理しましょう。あなたの知性が、解決への道筋を優しく示してくれます。内なる声に寄り添ってあげてください。", "この静かな色は、あなたに心の休息を与えます。深い安らぎの中で、魂の平穏を取り戻してくださいね。あなたは精神的な安定に導かれています。", "高貴で精神性の高いあなたの内面は、素晴らしい魅力です。ご自身の直感とインスピレーションを信じ、心の声に従って自信を持って進んでください。あなたは特別です。", "静けさとインスピレーションをもたらすこの色は、創造的な発想を促します。穏やかな気持ちで、精神的な豊かさを感じる素敵な一日を過ごしましょう。", "「あなたの感性を大切にしてください。癒やしを送ります」。心身の疲れを和らげるように、そっと寄り添います。無理せず、静かな時間を大切にしてください。", "深く安らぐラベンダーは、心の緊張を解きほぐし、安心感を与えます。精神的な安定を感じ、リラックスしてください。全ては守られています。", "あなたの内側には、深い静けさと高貴な精神性があります。静かな時間を作り、瞑想を通じてその声に耳を傾けてみてください。"] },
-            "#CE93D8": { menu: "カラーカード", reason: "“このままでいいんだ”と優しく思える方向へ、ほっとする案内をします。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["直感と理性のバランスが美しいですね。気づきを言語化する力が、周囲の理解を助けています。あなたの洞察は信頼に値します。", "学びを一つメモに残しましょう。記録は自信の貯金です。小さな可視化が、次の創造性と協力関係を自然に引き寄せます。", "あなたの持つ個性的で神秘的な魅力は、周囲の人々を温かく惹きつけます。ご自身のユニークな感性を大切にし、自信を持って表現してくださいね。", "もし、自分の居場所がないと感じたなら、この色があなたを優しく包み込みます。あなたの個性は、この世界に必要とされています。ありのままのあなたで大丈夫ですよ。", "この神秘的な色は、あなたに守られている感覚を与えます。あなたは宇宙の大きな流れの中で、しっかりと守られています。安心して、心の奥深くと繋がってくださいね。", "優美で繊細なあなたの感性は、世界を豊かにします。ご自身の内面の声に耳を傾け、精神的な成長を自信を持って追求してください。あなたは奥深い存在です。", "静かで穏やかな薄紫が、内省を促し、精神的な豊かさをもたらします。繊細な感性を活かして、新しい気づきに満ちた一日を過ごしましょう。", "「あなたの繊細な心を、私は大切に守りたい」。優美な色が、心の奥の不安をそっと癒やします。無理せず、自分らしくいられる場所を見つけてください。", "心の安らぎをもたらすこの色は、精神的な安定と安心感を与えます。無理な力を抜いて、穏やかな気持ちで全てを受け入れ、リラックスしてください。", "あなたは、そのままで十分完璧な存在です。欠点も含めて自分自身を深く受け入れ、優しさを周りの人にも分けてあげてください。"] },
-            "#8E24AA": { menu: "対面リーディング", reason: "変わりたい気持ちを無理に押さえず、丁寧に一歩ずつ進めるよう伴走します。", menuUrl: "https://spiritual-therapist-mii.studio.site/f2f_reading", messages: ["深い集中力はあなたの持ち味です。妥協せず磨いてきた技術が、静かな迫力を生みます。自己評価を半歩高めても大丈夫です。", "大胆な決断は、小さな検証の積み重ねで安全になります。仮説→試行→振り返りを短く回せば、リスクは手懐けられます。", "あなたの強い信念と深い洞察力は、周囲に確かな影響を与えています。ご自身の内なる力を信じ、目的を持って行動してください。あなたは力強い大切な存在です。", "孤独を感じる時は、この深い色のように、ご自身の内面を見つめてください。あなたの魂は、常に進化を求めています。内なる声に耳を傾け、自分を信じましょう。", "この深い色は、あなたに精神的な安定と力を与えます。どんな困難も乗り越えられる強さが、あなたにはあります。あなたの存在は、盤石ですよ。", "カリスマ性を秘めたあなたの威厳は、周りの人々を惹きつけます。ご自身の洞察力と直感を信じ、自信を持って行動してください。あなたは特別な存在です。", "深い洞察力とインスピレーションをもたらすこの色は、あなたの創造性を高めます。自信を持って、神秘的な魅力を存分に発揮しましょう。素敵な一日を。", "「あなたの持つ神秘的な魅力は、誰にも真似できません」。威厳と癒やしの紫が、あなたの心を深く理解し、静かに寄り添います。無理せず、自分の時間を大切に。", "精神的な安心感をもたらすこの色は、あなたの心に平穏を与えます。全ては最善に向かっていると信じ、深いリラックスを感じてください。心配はいりませんよ。", "あなたには、自分を変えるための、計り知れない精神的な力が備わっています。その力を信じ、内なる変革を始めてみませんか。"] },
-            "#6A1B9A": { menu: "未来予報", reason: "大きな理想も、少しずつなら叶えられる。そのペースを一緒に見つけていきましょう。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["粘り強さは静かな武器です。時間を味方につける姿勢が、結果の質を底上げします。歩幅が小さくても、軌跡はまっすぐ伸びています。", "難題は層を分けて扱いましょう。まず外側を一周し、境界を確かめる。輪郭が見えるほど、中心への道は明るくなります。", "あなたの直感力と精神性の高さは、人生の道標となります。ご自身の内なる導きを信じ、高次元の意識と繋がってください。あなたは真実を知る力を持っています。", "心が迷ったときは、この色が示す真実の光を思い出してください。あなたの直感は、いつも正しい道を示してくれます。ご自身の内なる声に敬意を払いましょうね。", "この色は、あなたの魂に深い安らぎをもたらします。あなたは宇宙の法則に守られています。すべては最善のタイミングで起こることを信頼してください。", "高貴な知恵を持つあなたの精神性は、周りを導く光です。ご自身の持つ深い知識と創造性に自信を持ち、真の価値を追求してください。あなたは賢明な存在です。", "知恵と創造性を高めるこの色は、目標達成への確かな道を示します。権威を持って、自信を持って行動しましょう。ポジティブなエネルギーが成功を引き寄せます。", "「あなたの知識と知恵は、必ず誰かの助けになります」。深い紫のように、あなたの心の奥に潜む不安を静かに受け止めます。安心して自分の道を歩んでください。", "内なる平穏と深い安心感をもたらすこの色は、あなたの心を穏やかに保ちます。全てを乗り越える知恵があなたにはあります。リラックスして心身を休ませましょう。", "あなたの高い理想は、実現可能です。直感を信じ、その知恵を活かして、一歩ずつ現実のものにしていきましょう。"] },
-            "#3F3F74": { menu: "未来予報", reason: "心が揺れたとき、戻る場所を一緒に作ります。強さは静かに育つものだから。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["落ち着いた判断は、信頼の拠り所です。感情に飲まれず景色を俯瞰できるあなたは、場の指針になれます。自分の軸を信じてください。", "曇り空の日こそ、タスクをひとつだけ軽く前へ。完了の手応えが弾みになります。静かな集中は、派手さ以上の成果を育てます。", "あなたの持つ知性と冷静な判断力は、確かな信頼を築きます。ご自身の知識と経験に自信を持ち、落ち着いた姿勢を保ってくださいね。", "感情が揺れたときは、この落ち着いた色のように、心を静かに保ってください。あなたの知性が、感情的な波を穏やかにします。無理せず、頭を休ませてあげましょう。", "この深い色は、あなたに揺るぎない安心感を与えます。あなたの周りには、信頼できる知的な秩序があります。安心して、落ち着いて物事に取り組んでくださいね。", "深く静かな濃青紫のように、あなたの内省的な心は真実を見通す力を持っています。ご自身の集中力と知性を信じ、心の奥深くと向き合うことを肯定してください。", "集中力と内省を高めるこの色は、質の高い思考を促します。静かな心で、深く物事を理解する貴重な時間を過ごしましょう。目標達成に繋がります。", "「あなたの内面の声に、私は静かに耳を傾けます」。深く寄り添うこの色が、あなたの心を静かに落ち着かせます。焦らず、自分のペースで心を整理してください。", "深い静寂と絶対的な安心感をもたらすこの色は、心の不安を和らげます。全てが落ち着くと信じ、深くリラックスしてください。あなたは守られています。", "あなたの知性と規律は、あなた自身を守る盾となります。感情に流されず、冷静に計画を実行することをおすすめします。"] },
-            "#2196F3": { menu: "アートセラピー", reason: "言葉になる前の気持ちも、線や色ならそっと出てきます。安心して委ねて大丈夫。", menuUrl: "https://spiritual-therapist-mii.studio.site/art-therapy", messages: ["冷静さと誠実さがあなたの信頼を育てています。澄んだ青のように判断はまっすぐです。迷いを受け止める姿勢そのものが、確かな強さです。", "新しい知識を一滴ずつ加えましょう。青い空が視界を広げるように、学びは可能性を開きます。小さな検証が自信を静かに底上げします。", "あなたの持つ高い理想と、未来を信じる力は、周囲に温かい希望をもたらします。ご自身の可能性を信じ、自由な精神で世界と交流してください。", "悲しみや不安で心が重いときは、この空の色を思い出してください。あなたの心は、常に晴れやかな青空に戻ることができます。心を解放し、深呼吸しましょう。", "すべてを受け入れるような、広大な安心感があなたを包んでいます。あなたは広い世界に繋がり、自由と希望に満ちています。心配はいりませんよ。", "大空のように無限の可能性と自由を持つあなたの知性は素晴らしいです。ご自身の能力を信じ、前向きな気持ちで新しい世界へと羽ばたいてください。あなたは自由です。", "希望に満ちたスカイブルーは、開放的な気持ちを呼び起こします。前向きな発想で、コミュニケーションを楽しみ、新しい出会いを引き寄せましょう。素敵な一日に。", "「あなたの悩みは、やがて晴れ渡る空のように消えます」。大空のように、あなたの心を優しく包み込みます。辛い時も、希望を忘れずに、一緒に乗り越えましょう。", "心の広がりと解放感をもたらすこの色は、深い安心感を与えます。全てを委ねて、リラックスしてください。あなたは守られ、愛されています。", "あなたの創造性は無限大です。心を解き放ち、感じたこと、考えたことを自由に表現してみましょう。"] },
-            "#1976D2": { menu: "未来予報", reason: "大切にしている想いを守りながら歩ける道を、一緒に整えます。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["積み重ねた実力は濃い青のように揺らぎません。ていねいな準備があなたの品格です。自信を半歩上げても、十分ふさわしい方です。", "課題を段取りに分けるほど前進は速くなります。深い青が集中を支えるように、構造化はあなたの味方です。合図は小さくて大丈夫です。", "あなたの持つ責任感と、強い信念は、周囲からの深い信頼を築いています。ご自身の公明正大な精神を大切にし、使命感を持って行動してください。", "心が乱れたときは、この深い海の色のように、静かに落ち着いてください。あなたの揺るぎない精神が、感情の波を鎮めます。自分自身の強さを信頼してくださいね。", "あなたの周りには、この深い色のような安定した基盤があります。信頼できる環境と、あなたの強い意志があなたを守ります。安心して、目標に集中してください。", "深い知恵と揺るぎない誠実さを持つあなたの存在は、周りの人々の信頼を集めます。ご自身の真実を信じ、自信を持って行動してください。あなたは信頼の柱です。", "誠実さと権威を高めるこの色は、目標達成への強い意志を支えます。信頼関係を大切に、着実に前進しましょう。ポジティブな行動が成功を導きます。", "「あなたの誠実さと努力を、私は心から信頼しています」。深い安らぎのブルーが、あなたの心を静かに落ち着かせます。不安な時も、いつでも頼ってください。", "絶対的な信頼感と安心感をもたらすこの色は、心の奥底に静けさを運びます。全てを委ねることで、深いリラックスを感じてください。あなたは安全です。", "あなたの信念と誠実さは、本物です。その信念を貫き、周りの人からの信頼の証として行動で示しましょう。"] },
-            "#BBDEFB": { menu: "ヒーリング", reason: "無理して元気にならなくていい。静かに戻ってくる力をそっと手伝います。", menuUrl: "https://spiritual-therapist-mii.studio.site/healing", messages: ["淡い青はゆるむ勇気をくれます。控えめでも確かな優しさが、周囲の緊張をほどいています。その柔らかさを自分にも向けてください。", "負荷を一段下げると、創造性が息を吹き返します。軽やかさは効率の敵ではありません。心地よさが集中をそっと後押しします。", "あなたの穏やかな優しさと、平和を愛する心は、周りに安らぎをもたらします。ご自身の純粋な心を大切にし、調和的な関係を築いてくださいね。", "心が疲れたときは、この静かな空の色のように、すべての重荷を解放してください。あなたの心は、常に軽やかで自由でいることができます。優しく自分を許しましょう。", "すべてを受け入れ、包み込むような深い安心感があなたを包んでいます。この柔らかな空間で、心と体を休ませてください。あなたは愛と平和に守られていますよ。", "優しく穏やかなあなたの心は、周りの人々に安らぎを与えます。頑張りすぎなくて大丈夫です。ご自身の心を優しく労り、穏やかな時間を大切にしてください。", "平和と休息を象徴するこの色は、心身をリフレッシュさせます。穏やかな気持ちで、今日一日を大切に過ごしましょう。前向きなエネルギーが優しさを生み出します。", "「あなたの心に、静かな安らぎが訪れますように」。優しく包み込むこの色が、辛い気持ちをそっと癒やします。無理せず、心の声に従って休息してください。", "深い安らぎと平和をもたらすこの色は、心の緊張を解きほぐします。深いリラックスを感じてください。あなたは穏やかな光に包まれています。", "あなたの心は、穏やかで平和な状態に戻ろうとしています。焦らず、その自然な流れに身を任せてあげてください。"] },
-            "#000080": { menu: "対面リーディング", reason: "深いところにある知恵が、自然と浮かび上がるような静かな時間になります。", menuUrl: "https://spiritual-therapist-mii.studio.site/f2f_reading", messages: ["揺るぎない紺はあなたの芯を映します。責任感と落ち着きは大きな価値です。背筋が通るほど、自己評価は自然に深まっていきます。", "長距離を走るつもりで、一定の歩幅を保ちましょう。深い色が視界を締めるように、余計な刺激を減らすほど成果は安定します。", "あなたの持つ深い知恵と、強い精神力は、誰にも揺るがないものです。ご自身の内なる真実を信じ、その静かな力を優しく発揮してください。", "孤独を感じるときは、この深い色が、あなたの内なる世界と繋がります。あなたの魂は、深い知識と繋がっています。静かな時間の中で、ご自身の内面を大切にしてください。", "宇宙のような、広大で普遍的な安心感があなたを包んでいます。あなたは永遠の真理と繋がっています。すべてはあなたの中で安定していますよ。", "知性と威厳を秘めたあなたの存在は、周りの人々に深い信頼を与えます。ご自身の真実を信じ、力強い一歩を踏み出してください。あなたの判断は正しいです。", "知性と威厳をもたらすこの色は、目標達成への強い決意を支えます。威厳を持って、自信を持って行動しましょう。ポジティブなエネルギーが成功を導きます。", "「あなたの強さと誠実さを、私は心から信じています」。深いブルーのように、あなたの心の奥深くまで寄り添います。辛い時も、いつでも頼ってください。", "絶対的な安心感と威厳をもたらすこの色は、あなたの心に平穏を与えます。全てがうまくいくと信じ、深くリラックスしてください。あなたは守られています。", "あなたの内側には、全てを知る深い知恵があります。静かな時間を作り、瞑想を通じてその声に耳を傾けてみましょう。"] },
-            "#B2EBF2": { menu: "カラーカード", reason: "肩の力が少し抜けると、自由さは戻ってきます。そのきっかけを優しく渡します。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["澄んだ水色は回復力の色です。あなたの柔軟さは状況を新鮮にします。やり直す選択は賢明さの証、評価して差し支えありません。", "空気を入れ替えるように、習慣に小さな風を。場所や姿勢を変えるだけで、意欲はすっと戻ります。軽いリフレッシュは効果的です。", "あなたの持つ自由な発想と、人を癒す穏やかな心は、周りを明るくします。ご自身のインスピレーションを大切にし、軽やかな気持ちで行動してくださいね。", "心が重いときは、この水の色のように、すべてを洗い流してください。あなたの心は、常に清らかで、新しい始まりを迎えることができます。軽く、自由に。", "この穏やかな青は、あなたの心に深い癒しと安らぎをもたらします。心配を手放し、この清らかな水に身を委ねてください。あなたは優しく守られていますよ。", "穏やかで純粋なあなたの心は、周りの人々を癒やします。自分自身の優しさと解放感を大切に、自信を持って日々を豊かに過ごしてください。あなたは素晴らしい。", "解放感と穏やかさをもたらすこの色は、心身をリフレッシュさせます。明るい希望を持って、今日一日を大切に過ごしましょう。ポジティブなエネルギーが幸運を運びます。", "「あなたの心は、いつも優しさに満ちています」。パステルブルーのように、あなたの心を優しく包み込みます。辛い時は、無理せず、心の声に従って休息してください。", "深い安らぎと穏やかさをもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは平和な光に包まれています。", "あなたの心は、風のように自由で清らかです。肩の力を抜き、軽やかに、思うままに羽ばたいてみましょう。"] },
-            "#1ABC9C": { menu: "ヒーリング", reason: "心と体のバランスが、自然に整っていくのを感じられます。休むことは悪いことじゃないよ。", menuUrl: "https://spiritual-therapist-mii.studio.site/healing", messages: ["穏やかなティールは調和の力です。境界線を丁寧に引けるあなたは、関係を健やかに保てます。自分を守る判断は立派な強さです。", "役割を整理すると、協力がスムーズになります。バランスの色が中庸を助けるように、偏りを一度リセットして進めます。", "あなたの持つ誠実さと、調和を重んじる心は、周りに温かい信頼を築きます。ご自身の健全な精神を信じ、着実に目標に向かって進んでくださいね。", "不安や焦りを感じるときは、この安定した色のように、冷静さを保ってください。あなたの心には、常に平和な基盤があります。深呼吸をして、心を落ち着けましょうね。", "自然の力のような、揺るぎない安心感があなたを包んでいます。あなたの周りには、健康と調和が満ちています。安心して、自分自身を大切にしてください。", "独創性に溢れたあなたの個性は、周りの人々に刺激を与えます。ご自身の表現力と自由な発想を自信を持って発揮してください。あなたは唯一無二の存在です。", "コミュニケーションと創造性を高めるこの色は、新しい発見に満ちた一日をもたらします。ポジティブな気持ちで、自由な発想を楽しんでください。素敵な体験を。", "「あなたの個性は、誰にも真似できない魅力です」。癒やしのターコイズが、あなたの心の疲れをそっと取り除きます。無理せず、自分らしくいられる場所を見つけてください。", "心の平穏と深い安心感をもたらすこの色は、あなたの心を穏やかに保ちます。全てがうまくいくと信じ、リラックスしてください。あなたは守られています。", "あなたの心は、今、調和を取り戻そうとしています。無理せず、心と体の声に耳を傾け、バランスの取れた生活を心がけてください。"] },
-            "#43A047": { menu: "未来予報", reason: "“ちゃんと進んでる”って、安心して思えるような歩幅を一緒に見つけます。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["みずみずしい緑は成長の確信をくれます。昨日より一歩進めたなら上出来です。あなたの粘り強さは、着実に実を結んでいます。", "試行を一つ増やせば、芽は太くなります。観察→微調整の循環が成果を育てます。小さな前進を数えるほど、景色は明るくなります。", "あなたの持つ生命力と、成長への強い意志は、周りを優しく力づけます。ご自身の持つ活力を認め、積極的に行動してください。あなたは進化し続ける大切な存在です。", "疲れたときは、この深い緑のように、自然の力を借りて心を癒してください。あなたの心には、この色のような強い回復力があります。無理せず、休息を取りましょうね。", "大地に根を張る木のように、あなたは強く安定しています。あなたの健康と活力は、あなた自身を守る盾となります。安心して、生命力を感じてください。", "大地のように力強いあなたの生命力と成長は、周りの人々に安心感を与えます。ご自身の努力と調和の心を信じ、自信を持って前に進んでください。あなたは確かな存在です。", "成長と安定をもたらすこの色は、目標達成への確かな道を示します。自然の力を感じながら、穏やかな気持ちで一歩ずつ進みましょう。ポジティブなエネルギーが幸運を運びます。", "「あなたの心は、自然のように強く、美しい」。深い緑が、あなたの心の疲れをそっと癒やします。無理せず、自分のペースで心を休ませてください。", "深い安らぎと安定感をもたらすこの色は、あなたの心を穏やかに保ちます。全てを手放し、リラックスしてください。あなたは自然の力に守られています。", "あなたの努力は、必ず実を結びます。急いで結果を求めず、日々の成長と小さな達成を楽しむことに意識を向けてください。"] },
-            "#AEEA00": { menu: "未来予報", reason: "新しい風が入るときは不安もセット。でも、楽しむ余白を作りながら進めます。", menuUrl: "https://spiritual-therapist-mii.studio.site/mirai-navi", messages: ["若葉の黄緑は好奇心の色。あなたのひらめきは瑞々しい価値です。遊び心を自分に許すほど、自己信頼はのびやかに育ちます。", "面白そうなことに少し舵を切りましょう。試して学んで戻せば良いだけ。軽やかな探索は、想像以上の実りを連れてきます。", "あなたの持つ純粋な創造性と、明るい希望は、周りを明るく照らします。ご自身の才能を信じ、自由な発想で世界と関わってくださいね。", "心が疲れたときは、この新鮮な色のように、心をリフレッシュしてください。あなたの純粋な探求心は、常に新しい解決策を見つけ出します。軽やかに、前に進みましょう。", "太陽の光を浴びるような、明るい安心感があなたを包んでいます。あなたの未来は希望に満ちています。心配はいりませんよ。いつでも光はそこにあります。", "新しい始まりを予感させるあなたの活力は、周りの人々を刺激します。ご自身の好奇心と前進する力を信じ、自信を持って新しい挑戦を楽しんでください。あなたはエネルギッシュです。", "好奇心と活力を高めるこの色は、行動力を促します。新しい発見に満ちた一日を楽しみましょう。前向きな気持ちで、最高の体験を引き寄せます。", "「あなたの持つエネルギーは、周りの人を明るくします」。活発なこの色が、あなたの心に力強いエールを送ります。辛い時も、希望を忘れずに、一緒に乗り越えましょう。", "心の活力と安心感をもたらすこの色は、あなたの心を穏やかに保ちます。全てがうまくいくと信じ、リラックスしてください。あなたは守られています。", "あなたの人生は、今、新しい成長期に入っています。好奇心とユーモアを持って、目の前の課題に飛び込んでみましょう。"] },
-            "#f3ffd1": { menu: "カラーカード", reason: "無理に変えなくていい。ありのままのあなたがそのまま息をしやすくなるように。", menuUrl: "https://spiritual-therapist-mii.studio.site/color-card", messages: ["あなたの感性は新芽のようにみずみずしく、細かな変化を捉える力があります。小さな工夫を重ねる姿勢こそ、誇ってよいあなたの強みです。", "面白さを一滴だけ足しましょう。軽い色のひらめきが作業に風を入れます。失敗もデータです。やわらかな挑戦は、確かな実りを運びます。", "あなたの持つ穏やかな優しさと、調和を愛する心は、周りに安らぎを与えます。ご自身の内面にある平和を大切にしてくださいね。", "心が乱れたときは、この静かな色のように、すべての感情を静かに見つめてください。あなたの心は、常に平和な状態に戻ることができます。優しく自分を受け入れましょう。", "すべてを受け入れるような、深い安らぎと安心感があなたを包んでいます。この柔らかな光の中で、心と体を深く休ませてください。あなたは愛に守られていますよ。", "優しい光を持つあなたの心は、周りの人々に安らぎを与えます。ご自身の優しさと純粋さを心から肯定し、自信を持って日々を豊かに過ごしてください。あなたは愛されています。", "穏やかさと希望をもたらすこの色は、心身をリフレッシュさせます。ポジティブな気持ちで、今日一日を大切に過ごしましょう。優しさに満ちた素敵な体験を。", "「あなたの優しさが、世界をより良くしています」。柔らかな光のように、あなたの心を優しく包み込みます。辛い時は、無理せず、心の声に従って休息してください。", "深い安らぎと穏やかさをもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは平和な光に包まれています。", "あなたは、そのままで十分魅力的です。肩の力を抜き、ありのままの自分でいることを自分に許可してあげてください。"] },
-            "#E0E1DD": { menu: "リーディング", reason: "あなたの落ち着いた視点が、そっと自分を守ってくれます。その感覚を一緒に育てましょう。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["整える力は才能です。あなたの丁寧な段取りが皆の負担を軽くしています。派手さは不要です。静かな実行力こそ価値そのものです。", "まず余計なノイズを一つ減らしましょう。曖昧さを整えるほど前進は滑らかになります。小さい整頓が、大きな集中を連れてきます。", "あなたの持つ落ち着きと、高い知性は、周囲に温かい信頼感を与えています。ご自身の判断力を信じ、冷静な姿勢を保ってくださいね。", "感情が揺れたときは、このニュートラルな色のように、心をフラットに保ってください。あなたの理性と知性が、感情的な波を穏やかにします。冷静さを大切にしましょう。", "この落ち着いた色は、あなたに揺るぎない安心感をもたらします。あなたの周りには、確かな安定感があります。安心して、自分のペースで進んでくださいね。", "控えめながらもバランスの取れたあなたの心は、周りの人々に安心感を与えます。ご自身の調和と落ち着きを大切に、自信を持って日々を豊かに過ごしてください。", "心の平静とバランスをもたらすこの色は、穏やかな気持ちで一日を過ごすことを助けます。中立的な視点で、物事を冷静に判断しましょう。素敵な一日に。", "「あなたの存在が、周りの調和を生み出しています」。静かに寄り添うこの色が、あなたの心の不安を和らげます。無理せず、心の声に従って休息してください。", "心の安らぎとバランスをもたらすこの色は、深いリラックスへと誘います。全てを手放し、リラックスしてください。あなたは穏やかな光に包まれています。", "あなたは、感情から一歩引いて物事を眺めることができる、賢明な人です。あなたの客観的な視点を信じて行動してください。"] },
-            "#6D6D6D": { menu: "対面リーディング", reason: "自分の軸がもっとしっかり感じられるよう、丁寧に言葉にしていきます。", menuUrl: "https://spiritual-therapist-mii.studio.site/f2f_reading", messages: ["ぶれない基準があなたにはあります。感情に寄り添いながらも事実で判断できる姿勢は十分に頼もしい資質です。自分の軸を信じてください。", "優先度を三段に分けて、上段だけ着手しましょう。濃いグレーのように輪郭が締まり、可動域が広がります。進路は必ず見えてきます。", "あなたの持つ誠実さと、地に足の着いた姿勢は、周囲に安心感を与えます。ご自身の経験と知恵を信頼し、着実に歩みを進めてくださいね。", "人生の重荷を感じるときは、この色が示すように、すべてを受け止める強さがあなたにはあります。あなたの経験は、無駄ではありません。ご自身を信頼してくださいね。", "この落ち着いた色は、あなたに変わらない安心感を与えます。あなたの周りには、信頼できる安定した土台があります。安心して、どっしりと構えてくださいね。", "冷静な判断力と知性を持つあなたの存在は、周りの人々に安定感を与えます。ご自身の客観性と落ち着きを信じ、自信を持って行動してください。あなたは頼れる存在です。", "知性と安定をもたらすこの色は、客観的な視点で物事を捉えることを助けます。落ち着いた気持ちで、目標達成に向けて着実に進みましょう。ポジティブな一日に。", "「あなたの落ち着いた対応に、私は心から感謝しています」。静かに寄り添うこの色が、あなたの心の不安を和らげます。無理せず、心の声に従って休息してください。", "深い安定感と落ち着きをもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは守られています。", "あなたの内側には、しっかりと確立された「自分軸」があります。周りの意見に惑わされず、自分の価値観を信じてください。"] },
-            "#3A3A3A": { menu: "対面リーディング", reason: "深い部分に触れても、ここなら大丈夫。安全に向き合える空間を保ちます。", menuUrl: "https://spiritual-therapist-mii.studio.site/f2f_reading", messages: ["暗い地色は光を際立たせます。あなたの集中と粘りは場の指針です。見えにくい努力ほど価値が高いこと、どうか忘れないでください。", "外界の明るさを少し絞り、一点に光を置きましょう。深い集中は短距離走でも育ちます。小さな完了が、次の加速を生みます。", "あなたの持つ力強さと、深い思慮深さは、周囲に確かな影響を与えています。ご自身の内なる権威を認め、自信を持って決断を下してくださいね。", "心が重いときは、この深みのある色のように、ご自身の内面に深く潜ってください。あなたの内なる強さが、困難を乗り越える力を優しく与えてくれます。自分を信じて。", "この深い色は、あなたに絶対的な安心感をもたらします。あなたは、あなた自身の力でしっかりと守られています。揺るぎない信念を持って、前進してくださいね。", "プロフェッショナルなあなたの存在は、周りの人々に信頼を与えます。ご自身の堅実さと洗練された知識を信じ、自信を持って行動してください。あなたは確かな存在です。", "堅実さと洗練をもたらすこの色は、目標達成への強い決意を支えます。落ち着いた気持ちで、着実に前進しましょう。ポジティブな行動が成功を導きます。", "「あなたの姿勢に、私は心から敬意を表します」。深い色が、あなたの心の疲れをそっと癒やします。無理せず、心の声に従って休息してください。", "絶対的な安心感と重厚感をもたらすこの色は、あなたの心を穏やかに保ちます。全てがうまくいくと信じ、リラックスしてください。あなたは守られています。", "あなたの中には、物事の全てを受け止め、支える基盤となる力強さがあります。恐れず、自分の深い部分と向き合ってみましょう。"] },
-            "#FFFFFF": { menu: "リーディング", reason: "心と未来がひらけていくような、やわらかな浄化と解放の時間になります。", menuUrl: "https://spiritual-therapist-mii.studio.site/reading", messages: ["白い余白を守れるあなたは賢明です。埋めない選択が質を上げます。休む判断と再開のタイミングを決められる主体性を誇ってください。", "まっさらな紙に見出しを一行だけ。はじまりは小さくて良いのです。線が一本引ければ次の行は自然に続きます。今日の一歩で充分です。", "あなたの持つ純粋な可能性は無限大です。ご自身の清らかな心と、新しい始まりを創り出す力を信じてください。あなたは希望そのものの、大切な存在です。", "心が疲れ切ったときは、この清らかな色のように、すべてを一度ゼロに戻しましょう。あなたの心は、常に浄化され、新しい光を受け入れることができます。", "この清らかな色は、あなたに心の解放と究極の安心感をもたらします。すべての不安から解き放たれ、純粋な光の中で安らぎを感じてくださいね。", "純粋で無限の可能性を持つあなたの心は、何よりも美しいです。過去の経験はリセットし、新しい自分として自信を持って再出発してください。あなたは光そのものです。", "清々しい気持ちで、今日を新しいスタートにしましょう。ポジティブな気持ちで一歩踏み出すことで、最高の始まりを迎えます。目標に向かって誠実に進みましょう。", "「あなたの純粋な心は、決して曇ることはありません」。光のように、あなたの心を優しく包み込みます。辛い時も、希望を忘れずに、一緒に乗り越えましょう。", "全てを包み込む純粋な白は、心の平穏と清らかな安心感を与えます。心配事を手放し、心身をリフレッシュしてください。きっと大丈夫です。", "あなたは、無限の可能性と、純粋な光に満ちた存在です。過去の全てを許し、理想の未来を自由に描いていきましょう。"] },
+        const colorCodes = [
+            "#FF0000","#FFE4E1","#FFB6C1","#FF8A80","#6B4226","#C49E7D","#D35400","#FF9800","#FFCC80","#F4A261",
+            "#F9A825","#FDD835","#ffffe6","#DCE775","#EC407A","#F48FB1","#F8BBD0","#FFF0F5","#FFFAFA","#E6E6FA",
+            "#CE93D8","#8E24AA","#6A1B9A","#3F3F74","#2196F3","#1976D2","#BBDEFB","#000080","#B2EBF2","#1ABC9C",
+            "#43A047","#AEEA00","#f3ffd1","#E0E1DD","#6D6D6D","#3A3A3A","#FFFFFF"
+        ];
+
+        const menuLinks = {
+            "リーディング鑑定書": "https://spiritual-therapist-mii.studio.site/reading",
+            "LINEリーディング": "https://spiritual-therapist-mii.studio.site/line-reading",
+            "アートセラピー": "https://spiritual-therapist-mii.studio.site/art-therapy",
+            "ヒーリング": "https://spiritual-therapist-mii.studio.site/healing",
+            "対面リーディング": "https://spiritual-therapist-mii.studio.site/f2f_reading"
         };
 
+        const reviewLinks = {
+            "リーディング鑑定書": "https://spiritual-therapist-mii.studio.site/review-reading",
+            "LINEリーディング": "https://spiritual-therapist-mii.studio.site/line-reading",
+            "アートセラピー": "https://spiritual-therapist-mii.studio.site/review-art-therapy",
+            "ヒーリング": "https://spiritual-therapist-mii.studio.site/review-healing",
+            "対面リーディング": "https://spiritual-therapist-mii.studio.site/review-f2f_reading"
+        };
+
+        // 生データの埋め込み（メッセージ）
+        const rawMessages = `
+#FF0000
+迷いがあっても、あなたの情熱は確かに灯っています。誠実に選び続ける力は、もう身についています。小さな一歩も価値ある前進です。
+血のめぐりのように、挑戦は自信を育てます。今日の一歩が明日の景色を変えます。失敗は熱を調整する合図、次に活かせます。
+あなたの内側には、誰にも負けない情熱という美しい炎が灯っています。その強いエネルギーは、あなた自身の道を力強く照らしてくれるでしょう。ご自身の熱い想いを大切にしてくださいね。
+今、心が熱く高まっているのですね。その強い感情は、あなたが真剣に向き合っている証拠です。無理に抑え込まないでください。あなたの情熱は、必ずあなたを支えてくれます。
+心の中に灯る炎が、あなたを守る温かい光となります。不安なときは、その情熱を思い出してください。あなたはいつでも、自分自身という確かな存在に支えられています。
+あなたの内に秘めた情熱は、無限の可能性を秘めています。自分を信じ、堂々と表現してください。エネルギーに満ちたあなたは、きっと素晴らしい未来を築けます。
+困難に直面しても、あなたの強い生命力と情熱が前進する力を与えてくれます。自信を持って、その活力を存分に発揮してください。
+「大丈夫、あなたは一人ではありません」。あなたの強い心と情熱が、どんな試練も乗り越える力になります。時には立ち止まっても、一歩踏み出す勇気を応援しています。
+力強く、前向きなあなたの存在自体が、周りに活力を与えています。疲れた時は、あなたの強い心の炎が消えないよう、少し休んでエネルギーをチャージしましょう。
+あなたの情熱は周囲を明るく照らす力を持っています。そのエネルギーを、周りの人を鼓舞するためにぜひ使ってみましょう。
+#FFE4E1
+やわらかな優しさは弱さではありません。丁寧に向き合う姿勢が、あなたと周りを同時に支えています。静かな強さを誇ってください。
+小さな思いやりが空気を淡く甘く整えます。あなたの一言で、今日の景色はやさしく変わります。心配りは確かな貢献です。
+あなたの持つ柔らかな優しさは、あなた自身の心の美しさから溢れています。ご自身の感情に素直でいることは、何よりも尊い自己肯定へと繋がります。そのままのあなたで大丈夫ですよ。
+心が少し疲れたときは、この柔らかな色のように、そっと力を抜いてみましょう。優しさに包まれた空間で、あなたは守られています。どうか無理せず、まずはご自身を労ってください。
+あなたの存在そのものが、周りに温かい安らぎを広げています。優しさで満たされたこの色のように、心の平穏を取り戻しましょう。大丈夫、あなたは愛に包まれています。
+優しいピンクのように、あなたは温かい愛と優しさに包まれています。自分を大切にする心は、あなたの輝きを一層増します。ありのままの自分を愛してくださいね。
+この色は幸せな予感を運んできます。あなたの柔らかな笑顔は、周りの人も明るく照らします。心の安らぎを感じながら、素敵な出来事を引き寄せましょう。
+疲れた心にそっと寄り添うような、柔らかな色です。大丈夫ですよ、辛い時は無理せず、自分自身を一番に大切にしてあげてください。あなたの優しさは宝物です。
+心が穏やかになる薄ピンクの光に包まれて、深い安心感を感じてください。すべてを受け入れる受容の心が、あなたの心を静かに癒やしてくれます。どうぞごゆっくりお休みください。
+あなたは愛と優しさで満たされています。まずは自分自身に、たっぷりその優しさを注いであげることをおすすめします。
+#FFB6C1
+あなたのやさしさは場をやわらげる力です。気づきを言葉にできる度に、自分を大切にできています。その姿勢は十分に美しいです。
+今日の自分に軽く微笑みを。完璧でなくて魅力的です。ひとつ手放すだけで、思った以上に身軽になり、新しい余白が生まれます。
+あなたの繊細で愛らしい感性は、この世界を美しく彩る才能です。ご自身の中にある素敵な部分を認め、大切にしてください。その感受性こそが、あなたの自信を育みます。
+寂しさや切なさを感じたときは、どうか一人で抱え込まないでください。あなたの心はとても純粋で美しい。その感情をそっと受け止め、優しくいたわってあげましょうね。
+温かい毛布に包まれるような安心感を、ご自身に与えてください。愛に満ちたこの色は、あなたの心を静かに落ち着かせます。いつでもあなたの心に寄り添っていますよ。
+あなたの素敵な個性は、愛と光に満ちています。この幸福の色のように、ご自身の魅力を再認識し、明るい未来を信じて進んでください。心から応援しています。
+ときめきに満ちたパステルピンクは、新しい喜びをもたらします。前向きな気持ちで、今日という日を楽しみましょう。あなたの優しい行動が、幸せの循環を生み出します。
+愛と優しさを感じさせるこの色は、あなたの心を温かく包み込みます。大丈夫です、ありのままの気持ちを大切にしてください。あなたの心の声に、そっと耳を傾けます。
+ほっと一息つけるような、癒やしのピンクです。穏やかな気持ちで、全てがうまくいくと信じましょう。あなたの周りは優しさに満ちています。安心してくださいね。
+自分の持つ愛らしさや無邪気さを恥ずかしがらずに受け入れて表現してみましょう。それが、今のあなたの大きな魅力になります。
+#FF8A80
+ため込んだ想いを、やさしく外に出せています。自分の声を信じるほど、世界は誠実に応えます。正直さはあなたの大きな力です。
+思い切って軽くなると、景色は一段明るくなります。手放しは負けではありません。次の余白と選択肢を増やす勇敢な行為です。
+あなたの勇気ある一歩は、周りに温かい光をもたらしています。人を想う優しい心と、行動力を誇りに思ってください。その温もりが、あなたをさらに輝かせてくれます。
+誰かのために頑張るあなたですが、まずはご自身を温めてください。あなたの優しさは、必ず周りに伝わっています。疲れた心に、そっと寄り添う温もりを感じてください。
+この温かい色が、あなたの心を優しく包み込みます。大丈夫、あなたは一人ではありません。困難な時も、この温もりを思い出してくださいね。きっと乗り越えられます。
+あなたの明るく親しみやすい性格は、周りを和ませる特別な魅力です。ご自身の創造性を信じて、新しいことに挑戦する勇気を持ちましょう。あなたらしく輝いてください。
+温かみのあるコーラルのように、周囲との繋がりを大切に、楽しい会話と新しい発見に満ちた一日を。前向きなエネルギーで、創造性を存分に発揮してください。
+「あなたの気持ちを理解していますよ」。温かい色が示すように、いつでもあなたの味方です。心を開いて、感じたままの素直な気持ちを表現してくれて大丈夫です。
+ほっこりとする暖かさが、あなたの心に平穏をもたらします。信頼できる人たちとの温かい繋がりを感じ、リラックスしてください。心配はいりませんよ。
+親しい人との温かい交流を大切にする時期です。不安や悲しみを感じたら、信頼できる人に気持ちを素直に伝えてみましょう。
+#6B4226
+あなたの積み重ねは静かに強いです。目立たなくても確かな土台が、今日も周りを支えています。誠実な努力は揺るぎません。
+ゆっくり育つ根は嵐に強い。焦らず丁寧に続けるほど、成果は長持ちします。時間はあなたの味方、信じて進めます。
+あなたがこれまで歩んできた道のり、積み重ねた経験こそが、揺るぎない自信の根っこです。過去の努力を認め、その重厚な知恵を活かしてください。あなたは価値のある大切な存在です。
+人生の深みを知るあなたは、一人ではありません。この落ち着いた色のように、あなたの存在はどっしりと安定しています。心の重荷を少し降ろして、ゆっくり休んでください。
+大地に根を張る木のように、あなたは強く安定しています。過去の経験があなたを優しく支えています。この確かな色のように、ご自身の安定した基盤を信頼してくださいね。
+大地のように揺るぎないあなたの強さと堅実さは、素晴らしい魅力です。ご自身の努力と積み重ねてきた経験に自信を持ってください。あなたは確かな存在です。
+落ち着いたブラウンが、地に足の着いた行動を促します。焦らず、着実に目標に向かって進みましょう。安定感のあるあなたは、信頼を集める頼れる存在です。
+大地のように、しっかりとあなたの心を支えます。落ち着いた時間を持ち、心身の疲れを癒やしましょう。安心して自分のペースを取り戻してください。
+重厚な安心感をもたらすこの色は、あなたの土台がいかに堅固であるかを示しています。深くリラックスし、日々の安定を再確認してください。全ては順調です。
+焦らず、長期的な視点を持って計画を立てましょう。「地に足をつける」感覚を取り戻すために、体を動かしてみるのもおすすめです。
+#C49E7D
+飾らない誠実さが、場にぬくもりを運びます。素朴さは魅力です。あなたの在り方が信頼という実りを着実に育てています。
+手の届く範囲を整えるだけで、暮らしは穏やかに変わります。小さな快適を一つずつ。成果は静かに積み上がっていきます。
+あなたの持つ誠実さと穏やかな知性は、周りの人からの信頼を深めています。ご自身の判断力を信じて、安心して進んでください。あなたの静かな強さが、未来を切り開きます。
+時には、物思いに耽る静かな時間も大切です。この落ち着いた色が、あなたの思考に深みを与えます。心の整理をする時間として、ご自身の内面とゆっくり向き合ってみてください。
+自然体のあなたが一番魅力的です。この穏やかな色が示すように、肩の力を抜いてくださいね。あなたの周りには、信頼できる安心感に満ちた空間があります。
+飾らないあなたの自然体の魅力は、周りの人々を穏やかな気持ちにさせます。ありのままの自分でいることが、最高の自己肯定感に繋がります。心を解放してください。
+穏やかで優しいこの色は、日々の小さな幸せに気づかせてくれます。心にゆとりを持ち、自然の流れに身を任せてみましょう。平和な気持ちで、豊かな一日を。
+木漏れ日のような暖かさで、あなたの心をそっと包みます。頑張りすぎなくて大丈夫ですよ。安らぎを感じる自分の場所で、心穏やかにお過ごしください。
+自然の力を感じるこの色は、深い安らぎと安定をもたらします。心身を緩め、リラックスしてください。素朴な安心感の中で、穏やかな時間をお楽しみください。
+これまでの経験や知識を活かし、周りの人に優しく伝えてみましょう。芸術鑑賞や読書など、心を豊かにする時間を持つことが大切です。
+#D35400
+勇気は派手でなくて構いません。現実的な一歩を重ねるあなたは強いです。結果より続ける力、その価値は確かです。
+好奇心の火を少し足しましょう。試して合わなければ戻せばいい。柔軟さこそがあなたの推進力、安心して挑めます。
+あなたの挑戦する姿勢は、周りの人たちを温かく奮い立たせる力を持っています。失敗を恐れず、情熱を持って進む姿こそ、あなたの最高の魅力と自信の源です。
+時には道に迷うこともあるでしょう。しかし、あなたの内側には、この炎の色のような強いエネルギーが宿っています。その熱い気持ちを信じ、諦めないでくださいね。
+活動的でありながらも、この色は地に足の着いた安定感をもたらします。ご自身の直感とエネルギーを信じてください。力強く、そして穏やかなあなたが、あなた自身を守ります。
+あなたの持つエネルギーは、周りを明るく照らす太陽のようです。果敢な行動力と創造性を信じ、新しい挑戦を楽しんでください。あなたの未来は明るいです。
+元気が出るオレンジが、ポジティブな気持ちを後押しします。活動的な一日を予感させ、喜びをもたらします。積極的に人や物事に関わり、ワクワクを追求しましょう。
+「頑張っているあなたを、心から応援しています」。温かい光のように、あなたの心に寄り添います。前に進む勇気とエネルギーを、この色がそっと与えてくれます。
+暖かく包み込むオレンジ色は、心の活力と安心感を与えます。困難を乗り越える力があなたにはあります。安心して、自分のペースで進んでください。
+あなたには、変化を起こすための集中力とエネルギーがあります。情熱を一点に集中させ、目標を突破する力を信じてください。
+#FF9800
+あなたの明るさは、人の背中をそっと押します。その力をどうぞ自分にも向けてください。自分への励ましは最強の味方です。
+予定に遊び心をひと匙。余白があるほど偶然の良い巡りが入りやすくなります。軽やかさは成果を遠ざけず、むしろ近づけます。
+あなたの明るい笑顔と親しみやすさは、周囲を照らす太陽のような存在です。ご自身のポジティブな影響力を認め、人との繋がりを大切にしてください。あなたは素晴らしい大切な存在ですよ。
+心が疲れたときは、温かい光に包まれるイメージをしてください。あなたの明るい性質は、どんな時もあなた自身を照らす力となります。少し休んで、また一緒に輝きましょう。
+太陽の温かさが、あなたに安心感を与えてくれます。この色のように、あなたの周りは明るいエネルギーで満たされています。心配はいりません。いつでも光はそこにありますよ。
+あなたの明るく開放的な心は、周りを魅了します。自分らしさを臆せず表現し、人生を楽しみ尽くすことに自信を持ってください。あなたの笑顔が最高です。
+陽気なオレンジで、最高の気分で一日をスタートしましょう。好奇心と遊び心を持って、新しい体験を楽しみましょう。心を開放して、喜びを感じる一日に。
+心躍るオレンジのように、あなたの毎日に笑顔と楽しさが溢れるように願っています。辛い時も、前向きな気持ちをそっと支えます。いつでも頼ってください。
+温かい太陽の光のようなこの色は、心の壁を取り払い、安心感を与えます。親しみやすい雰囲気の中で、リラックスし、自分らしくいられる喜びを感じてください。
+人生は心から楽しむためにあります。あなたの持つ明るさで、周りの人にも喜びを分けてあげてください。
+#FFCC80
+あなたの穏やかなあたたかさは、場をゆるめる力です。目立たなくても周囲は助かっています。その気配りは立派な才能です、胸を張ってください。
+予定に余白を残すあなたの判断は賢明です。ゆるい光が集中を助けます。小さな工夫が積み重なり、思った以上の実りに変わっていきます。
+あなたの素直な感性は、周りに温かい幸福感を与えています。自分自身の無邪気さや、人を愛する優しい心を大切にしてください。その優しさが、あなたの自信に繋がります。
+優しさに満ちたこの色は、あなたの疲れた心をそっと癒します。人に優しくできるあなたは、まずご自身を優しく包んであげてください。いつでもあなたの心に寄り添っていますよ。
+お母さんの温もりを感じるような、優しい安心感があなたを包んでいます。この柔らかな光を信頼してくださいね。心地よい安らぎが、あなたを深くリラックスさせてくれます。
+優しいアプリコットのように、あなたは温かく心地よい魅力を持っています。周りの優しさを受け止め、自分自身の素晴らしさを心から認めてください。あなたは特別です。
+幸福感に満ちたアプリコットカラーが、穏やかで楽しい時間をもたらします。心地よい気持ちで、日常の小さな幸せをたくさん見つけましょう。今日も良い一日に。
+「優しさに満ちたあなたに、そっと寄り添います」。喜びと安らぎのアプリコットが、あなたの心を温かく癒やします。無理せず、心の声を大切にしてください。
+柔らかな温もりを持つこの色は、全てを受け入れるような安心感をもたらします。心地よい空間で、心からリラックスし、深い安らぎを感じてください。
+あなたの親しみやすさは、大きな魅力です。心を開いて、周りの人との会話や交流を楽しんでみてください。
+#F4A261
+たしかな地色を持つあなたは、現実を丁寧に動かせます。派手さはなくても実行力は本物です。積み重ねるほど信頼は濃く育ちます。
+今日の一歩は、砂の小道に確かな跡を残します。試して合わなければ修正すればよいだけ。柔軟さが成果を連れてきます。
+あなたの社交性とオープンな心は、新しい世界を広げる鍵です。自分らしさを表現することを恐れず、積極的に人との交流を楽しんでください。あなたの魅力は無限大ですよ。
+時には、心がざわつくこともあるでしょう。その気持ちを正直に認めてあげてください。この温かい色が、あなたの心に穏やかな解放感をもたらしてくれますよ。
+この温もりは、心の寂しさを和らげ、あなたを孤独から守ります。大丈夫、あなたは広い世界と繋がっています。安心して、周りの人との交流を楽しんでくださいね。
+砂漠のように広がるあなたの無限の可能性を信じましょう。自由な発想とインスピレーションを大切に、自分だけの道を自信を持って切り拓いてください。あなたには力があります。
+好奇心を刺激するサンドオレンジは、新しい冒険への第一歩を後押しします。自立心を持って、自分の人生を自由に創造していきましょう。素晴らしい旅になります。
+「あなたの自由な発想を、私は尊重します」。孤独を感じた時も、この色があなたの心にインスピレーションと希望の光を灯します。いつでも味方です。
+自然体の安心感を与えるこの色は、心の自由を許し、深くリラックスさせます。ありのままの自分でいることの心地よさを再確認し、穏やかな気持ちでお過ごしください。
+あなたは、自信を持って輝くことができます。あなたの個性を隠さず、積極的に表現することに意識を向けてください。
+#F9A825
+あなたの視点には金色のひらめきがあります。気づきを言葉にするたび、周囲の理解も深まります。自分の直感を信頼して大丈夫です。
+ひとつ明るい選択が、連鎖して空気を変えます。好奇心に小さく賭けましょう。楽しさは集中を呼び、集中は結果を連れてきます。
+あなたの前向きな知恵とユーモアは、周囲に温かい活力を与えています。自分自身の持つ明るい才能を認め、存分に発揮してください。あなたは、周囲を笑顔にする素晴らしい力を持っています。
+不安な気持ちが襲ってきたら、この明るい光を心に描いてください。あなたの知性が、問題を解決する道筋を照らしてくれます。焦らず、ご自身の能力を信頼してくださいね。
+この輝きは、困難な状況でも希望を見出す力をあなたに与えます。心が明るく満たされる安心感を抱いてください。あなたの未来は、光に満ちていますよ。
+太陽のような輝かしい才能と知性を持っています。ご自身のアイデアと能力に絶大な自信を持ち、目標達成に向けて力強く進んでください。成功はすぐそこです。
+希望に満ちたゴールデンイエローは、最高の未来を予感させます。創造的な発想で、今日一日を輝かせましょう。ポジティブなエネルギーで幸運を引き寄せます。
+「あなたの可能性は無限大です。諦めないでください」。知性と希望の色が、あなたの努力を認め、讃えます。つらい時も必ず光は差し込みます。心の支えになります。
+豊かさと安心感をもたらすこの色は、あなたの基盤が確固たるものであることを示します。自信を持って、将来への希望を抱き、穏やかな気持ちで日々をお過ごしください。
+あなたは、物事の本質を見抜く力を持っています。深く考え、あなたの明晰な洞察力を信じて行動することをおすすめします。
+#FDD835
+無邪気さと誠実さを併せ持つあなたは、人に希望を分けられます。遠慮のいらない笑顔は力です。自分の明るさを信じてください。
+遊び心を予定に混ぜると、ひらめきが加速します。正解は一つではありません。試行の総数が、安心の土台を厚くしてくれます。
+あなたの生まれ持った個性と知性は、あなただけの宝物です。自分自身の独創性を信じ、それを表現してください。あなたは唯一無二の、とても大切な存在です。
+もし心が曇ってしまったら、この明るい色を思い出してください。あなたの内なる知恵が、解決策を優しく導き出します。自分自身と対話する時間を大切にしてくださいね。
+光に満ちたこの色は、あなたに明るい未来をもたらします。不安を乗り越えるエネルギーを、この輝きから受け取ってください。希望は常にあなたのそばにありますよ。
+あなたの明るい笑顔とユーモアは、周りの人々に幸福をもたらします。自分自身の魅力を最大限に活かし、コミュニケーションを楽しんでください。あなたは皆の太陽です。
+ハッピーな黄色で、心から楽しい一日を過ごしましょう。ポジティブなエネルギーを周りに分け与え、最高の気分で行動できます。喜びに満ちた最高の体験を。
+「あなたの笑顔が、私にとっての救いです」。明るい黄色のように、あなたの心に光を灯したい。つらい気持ちも共有し、一緒に乗り越えるサポートをさせてください。
+希望と安心感を与えるこの色は、心の曇りを払い、穏やかな気持ちをもたらします。明るい未来を信じ、リラックスしてください。心配はいりませんよ。
+あなたの内側には、無限の可能性を秘めた閃きがあります。その大切なアイデアを、ぜひ行動に移してみましょう。
+#ffffe6
+あなたの繊細さは弱点ではなく、微細な変化を捉える力です。気づける人は、優しく正確に配慮できます。その資質は希少で尊いです。
+白に一滴の光を溶かすように、少しの前向きが場を明るくします。静かな決意は長持ちします。静けさごと味方につけましょう。
+あなたの素直な感受性は、この世界を優しく受け止める力です。ご自身の純粋な心を認め、大切にしてください。ありのままのあなたが、一番優しく輝いています。
+心が疲れたときは、無理せず立ち止まりましょう。この優しい色が、あなたの心をそっと洗い流してくれます。静かな時間の中で、ご自身を深く癒してあげてください。
+まるで天からの光のような、清らかな安心感があなたを包んでいます。心配や不安を手放し、この静かな平穏の中で心を休ませてくださいね。
+控えめながらも洗練されたあなたの個性は、穏やかな美しさを持っています。完璧でなくて大丈夫です。ありのままの自分の調和を大切に、優雅な心で過ごしてください。
+落ち着いたクリーム色が、心地よい調和を生み出します。シンプルに考え、心穏やかな時間を過ごしましょう。前向きな気持ちで、優雅に一日を楽しみましょう。
+「あなたのペースで、ゆっくりで大丈夫ですよ」。優しい色が、あなたの心を穏やかに包み込みます。焦らず、自然体でいることが、何よりも大切です。
+心の安らぎをもたらすこの色は、安心感と静けさを与えます。余計な力を抜き、リラックスしてください。静かで穏やかな時間が、あなたを癒やします。
+あなたの前には、無限の可能性が広がっています。固定観念を捨て、自由に理想の未来を描いてみましょう。
+#DCE775
+芽吹きを見守るように、あなたは変化を育てています。ゆるやかな成長は強靭です。昨日より少し楽になったなら、それは確かな前進です。
+学びをひとつ記録すると、自分への信頼が増えます。未完成でいる勇気が、伸びしろを広げます。今日も試す価値があります。
+あなたの持つ新鮮な発想と穏やかな調和の精神は、未来への希望を育みます。ご自身の成長力を信じ、新しい変化を恐れずに受け入れてくださいね。
+変化を恐れないでください。あなたの心には、この若々しい色のように、常に成長し続ける力が宿っています。少しずつ、ご自身のペースで進んでいきましょうね。
+自然の恵みのような、穏やかで心地よい安心感があなたを包んでいます。あなたの持つ回復力を信じてください。心と身体の健康を、一番に考えましょう。
+穏やかな緑色のように、あなたは着実に成長し続けています。自分自身の努力を認め、希望を持って前に進むことに自信を持ってください。あなたの未来は明るいです。
+癒やしのパステルグリーンが、心身の調和を整えます。新しい可能性に希望を持ち、穏やかな気持ちで一歩ずつ進みましょう。心地よい成長を感じる一日に。
+「あなたの心の健康が、私にとって一番大切です」。優しく癒やすこの色が、あなたの心の疲れをそっと取り除きます。無理せず、自分を大切にしてください。
+自然の中にいるような安心感が、あなたの心を静めます。深呼吸をして、ストレスを手放しましょう。穏やかな気持ちで、心地よい安らぎを感じてください。
+急いで結果を出そうとせず、今の努力が未来の大きな実りにつながると信じて、日々の小さな変化を楽しんでください。
+#EC407A
+あなたの率直さは、心の強さです。好きを大切にする姿勢が、自己尊重を太くします。遠慮せず、自分の感情に席を用意してください。
+思いを伝えると、関係は鮮やかに整います。丁寧に境界線を引くことは、絆を守る行為です。あなたの選択は健やかです。
+あなたの持つ愛情深さと、情熱的な魅力は、多くの人を温かく引きつけます。ご自身の感情に正直であり、その豊かな表現力を誇りに思ってくださいね。
+時には、胸が締め付けられるような切ない感情もあるでしょう。その感情も、あなたの深い愛情の証です。ご自身の心に寄り添い、優しく抱きしめてあげてください。
+この深い愛の色は、あなたが満たされていることを示しています。自分自身への深い愛情と、周りからの愛を感じてください。あなたは愛される、大切な存在です。
+燃えるような愛の情熱が、あなたのエネルギー源です。ご自身の魅力と女性性を心から肯定し、自信を持って輝いてください。あなたは愛される存在です。
+情熱的なピンクが、行動力と前向きな気持ちを呼び起こします。愛を持って、周囲と自分自身に接しましょう。ワクワクする素晴らしい一日に。
+「あなたの感情を大切にしてください。愛しています」。情熱的なこの色が、あなたの心に力強いエールを送ります。自分を愛する心を、いつまでも忘れないで。
+愛に満ちたこの色は、深い安心感と幸福感を与えます。誰かに頼ることは弱さではありません。心を開放して、愛に包まれリラックスしてください。
+あなたは、深い愛と喜びに満たされた存在です。その愛のエネルギーを解放し、人生を情熱的に楽しむことを自分に許可してあげてください。
+#F48FB1
+柔らかい語り口は、場の安全をつくります。あなたの配慮は目に見えにくくても、確かに届いています。自分の優しさを認めてください。
+小さなありがとうを口にするほど、心は軽くなります。感謝は循環します。今日の一言が、明日の関係をやわらかく整えます。
+あなたの持つ優しい美しさと、人を思いやる心は、周りをそっと癒しています。ご自身の繊細な感性を大切にし、心の豊かさを育ててくださいね。
+心が傷ついたときは、この柔らかな色のように、ご自身を優しく労ってください。あなたの痛みは、誰かを想う心の深さの証です。無理せず、まずは自分を癒しましょうね。
+母親の愛情のような、深い安心感があなたを包んでいます。あなたは愛に守られていますよ。この心地よい安らぎの中で、心を深くリラックスさせてください。
+生まれたての優しさを持つベビーピンクのように、あなたの純粋な心は素晴らしい宝物です。自分自身の夢を大切にし、自信を持って輝く未来を創ってください。
+優しさに溢れたベビーピンクで、心地よい一日を始めましょう。小さな幸せを見つけ、心から笑う時間を大切に。純粋な喜びを感じる素敵な体験を。
+「あなたの優しい心に、心から感謝しています」。辛い時は、この柔らかな色があなたの心を優しく癒やします。どうか無理せず、自分を大切にしてください。
+無条件の愛と安心感をもたらすこの色は、深いリラックスを促します。純粋な心で、全てを受け入れ、穏やかな気持ちで安らぎを感じてください。
+あなたは、優雅で洗練された美しさを持っています。自分自身を最高に美しく、丁寧に扱ってあげてください。
+#F8BBD0
+あなたの気遣いは淡い花びらのように周囲を包みます。目立たなくても効果は深いです。育ててきた優しさを、自分に向けても大丈夫です。
+予定にやわらかい余白を残しましょう。小さな休息が創造性を呼び、人にも自分にも優しい選択を増やします。穏やかさは立派な前進です。
+あなたの純粋さと、人を惹きつける愛らしい魅力は、あなたの最大の強みです。ありのままのあなたを愛し、その無垢な心を守ってください。あなたは愛らしい大切な存在です。
+もし、心が疲れてしまったら、この穏やかな色に身を委ねてください。あなたの繊細な心を、優しく守り、包み込みます。ご自身の心の声にそっと耳を傾けましょう。
+この柔らかな温もりは、心の安全地帯です。純粋な安心感があなたを包み込みます。心配を手放し、この優しさに満たされた空間でゆっくり休んでくださいね。
+静かで繊細なあなたの内面の美しさは、唯一無二の魅力です。周りの目を気にせず、ご自身のペースで穏やかな時間を大切にしてください。あなたは十分に素晴らしい。
+静けさと穏やかさをもたらすこの色は、心の余裕を生み出します。焦らず、ゆっくりと、今日の計画を進めましょう。平和な気持ちで、一日を大切に。
+「静かに、あなたの心の声に耳を傾けます」。繊細な心を持つあなたに、無理強いはしません。心穏やかな時間を過ごし、ゆっくりと回復してくださいね。
+安らぎと平和をもたらすこの色は、深いリラックスへと誘います。何もかもを忘れて、静かな安心感に身を委ねてください。心ゆくまで休息しましょう。
+あなたは、優しさと癒やしの力に満ちています。疲れた自分を許し、温かい思いやりを注いでみましょう。
+#FFF0F5
+丁寧な言葉選びが、あなたの品をつくります。静かな思いやりは長く届きます。控えめさの奥にある芯の強さを誇ってください。
+ゆっくりで良いので、今日のToDoを一つだけ優しく完了しましょう。小さな成功体験は連鎖します。静かな達成感が明日を軽くします。
+あなたの穏やかな心と、調和を大切にする姿勢は、周りに平和をもたらします。ご自身の感情を静かに見つめ、心の奥底にある穏やかさを信じてくださいね。
+心が乱れたときは、この静かな色を思い浮かべてください。あなたの内側には、常に穏やかな海のような静けさがあります。深呼吸をして、心を鎮めていきましょう。
+すべてを受け入れるような、深い安心感があなたを包んでいます。この柔らかな空間で、心と体を休ませてください。あなたは、この静かな平和の中にいますよ。
+優雅なラベンダーのように、あなたは心に秘めた静かな強さを持っています。ご自身の美しさと優しさを肯定し、自信を持って日々を豊かに過ごしてください。
+穏やかな喜びに満ちた一日をもたらします。優美な気持ちで、周りの美しさに感謝しながら前向きに進みましょう。
+「優美なあなたに、静かな癒やしを送ります」。心の中の不安を和らげるように、そっと寄り添います。焦らなくて大丈夫、心の平穏を一番に考えましょう。
+静けさと安らぎをもたらすこの色は、心が落ち着くのを助けます。全てがうまくいくと信じ、深いリラックスを感じてください。安心して、穏やかな時間を。
+あなたの夢と、そこにある純粋な愛を信じてください。その気持ちが、あなたの未来を美しく彩るでしょう。
+#FFFAFA
+白い余白は、選べる自由の証です。無理に埋めなくて構いません。休む判断も実力です。あなたは場を整える力をすでに持っています。
+一歩進んでは止まり、景色を確かめましょう。見直しは後退ではありません。精度が上がるほど、次の行動が軽く速くなります。
+あなたの持つ清らかさと、高い理想を持つ心は、周囲を温かく励まします。ご自身の純粋な動機を大切にし、信念を持って行動してくださいね。
+心が乱れたときは、この清らかな色のように、すべての雑念を洗い流してください。あなたの心は、常に純粋な状態に戻ることができます。心を込めて自分を許しましょう。
+この清らかな色は、あなたに心の浄化と安らぎをもたらします。すべての不安から解放され、心穏やかな時間を取り戻してください。あなたは守られていますよ。
+雪のように清らかで誠実なあなたの心は、何よりも美しいです。過去の失敗はリセットし、新しい自分として自信を持って再出発してください。未来は無限大。
+清々しい気持ちで、今日を新しいスタートにしましょう。ポジティブな気持ちで一歩踏み出すことで、最高の始まりを迎えます。目標に向かって誠実に進みましょう。
+「あなたの誠実な心は、決して裏切りません」。つらい経験はリセットし、心をまっさらにしましょう。私はいつもあなたの純粋な心を信じています。応援しています。
+全てを包み込むスノーホワイトは、心の平穏と清らかな安心感を与えます。心配事を手放し、心身をリフレッシュしてください。きっと大丈夫です。
+あなたは、縛られることなく自由になることができます。自分の心の声に従って、軽やかに行動してみましょう。
+#E6E6FA
+あなたの落ち着きは、周囲の緊張をやさしくほどきます。柔らかな配色のように、関係を調和へ導く力があります。自覚して大切にしてください。
+頭に霧がかかったら、五分だけ静かな作業を。短い集中が弾みになります。心地よい香りを添えれば、継続のハードルは下がります。
+あなたの持つ優雅さと精神的な探求心は、あなたを深く高めます。ご自身の内面にある豊かさを認め、知的な探求を楽しんでくださいね。
+心が混乱したときは、この穏やかな色のように、頭の中を整理しましょう。あなたの知性が、解決への道筋を優しく示してくれます。内なる声に寄り添ってあげてください。
+この静かな色は、あなたに心の休息を与えます。深い安らぎの中で、魂の平穏を取り戻してくださいね。あなたは精神的な安定に導かれています。
+高貴で精神性の高いあなたの内面は、素晴らしい魅力です。ご自身の直感とインスピレーションを信じ、心の声に従って自信を持って進んでください。あなたは特別です。
+静けさとインスピレーションをもたらすこの色は、創造的な発想を促します。穏やかな気持ちで、精神的な豊かさを感じる素敵な一日を過ごしましょう。
+「あなたの感性を大切にしてください。癒やしを送ります」。心身の疲れを和らげるように、そっと寄り添います。無理せず、静かな時間を大切にしてください。
+深く安らぐラベンダーは、心の緊張を解きほぐし、安心感を与えます。精神的な安定を感じ、リラックスしてください。すべては守られています。
+あなたの内側には、深い静けさと高貴な精神性があります。静かな時間を作り、内面からのメッセージを受け取ってみてください。
+#CE93D8
+直感と理性のバランスが美しいですね。気づきを言語化する力が、周囲の理解を助けています。あなたの洞察は信頼に値します。
+学びを一つメモに残しましょう。記録は自信の貯金です。小さな可視化が、次の創造性と協力関係を自然に引き寄せます。
+あなたの持つ個性的で神秘的な魅力は、周囲の人々を温かく惹きつけます。ご自身のユニークな感性を大切にし、自信を持って表現してくださいね。
+もし、自分の居場所がないと感じたなら、この色があなたを優しく包み込みます。あなたの個性は、この世界に必要とされています。ありのままのあなたで大丈夫ですよ。
+この神秘的な色は、あなたに守られている感覚を与えます。あなたは宇宙の大きな流れの中で、しっかりと守られています。安心して、心の奥深くと繋がってくださいね。
+優美で繊細なあなたの感性は、世界を豊かにします。ご自身の内面の声に耳を傾け、精神的な成長を自信を持って追求してください。あなたは奥深い存在です。
+静かで穏やかな薄紫が、内省を促し、精神的な豊かさをもたらします。繊細な感性を活かして、新しい気づきに満ちた一日を過ごしましょう。
+「あなたの繊細な心を、私は大切に守りたい」。優美な色が、心の奥の不安をそっと癒やします。無理せず、自分らしくいられる場所を見つけてください。
+心の安らぎをもたらすこの色は、精神的な安定と安心感を与えます。無理な力を抜いて、穏やかな気持ちで全てを受け入れ、リラックスしてください。
+あなたは、そのままで十分完璧な存在です。欠点も含めて自分自身を深く受け入れ、優しさを周りの人にも分けてあげてください。
+#8E24AA
+深い集中力はあなたの持ち味です。妥協せず磨いてきた技術が、静かな迫力を生みます。自己評価を半歩高めても大丈夫です。
+大胆な決断は、小さな検証の積み重ねで安全になります。仮説→試行→振り返りを短く回せば、リスクは手懐けられます。
+あなたの強い信念と深い洞察力は、周囲に確かな影響を与えています。ご自身の内なる力を信じ、目的を持って行動してください。あなたは力強い大切な存在です。
+孤独を感じる時は、この深い色のように、ご自身の内面を見つめてください。あなたの魂は、常に進化を求めています。内なる声に耳を傾け、自分を信じましょう。
+この深い色は、あなたに精神的な安定と力を与えます。どんな困難も乗り越えられる強さが、あなたにはあります。あなたの存在は、盤石ですよ。
+カリスマ性を秘めたあなたの威厳は、周りを惹きつけます。ご自身の洞察力と直感を信じ、自信を持って行動してください。あなたは特別な存在です。
+深い洞察力とインスピレーションをもたらすこの色は、あなたの創造性を高めます。自信を持って、神秘的な魅力を存分に発揮しましょう。素敵な一日を。
+「あなたの持つ神秘的な魅力は、誰にも真似できません」。威厳と癒やしの紫が、あなたの心を深く理解し、静かに寄り添います。無理せず、自分の時間を大切に。
+精神的な安心感をもたらすこの色は、あなたの心に平穏を与えます。全ては最善に向かっていると信じ、深いリラックスを感じてください。心配はいりませんよ。
+あなたには、自分を変えるための、計り知れない精神的な力が備わっています。その力を信じ、内なる変革を始めてみませんか。
+#6A1B9A
+粘り強さは静かな武器です。時間を味方につける姿勢が、結果の質を底上げします。歩幅が小さくても、軌跡はまっすぐ伸びています。
+難題は層を分けて扱いましょう。まず外側を一周し、境界を確かめる。輪郭が見えるほど、中心への道は明るくなります。
+あなたの直感力と精神性の高さは、人生の道標となります。ご自身の内なる導きを信じ、高次元の意識と繋がってください。あなたは真実を知る力を持っています。
+心が迷ったときは、この色が示す真実の光を思い出してください。あなたの直感は、いつも正しい道を示してくれます。ご自身の内なる声に敬意を払いましょうね。
+この色は、あなたの魂に深い安らぎをもたらします。あなたは宇宙の法則に守られています。すべては最善のタイミングで起こることを信頼してください。
+高貴な知恵を持つあなたの精神性は、周りを導く光です。ご自身の持つ深い知識と創造性に自信を持ち、真の価値を追求してください。あなたは賢明な存在です。
+知恵と創造性を高めるこの色は、目標達成への確かな道を示します。権威を持って、自信を持って行動しましょう。ポジティブなエネルギーが成功を引き寄せます。
+「あなたの知識と知恵は、必ず誰かの助けになります」。深い紫のように、あなたの心の奥に潜む不安を静かに受け止めます。安心して自分の道を歩んでください。
+内なる平穏と深い安心感をもたらすこの色は、あなたの心を穏やかに保ちます。全てを乗り越える知恵があなたにはあります。リラックスして心身を休ませましょう。
+あなたの高い理想は、実現可能です。直感を信じ、その知恵を活かして、一歩ずつ現実のものにしていきましょう。
+#3F3F74
+落ち着いた判断は、信頼の拠り所です。感情に飲まれず景色を俯瞰できるあなたは、場の指針になれます。自分の軸を信じてください。
+曇り空の日こそ、タスクをひとつだけ軽く前へ。完了の手応えが弾みになります。静かな集中は、派手さ以上の成果を育てます。
+あなたの持つ知性と冷静な判断力は、確かな信頼を築きます。ご自身の知識と経験に自信を持ち、落ち着いた姿勢を保ってくださいね。
+感情が揺れたときは、この落ち着いた色のように、心を静かに保ってください。あなたの知性が、感情的な波を穏やかにします。無理せず、頭を休ませてあげましょう。
+この深い色は、あなたに揺るぎない安心感を与えます。あなたの周りには、信頼できる知的な秩序があります。安心して、落ち着いて物事に取り組んでくださいね。
+深く静かな濃青紫のように、あなたの内省的な心は真実を見通す力を持っています。ご自身の集中力と知性を信じ、心の奥深くと向き合うことを肯定してください。
+集中力と内省を高めるこの色は、質の高い思考を促します。静かな心で、深く物事を理解する貴重な時間を過ごしましょう。目標達成に繋がります。
+「あなたの内面の声に、私は静かに耳を傾けます」。深く寄り添うこの色が、あなたの心を静かに落ち着かせます。焦らず、自分のペースで心を整理してください。
+深い静寂と絶対的な安心感をもたらすこの色は、心の不安を和らげます。全てが落ち着くと信じ、深くリラックスしてください。あなたは守られています。
+あなたの知性と規律は、あなた自身を守る盾となります。感情に流されず、冷静に計画を実行することをおすすめします。
+#2196F3
+冷静さと誠実さがあなたの信頼を育てています。澄んだ青のように判断はまっすぐです。迷いを受け止める姿勢そのものが、確かな強さです。
+新しい知識を一滴ずつ加えましょう。青い空が視界を広げるように、学びは可能性を開きます。小さな検証が自信を静かに底上げします。
+あなたの持つ高い理想と、未来を信じる力は、周囲に温かい希望をもたらします。ご自身の可能性を信じ、自由な精神で世界と交流してください。
+悲しみや不安で心が重いときは、この空の色を思い出してください。あなたの心は、常に晴れやかな青空に戻ることができます。心を解放し、深呼吸しましょう。
+すべてを受け入れるような、広大な安心感があなたを包んでいます。あなたは広い世界に繋がり、自由と希望に満ちています。心配はいりませんよ。
+大空のように無限の可能性と自由を持つあなたの知性は素晴らしいです。ご自身の能力を信じ、前向きな気持ちで新しい世界へと羽ばたいてください。あなたは自由です。
+希望に満ちたスカイブルーは、開放的な気持ちを呼び起こします。前向きな発想で、コミュニケーションを楽しみ、新しい出会いを引き寄せましょう。素敵な一日に。
+「あなたの悩みは、やがて晴れ渡る空のように消えます」。大空のように、あなたの心を優しく包み込みます。辛い時も、希望を忘れずに、一緒に乗り越えましょう。
+心の広がりと解放感をもたらすこの色は、深い安心感を与えます。全てを委ねて、リラックスしてください。あなたは守られ、愛されています。
+あなたの創造性は無限大です。心を解き放ち、感じたこと、考えたことを自由に表現してみましょう。
+#1976D2
+積み重ねた実力は濃い青のように揺らぎません。ていねいな準備があなたの品格です。自信を半歩上げても、十分ふさわしい方です。
+課題を段取りに分けるほど前進は速くなります。深い青が集中を支えるように、構造化はあなたの味方です。合図は小さくて大丈夫です。
+あなたの持つ責任感と、強い信念は、周囲からの深い信頼を築いています。ご自身の公明正大な精神を大切にし、使命感を持って行動してください。
+心が乱れたときは、この深い海の色のように、静かに落ち着いてください。あなたの揺るぎない精神が、感情の波を鎮めます。自分自身の強さを信頼してくださいね。
+あなたの周りには、この深い色のような安定した基盤があります。信頼できる環境と、あなたの強い意志があなたを守ります。安心して、目標に集中してください。
+深い知恵と揺るぎない誠実さを持つあなたの存在は、周りの人々の信頼を集めます。ご自身の真実を信じ、自信を持って行動してください。あなたは信頼の柱です。
+誠実さと権威を高めるこの色は、目標達成への強い意志を支えます。信頼関係を大切に、着実に前進しましょう。ポジティブな行動が成功を導きます。
+「あなたの誠実さと努力を、私は心から信頼しています」。深い安らぎのブルーが、あなたの心を静かに落ち着かせます。不安な時も、いつでも頼ってください。
+絶対的な信頼感と安心感をもたらすこの色は、心の奥底に静けさを運びます。全てを委ねることで、深いリラックスを感じてください。あなたは安全です。
+あなたの信念と誠実さは、本物です。その信念を貫き、周りの人からの信頼の証として行動で示しましょう。
+#BBDEFB
+淡い青はゆるむ勇気をくれます。控えめでも確かな優しさが、周囲の緊張をほどいています。その柔らかさを自分にも向けてください。
+負荷を一段下げると、創造性が息を吹き返します。軽やかさは効率の敵ではありません。心地よさが集中をそっと後押しします。
+あなたの穏やかな優しさと、平和を愛する心は、周りに安らぎをもたらします。ご自身の純粋な心を大切にし、調和的な関係を築いてくださいね。
+心が疲れたときは、この静かな空の色のように、すべての重荷を解放してください。あなたの心は、常に軽やかで自由でいることができます。優しく自分を許しましょう。
+すべてを受け入れ、包み込むような深い安心感があなたを包んでいます。この柔らかな空間で、心と体を休ませてください。あなたは愛と平和に守られていますよ。
+優しく穏やかなあなたの心は、周りの人々に安らぎを与えます。頑張りすぎなくて大丈夫です。ご自身の心を優しく労り、穏やかな時間を大切にしてください。
+平和と休息を象徴するこの色は、心身をリフレッシュさせます。穏やかな気持ちで、今日一日を大切に過ごしましょう。前向きなエネルギーが優しさを生み出します。
+「あなたの心に、静かな安らぎが訪れますように」。優しく包み込むこの色が、辛い気持ちをそっと癒やします。無理せず、心の声に従って休息してください。
+深い安らぎと平和をもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは穏やかな光に包まれています。
+あなたの心は、穏やかで平和な状態に戻ろうとしています。焦らず、その自然な流れに身を任せてあげてください。
+#000080
+揺るぎない紺はあなたの芯を映します。責任感と落ち着きは大きな価値です。背筋が通るほど、自己評価は自然に深まっていきます。
+長距離を走るつもりで、一定の歩幅を保ちましょう。深い色が視界を締めるように、余計な刺激を減らすほど成果は安定します。
+あなたの持つ深い知恵と、強い精神力は、誰にも揺るがないものです。ご自身の内なる真実を信じ、その静かな力を優しく発揮してください。
+孤独を感じるときは、この深い色が、あなたの内なる世界と繋がります。あなたの魂は、深い知識と繋がっています。静かな時間の中で、ご自身の内面を大切にしてください。
+宇宙のような、広大で普遍的な安心感があなたを包んでいます。あなたは永遠の真理と繋がっています。すべてはあなたの中で安定していますよ。
+知性と威厳を秘めたあなたの存在は、周りの人々に深い信頼を与えます。ご自身の真実を信じ、力強い一歩を踏み出してください。あなたの判断は正しいです。
+揺るぎない誠実さをもたらすこの色は、目標達成への強い決意を支えます。威厳を持って、自信を持って行動しましょう。ポジティブなエネルギーが成功を導きます。
+「あなたの強さと誠実さを、私は心から信じています」。深いブルーのように、あなたの心の奥深くまで寄り添います。辛い時も、いつでも頼ってください。
+絶対的な安心感と威厳をもたらすこの色は、あなたの心に平穏を与えます。全てがうまくいくと信じ、深くリラックスしてください。あなたは守られています。
+あなたの内側には、全てを知る深い知恵があります。静かな時間を作り、瞑想を通じてその声に耳を傾けてみましょう。
+#B2EBF2
+澄んだ水色は回復力の色です。あなたの柔軟さは状況を新鮮にします。やり直す選択は賢明さの証、評価して差し支えありません。
+空気を入れ替えるように、習慣に小さな風を。場所や姿勢を変えるだけで、意欲はすっと戻ります。軽いリフレッシュは効果的です。
+あなたの持つ自由な発想と、人を癒す穏やかな心は、周りを明るくします。ご自身のインスピレーションを大切にし、軽やかな気持ちで行動してくださいね。
+心が重いときは、この水の色のように、すべてを洗い流してください。あなたの心は、常に清らかで、新しい始まりを迎えることができます。軽く、自由に。
+この穏やかな青は、あなたの心に深い癒しと安らぎをもたらします。心配を手放し、この清らかな水に身を委ねてください。あなたは優しく守られていますよ。
+穏やかで純粋なあなたの心は、周りの人々を癒やします。自分自身の優しさと解放感を大切に、自信を持って日々を豊かに過ごしてください。あなたは素晴らしい。
+解放感と穏やかさをもたらすこの色は、心身をリフレッシュさせます。明るい希望を持って、今日一日を大切に過ごしましょう。ポジティブなエネルギーが幸運を運びます。
+「あなたの心は、いつも優しさに満ちています」。パステルブルーのように、あなたの心を優しく包み込みます。辛い時は、無理せず、心の声に従って休息してください。
+深い安らぎと穏やかさをもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは平和な光に包まれています。
+あなたの心は、風のように自由で清らかです。肩の力を抜き、軽やかに、思うままに羽ばたいてみましょう。
+#1ABC9C
+穏やかなティールは調和の力です。境界線を丁寧に引けるあなたは、関係を健やかに保てます。自分を守る判断は立派な強さです。
+役割を整理すると、協力がスムーズになります。バランスの色が中庸を助けるように、偏りを一度リセットして進めます。
+あなたの持つ誠実さと、調和を重んじる心は、周りに温かい信頼を築きます。ご自身の健全な精神を信じ、着実に目標に向かって進んでくださいね。
+不安や焦りを感じるときは、この安定した色のように、冷静さを保ってください。あなたの心には、常に平和な基盤があります。深呼吸をして、心を落ち着けましょうね。
+自然の力のような、揺るぎない安心感があなたを包んでいます。あなたの周りには、健康と調和が満ちています。安心して、自分自身を大切にしてください。
+独創性に溢れたあなたの個性は、周りの人々に刺激を与えます。ご自身の表現力と自由な発想を自信を持って発揮してください。あなたは唯一無二の存在です。
+コミュニケーションと創造性を高めるこの色は、新しい発見に満ちた一日をもたらします。ポジティブな気持ちで、自由な発想を楽しんでください。素敵な体験を。
+「あなたの個性は、誰にも真似できない魅力です」。癒やしのターコイズが、あなたの心の疲れをそっと取り除きます。無理せず、自分らしくいられる場所を見つけてください。
+心の平穏と深い安心感をもたらすこの色は、あなたの心を穏やかに保ちます。全てがうまくいくと信じ、リラックスしてください。あなたは守られています。
+あなたの心は、今、調和を取り戻そうとしています。無理せず、心と体の声に耳を傾け、バランスの取れた生活を心がけてください。
+#43A047
+みずみずしい緑は成長の確信をくれます。昨日より一歩進めたなら上出来です。あなたの粘り強さは、着実に実を結んでいます。
+試行を一つ増やせば、芽は太くなります。観察→微調整の循環が成果を育てます。小さな前進を数えるほど、景色は明るくなります。
+あなたの持つ生命力と、成長への強い意志は、周りを優しく力づけます。ご自身の持つ活力を認め、積極的に行動してください。あなたは進化し続ける大切な存在です。
+疲れたときは、この深い緑のように、自然の力を借りて心を癒してください。あなたの心には、この色のような強い回復力があります。無理せず、休息を取りましょうね。
+大地に根を張る木のように、あなたは強く安定しています。あなたの健康と活力は、あなた自身を守る盾となります。安心して、生命力を感じてください。
+大地のように力強いあなたの生命力と成長は、周りの人々に安心感を与えます。ご自身の努力と調和の心を信じ、自信を持って前に進んでください。あなたは確かな存在です。
+成長と安定をもたらすこの色は、目標達成への確かな道を示します。自然の力を感じながら、穏やかな気持ちで一歩ずつ進みましょう。ポジティブなエネルギーが幸運を運びます。
+「あなたの心は、自然のように強く、美しい」。深い緑が、あなたの心の疲れをそっと癒やします。無理せず、自分のペースで心を休ませてください。
+深い安らぎと安定感をもたらすこの色は、あなたの心を穏やかに保ちます。全てを手放し、リラックスしてください。あなたは自然の力に守られています。
+あなたの努力は、必ず実を結びます。急いで結果を求めず、日々の成長と小さな達成を楽しむことに意識を向けてください。
+#AEEA00
+若葉の黄緑は好奇心の色。あなたのひらめきは瑞々しい価値です。遊び心を自分に許すほど、自己信頼はのびやかに育ちます。
+面白そうなことに少し舵を切りましょう。試して学んで戻せば良いだけ。軽やかな探索は、想像以上の実りを連れてきます。
+あなたの持つ純粋な創造性と、明るい希望は、周りを明るく照らします。ご自身の才能を信じ、自由な発想で世界と関わってくださいね。
+心が疲れたときは、この新鮮な色のように、心をリフレッシュしてください。あなたの純粋な探求心は、常に新しい解決策を見つけ出します。軽やかに、前に進みましょう。
+太陽の光を浴びるような、明るい安心感があなたを包んでいます。あなたの未来は希望に満ちています。心配はいりませんよ。いつでも光はそこにあります。
+新しい始まりを予感させるあなたの活力は、周りの人々を刺激します。ご自身の好奇心と前進する力を信じ、自信を持って新しい挑戦を楽しんでください。あなたはエネルギッシュです。
+好奇心と活力を高めるこの色は、行動力を促します。新しい発見に満ちた一日を楽しみましょう。前向きな気持ちで、最高の体験を引き寄せます。
+「あなたの持つエネルギーは、周りの人を明るくします」。活発なこの色が、あなたの心に力強いエールを送ります。辛い時も、希望を忘れずに、一緒に乗り越えましょう。
+心の活力と安心感をもたらすこの色は、あなたの心を穏やかに保ちます。全てがうまくいくと信じ、リラックスしてください。あなたは守られています。
+あなたの人生は、今、新しい成長期に入っています。好奇心とユーモアを持って、目の前の課題に飛び込んでみましょう。
+#f3ffd1
+あなたの感性は新芽のようにみずみずしく、細かな変化を捉える力があります。小さな工夫を重ねる姿勢こそ、誇ってよいあなたの強みです。
+面白さを一滴だけ足しましょう。軽い色のひらめきが作業に風を入れます。失敗もデータです。やわらかな挑戦は、確かな実りを運びます。
+あなたの持つ穏やかな優しさと、調和を愛する心は、周りに安らぎを与えます。ご自身の内面にある平和を大切にしてくださいね。
+心が乱れたときは、この静かな色のように、すべての感情を静かに見つめてください。あなたの心は、常に平和な状態に戻ることができます。優しく自分を受け入れましょう。
+すべてを受け入れるような、深い安らぎと安心感があなたを包んでいます。この柔らかな光の中で、心と体を深く休ませてください。あなたは愛に守られていますよ。
+優しい光を持つあなたの心は、周りの人々に安らぎを与えます。ご自身の優しさと純粋さを心から肯定し、自信を持って日々を豊かに過ごしてください。あなたは愛されています。
+穏やかさと希望をもたらすこの色は、心身をリフレッシュさせます。ポジティブな気持ちで、今日一日を大切に過ごしましょう。優しさに満ちた素敵な体験を。
+「あなたの優しさが、世界をより良くしています」。柔らかな光のように、あなたの心を優しく包み込みます。辛い時は、無理せず、心の声に従って休息してください。
+深い安らぎと穏やかさをもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは平和な光に包まれています。
+あなたは、そのままで十分魅力的です。肩の力を抜き、ありのままの自分でいることを自分に許可してあげてください。
+#E0E1DD
+整える力は才能です。あなたの丁寧な段取りが皆の負担を軽くしています。派手さは不要です。静かな実行力こそ価値そのものです。
+まず余計なノイズを一つ減らしましょう。曖昧さを整えるほど前進は滑らかになります。小さい整頓が、大きな集中を連れてきます。
+あなたの持つ落ち着きと、高い知性は、周囲に温かい信頼感を与えています。ご自身の判断力を信じ、冷静な姿勢を保ってくださいね。
+感情が揺れたときは、このニュートラルな色のように、心をフラットに保ってください。あなたの理性と知性が、感情的な波を穏やかにします。冷静さを大切にしましょう。
+この落ち着いた色は、あなたに揺るぎない安心感をもたらします。あなたの周りには、確かな安定感があります。安心して、自分のペースで進んでくださいね。
+控えめながらもバランスの取れたあなたの心は、周りの人々に安心感を与えます。ご自身の調和と落ち着きを大切に、自信を持って日々を豊かに過ごしてください。
+心の平静とバランスをもたらすこの色は、穏やかな気持ちで一日を過ごすことを助けます。中立的な視点で、物事を冷静に判断しましょう。素敵な一日に。
+「あなたの存在が、周りの調和を生み出しています」。静かに寄り添うこの色が、あなたの心の不安を和らげます。無理せず、心の声に従って休息してください。
+心の安らぎとバランスをもたらすこの色は、深いリラックスへと誘います。全てを手放し、リラックスしてください。あなたは穏やかな光に包まれています。
+あなたは、感情から一歩引いて物事を眺めることができる、賢明な人です。あなたの客観的な視点を信じて行動してください。
+#6D6D6D
+ぶれない基準があなたにはあります。感情に寄り添いながらも事実で判断できる姿勢は十分に頼もしい資質です。自分の軸を信じてください。
+優先度を三段に分けて、上段だけ着手しましょう。濃いグレーのように輪郭が締まり、可動域が広がります。進路は必ず見えてきます。
+あなたの持つ誠実さと、地に足の着いた姿勢は、周囲に安心感を与えます。ご自身の経験と知恵を信頼し、着実に歩みを進めてくださいね。
+人生の重荷を感じるときは、この色が示すように、すべてを受け止める強さがあなたにはあります。あなたの経験は、無駄ではありません。ご自身を信頼してくださいね。
+この落ち着いた色は、あなたに変わらない安心感を与えます。あなたの周りには、信頼できる安定した土台があります。安心して、どっしりと構えてくださいね。
+冷静な判断力と知性を持つあなたの存在は、周りの人々に安定感を与えます。ご自身の客観性と落ち着きを信じ、自信を持って行動してください。あなたは頼れる存在です。
+知性と安定をもたらすこの色は、客観的な視点で物事を捉えることを助けます。落ち着いた気持ちで、目標達成に向けて着実に進みましょう。ポジティブな一日に。
+「あなたの落ち着いた対応に、私は心から感謝しています」。静かに寄り添うこの色が、あなたの心の不安を和らげます。無理せず、心の声に従って休息してください。
+深い安定感と落ち着きをもたらすこの色は、心の緊張を解きほぐします。全てを手放し、リラックスしてください。あなたは守られています。
+あなたの内側には、しっかりと確立された「自分軸」があります。周りの意見に惑わされず、自分の価値観を信じてください。
+#3A3A3A
+暗い地色は光を際立たせます。あなたの集中と粘りは場の指針です。見えにくい努力ほど価値が高いこと、どうか忘れないでください。
+外界の明るさを少し絞り、一点に光を置きましょう。深い集中は短距離走でも育ちます。小さな完了が、次の加速を生みます。
+あなたの持つ力強さと、深い思慮深さは、周囲に確かな影響を与えています。ご自身の内なる権威を認め、自信を持って決断を下してくださいね。
+心が重いときは、この深みのある色のように、ご自身の内面に深く潜ってください。あなたの内なる強さが、困難を乗り越える力を優しく与えてくれます。自分を信じて。
+この深い色は、あなたに絶対的な安心感をもたらします。あなたは、あなた自身の力でしっかりと守られています。揺るぎない信念を持って、前進してくださいね。
+プロフェッショナルなあなたの存在は、周りの人々に信頼を与えます。ご自身の堅実さと洗練された知識を信じ、自信を持って行動してください。あなたは確かな存在です。
+堅実さと洗練をもたらすこの色は、目標達成への強い決意を支えます。落ち着いた気持ちで、着実に前進しましょう。ポジティブな行動が成功を導きます。
+「あなたの姿勢に、私は心から敬意を表します」。深い色が、あなたの心の疲れをそっと癒やします。無理せず、心の声に従って休息してください。
+絶対的な安心感と重厚感をもたらすこの色は、あなたの心を穏やかに保ちます。全てがうまくいくと信じ、リラックスしてください。あなたは守られています。
+あなたの中には、物事の全てを受け止め、支える基盤となる力強さがあります。恐れず、自分の深い部分と向き合ってみましょう。
+#FFFFFF
+白い余白を守れるあなたは賢明です。埋めない選択が質を上げます。休む判断と再開のタイミングを決められる主体性を誇ってください。
+まっさらな紙に見出しを一行だけ。はじまりは小さくて良いのです。線が一本引ければ次の行は自然に続きます。今日の一歩で充分です。
+あなたの持つ純粋な可能性は無限大です。ご自身の清らかな心と、新しい始まりを創り出す力を信じてください。あなたは希望そのものの、大切な存在です。
+心が疲れ切ったときは、この清らかな色のように、すべてを一度ゼロに戻しましょう。あなたの心は、常に浄化され、新しい光を受け入れることができます。
+この清らかな色は、あなたに心の解放と究極の安心感をもたらします。すべての不安から解き放たれ、純粋な光の中で安らぎを感じてくださいね。
+純粋で無限の可能性を持つあなたの心は、何よりも美しいです。過去の経験はリセットし、新しい自分として自信を持って再出発してください。あなたは光そのものです。
+清々しい気持ちで、今日を新しいスタートにしましょう。ポジティブな気持ちで一歩踏み出すことで、最高の始まりを迎えます。目標に向かって誠実に進みましょう。
+「あなたの純粋な心は、決して曇ることはありません」。光のように、あなたの心を優しく包み込みます。辛い時も、希望を忘れずに、一緒に乗り越えましょう。
+全てを包み込む純粋な白は、心の平穏と清らかな安心感を与えます。心配事を手放し、心身をリフレッシュしてください。きっと大丈夫です。
+あなたは、無限の可能性と、純粋な光に満ちた存在です。過去の全てを许し、理想の未来を自由に描いていきましょう。
+`;
+
+        const rawMenus = `
+#FF0000
+リーディング鑑定書
+今、目標達成への強い意欲が満ちているあなたには、「いつ、何をすべきか」という具体的な対策が、そのエネルギーを最高の成果に導いてくれます。
+#FFE4E1
+ヒーリング
+心の奥底で安心感と自己受容を求めているサインです。言葉にしづらい心の重さや疲れをそっと手放し、ご自身の全体バランスを整える時間が必要ですよ。
+#FFB6C1
+アートセラピー
+人生をもっと心のままに楽しみたいという願いが込められています。言語化できない「モヤモヤ」を絵で表現し、心を開放してみませんか？
+#FF8A80
+ヒーリング
+温かい心の繋がりと安らぎを求めていますね。守護のサポートを受けながら、心身の滞りを優しく整え、疲れた心を深い安心感で満たしてあげましょう。
+#6B4226
+対面リーディング
+人生の土台を固めたいという堅実な願いが込められています。「いつ、何をすべきか」という具体的な行動計画を立て、じっくりと着実に目標を達成していきましょう。
+#C49E7D
+リーディング鑑定書
+内面的な豊かさや深い知恵に光が当たっています。守護霊様からの高次なメッセージを受け取り、ご自身の持つ魂の本質的な方向性をさらに明確にしてみませんか？
+#D35400
+リーディング鑑定書
+停滞している状況を打破し、エネルギーを爆発させたいという強い意志があります。短期的な見通しと対策を活用して、目標を最短で突破する指針を立てましょう。
+#FF9800
+アートセラピー
+もっと自由に、喜びを表現したいという心のサインです。言葉にならない感情を、絵を通じて解放し、深層心理に隠された「魂の本音」を発見してみましょう。
+#FFCC80
+LINEリーディング
+軽やかさや交流を楽しみたいという今の気分にぴったりです。流れを感じながらのセッションがおすすめです
+#F4A261
+アートセラピー
+「自分の個性を発揮したい」「自信を高めたい」という願いがあります。視覚的な表現を通じて、「誰も知らない自分」や埋もれていた本音を深く掘り起こしてみませんか？
+#F9A825
+リーディング鑑定書
+物事の本質や知的な探求心がテーマです。「思考カラーマップ」で心の状態を客観的に分析し、スピリチュアルな視点から人生の確かな方向性を確認できますよ。
+#FDD835
+LINEリーディング
+現状を打破する斬新なアイデアを求めているサインです。対策を通じて「チャンスの最大化」を図り、そのひらめきを現実の具体的な成果に結びつけるお手伝いをします。
+#ffffe6
+ヒーリング
+「全てをリセットし、まっさらになりたい」という心の叫びです。セルフケアでは抜けきらない心の重さや詰まりを整え、新しい始まりのための土台づくりをサポートします。
+#DCE775
+ヒーリング
+穏やかなペースでの成長を望み、心身のリフレッシュが必要です。守護のサポートを受けながら、全体的なバランスを整えることで、着実なステップアップを応援します。
+#EC407A
+アートセラピー
+「生きる喜びを深く感じたい」「自己肯定感を高めたい」という情熱的なテーマです。視覚的な表現（絵や筆跡）を通して、心のブロックを外し、愛のエネルギーを解放できますよ。
+#F48FB1
+アートセラピー
+内面と外面、両方の美しさを求める美意識の現れです。深層心理を掘り下げ、真の魅力を妨げる潜在的なブロックを解消するきっかけを見つけてみましょう。
+#F8BBD0
+ヒーリング
+心身の疲れを癒やし、リラックスしたいという強い願いがあります。言葉にしづらい心身の「だるさ・重さ」を整え、自己受容を深める優しいサポートが最適ですよ。
+#FFF0F5
+アートセラピー
+純粋な愛の感情や、理想的な未来を描きたいという願いが込められています。深層心理分析で「魂の本音」を知り、人生で大切にすべきことを明確にできます。
+#FFFAFA
+ヒーリング
+過去の感情的な重荷から解放され、軽やかになりたいという強いサインです。心身の「詰まり」を整え、エネルギーを浄化することで、より自由に羽ばたく準備が整います。
+#E6E6FA
+リーディング鑑定書
+日々の喧騒から離れ、精神的な平和とインスピレーションを求めています。「魂が本当に望むこと」や、人生の本質的な方向性を知る高次なメッセージが、今のあなたに響くでしょう。
+#CE93D8
+ヒーリング
+自分自身の全てを受け入れたいという癒やしのテーマです。自己治癒力が働く土台づくりをすることで、内なる癒やしが深まり、自己受容のプロセスが穏やかに進みます。
+#8E24AA
+リーディング鑑定書
+現状から脱却し、「本当の自分」に生まれ変わりたいという根源的な願いがあります。スピリチュアルな視点から、あなたの人生の深い意味と方向性を知るきっかけになりますよ。
+#6A1B9A
+リーディング鑑定書
+高い理想やビジョンの実現が目前です。具体的な対策を通じて「チャンスの最大化」を図り、あなたの直感と知恵を現実の結果に結びつけるための計画を立てましょう。
+#3F3F74
+リーディング鑑定書
+感情の波に左右されない強い自分になりたいという願いがあります。「思考カラーマップ」で心の状態を客観的に分析し、冷静で理性的な「自分軸」を確立するお手伝いをします。
+#2196F3
+アートセラピー
+自由な発想と、オープンな自己表現がテーマです。言葉にできない創造的なエネルギーを「絵や筆跡」で表すことで、あなたの心を深く解放し、スッキリ感を味わえます。
+#1976D2
+対面リーディング
+自分の信念に基づいて行動し、責任を果たしたいという強い思いがあります。「リスクマネジメント」や「具体的な対策」など、堅実な行動を支える指針が、あなたの信頼を確かなものにしてくれます。
+#BBDEFB
+ヒーリング
+心に平和と静けさを求め、リラックスしたいというサインです。心のざわつきや、セルフケアでは抜けない心の詰まりを整え、穏やかで安心できる状態へ戻るサポートをします。
+#000080
+リーディング鑑定書
+人生の深い意味や、内なる真実を知りたいという探求心があります。「魂が本当に望むこと」を知り、自分の内面にある真の力を引き出すメッセージを受け取ってみませんか。
+#B2EBF2
+ヒーリング
+束縛から解放され、軽やかになりたいという願いがあります。ヒーリングで肩の力を抜き、軽やかに、思うままに羽ばたいてみましょう。
+#1ABC9C
+ヒーリング
+心と体のバランス、穏やかな調和がテーマです。心身の滞りやモヤを整え、守護のサポートを受けながら、自己治癒力が働く土台をつくることで、全体的なバランスを回復させます。
+#43A047
+リーディング鑑定書
+焦らず着実に進みたいという願いがあります。対策で「リスクマネジメント」や「チャンスの最大化」を計画し、あなたの努力を確実な実りへと導く指針を立てていきましょう。
+#AEEA00
+LINEリーディング
+あなたの人生は、今、新しい成長期に入っています。好奇心とユーモアを持って、目の前の課題に飛び込んでみましょう。
+#f3ffd1
+ヒーリング
+義務やプレッシャーから解放され、自然体で過ごしたいという願いがあります。ヒーリングでほっと一息整えましょう
+#E0E1DD
+リーディング鑑定書
+感情に流されず、冷静な知性を求めています。「思考カラーマップ」で心の状態を客観的に分析し、理性と知恵を持って人生の方向性を定めるための、深い洞察が得られます。
+#6D6D6D
+リーディング鑑定書
+他者に依存せず、自分の軸を確立したいという強い願いがあります。魂が本当に望むことなど、本質的な人生の方向性を知り、揺るぎない「自分軸」を強化することができます。
+#3A3A3A
+リーディング鑑定書
+揺るぎない基盤を築きたいという強い思いがあります。漠然とした「悩み事」や「人生の迷い」があるなら、スピリチュアルな視点から本質的な人生の方向性を見つけましょう。
+#FFFFFF
+リーディング鑑定書
+最高の理想と新しい人生の始まりという未来志向のテーマです。対策を活用して「チャンスの最大化」を図り、理想の未来を現実のものにするための具体的な行動計画を立てられますよ。
+`;
+
+        // データパース関数
+        function parseMessages(str) {
+            const lines = str.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+            const data = {};
+            let currentColor = null;
+            lines.forEach(line => {
+                if (line.startsWith('#')) {
+                    currentColor = line.toUpperCase();
+                    data[currentColor] = [];
+                } else if (currentColor) {
+                    data[currentColor].push(line);
+                }
+            });
+            return data;
+        }
+
+        function parseMenus(str) {
+            const lines = str.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+            const data = {};
+            let currentColor = null;
+            let expected = 'name'; // 'name' または 'reason'
+            
+            lines.forEach(line => {
+                if (line.startsWith('#')) {
+                    currentColor = line.toUpperCase();
+                    data[currentColor] = { name: '', reason: '' };
+                    expected = 'name';
+                } else if (currentColor) {
+                    if (expected === 'name') {
+                        data[currentColor].name = line;
+                        expected = 'reason';
+                    } else if (expected === 'reason') {
+                        data[currentColor].reason = line;
+                    }
+                }
+            });
+            return data;
+        }
+
+        const messagesData = parseMessages(rawMessages);
+        const menusData = parseMenus(rawMenus);
+
+        // 状態管理
         let selectedColors = [];
-        const colorGrid = document.getElementById('color-grid');
-        const diagnoseButton = document.getElementById('diagnose-button');
-        const resetButton = document.getElementById('reset-button');
-        const resultArea = document.getElementById('result-area');
 
-        // すべての色コードを配列として取得
-        const ALL_COLOR_CODES = Object.keys(COLOR_DATA);
+        // DOM要素
+        const gridContainer = document.getElementById('color-grid');
+        const paletteEls = [
+            document.getElementById('palette-0'),
+            document.getElementById('palette-1'),
+            document.getElementById('palette-2')
+        ];
+        const btnDiagnoseContainer = document.getElementById('btn-diagnose-container');
+        const btnDiagnose = document.getElementById('btn-diagnose');
+        const viewSelect = document.getElementById('view-select');
+        const viewResult = document.getElementById('view-result');
+        const btnRetry = document.getElementById('btn-retry');
 
-        // --- Core Functions ---
-
-        /**
-         * 色カードをクリックした際の処理
-         * @param {string} hexCode - 選択された色コード
-         * @param {HTMLElement} cardElement - クリックされたカードのDOM要素
-         */
-        function handleColorCardClick(hexCode, cardElement) {
-            const index = selectedColors.indexOf(hexCode);
-
-            if (index > -1) {
-                // 既に選択されている場合は解除
-                selectedColors.splice(index, 1);
-            } else if (selectedColors.length < 3) {
-                // 3色未満なら追加
-                selectedColors.push(hexCode);
-            }
-
-            // カードの選択状態を更新
-            updateCardSelectionStyles();
-            // パレットを更新
-            updatePalette();
-            // 診断ボタンの状態を更新
-            updateDiagnosisButtonState();
+        // 色カードの生成
+        colorCodes.forEach(color => {
+            const card = document.createElement('div');
+            card.className = 'color-card aspect-square rounded-sm border border-gray-200 shadow-sm';
+            card.style.backgroundColor = color;
+            card.dataset.color = color;
             
-            // 結果表示エリアを非表示に戻す
-            if (resultArea.style.display !== 'none') {
-                resultArea.classList.add('hidden');
-            }
-        }
-
-        /**
-         * カードのスタイル（選択状態と番号）を更新
-         */
-        function updateCardSelectionStyles() {
-            ALL_COLOR_CODES.forEach(hex => {
-                const card = document.getElementById(`card-${hex.substring(1)}`);
-                if (!card) return;
-
-                const index = selectedColors.indexOf(hex);
-                const numberSpan = card.querySelector('.color-card-number');
-
-                if (index > -1) {
-                    card.classList.add('selected');
-                    // 選択順位を表示
-                    if (numberSpan) {
-                        numberSpan.textContent = index + 1;
-                        numberSpan.style.display = 'flex';
-                        // 白いカードの場合、番号の背景色を調整
-                        if (hex === '#FFFFFF') {
-                            numberSpan.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-                            numberSpan.style.color = '#000000';
-                        }
-                    }
-                } else {
-                    card.classList.remove('selected');
-                    if (numberSpan) {
-                        numberSpan.style.display = 'none';
-                    }
-                }
-            });
-        }
-
-        /**
-         * 選択された色をパレットに表示
-         */
-        function updatePalette() {
-            for (let i = 0; i < 3; i++) {
-                const palette = document.getElementById(`palette-${i + 1}`);
-                if (selectedColors[i]) {
-                    palette.style.backgroundColor = selectedColors[i];
-                    // 白い色の境界を見やすくする
-                    if (selectedColors[i] === '#FFFFFF') {
-                        palette.style.border = '2px solid #ccc';
-                    } else {
-                        palette.style.border = 'none';
-                    }
-                } else {
-                    palette.style.backgroundColor = '#FFFFFF';
-                    palette.style.border = '1px solid #E0E1DD';
-                }
-            }
-        }
-
-        /**
-         * 診断ボタンの有効/無効を切り替え
-         */
-        function updateDiagnosisButtonState() {
-            diagnoseButton.disabled = selectedColors.length !== 3;
-        }
-
-        /**
-         * 診断結果を表示
-         */
-        function diagnose() {
-            if (selectedColors.length !== 3) return;
-
-            // 1. おすすめメニューと理由（最初の色に基づいて決定）
-            const firstColorHex = selectedColors[0];
-            const primaryData = COLOR_DATA[firstColorHex];
-
-            document.getElementById('menu-name-result').textContent = primaryData.menu;
-            document.getElementById('reason-result').textContent = primaryData.reason;
-
-            // 2. メッセージ（3色それぞれのメッセージからランダムに1つずつ選択し、結合）
-            let combinedMessage = "";
-            selectedColors.forEach((hex, index) => {
-                const data = COLOR_DATA[hex];
-                // 0から9の間でランダムなインデックスを取得
-                const randomIndex = Math.floor(Math.random() * data.messages.length);
-                const message = data.messages[randomIndex];
-                
-                // 3色分のメッセージを「\n\n」で結合
-                combinedMessage += (index > 0 ? "\n\n" : "") + message;
-            });
-            document.getElementById('message-result').textContent = combinedMessage;
-
-
-            // 3. 詳細URLを設定 (予約ボタンはLINE固定のため更新しない)
-            document.getElementById('menu-detail-button').href = primaryData.menuUrl;
-            
-            // 4. 結果エリアを表示
-            resultArea.classList.remove('hidden');
-            
-            // スクロールして結果へ移動
-            resultArea.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        /**
-         * 初期化処理（色カードの生成）
-         */
-        function initializeColorCards() {
-            colorGrid.innerHTML = ''; // 既存のカードをクリア
-
-            ALL_COLOR_CODES.forEach(hex => {
-                const card = document.createElement('div');
-                card.id = `card-${hex.substring(1)}`;
-                card.className = 'color-card';
-                card.style.backgroundColor = hex;
-                card.setAttribute('data-hex', hex);
-                
-                // 白いカードの場合、視認性向上のために枠線を追加
-                if (hex === '#FFFFFF') {
-                    card.style.border = '1px solid #E0E1DD';
-                }
-
-                // 選択順位表示用の要素
-                const numberSpan = document.createElement('span');
-                numberSpan.className = 'color-card-number';
-                numberSpan.style.display = 'none'; // 初期は非表示
-                card.appendChild(numberSpan);
-
-                card.addEventListener('click', () => handleColorCardClick(hex, card));
-                colorGrid.appendChild(card);
-            });
-        }
-        
-        // --- Event Listeners and Initial Setup ---
-
-        /**
-         * リセット処理
-         */
-        resetButton.addEventListener('click', () => {
-            selectedColors = [];
-            updateCardSelectionStyles();
-            updatePalette();
-            updateDiagnosisButtonState();
-            resultArea.classList.add('hidden');
+            card.addEventListener('click', () => handleColorClick(color, card));
+            gridContainer.appendChild(card);
         });
 
-        // 診断ボタンのクリックイベント
-        diagnoseButton.addEventListener('click', diagnose);
+        // 色クリック処理
+        function handleColorClick(color, cardEl) {
+            const index = selectedColors.indexOf(color);
+            
+            if (index > -1) {
+                // すでに選択されている場合は解除
+                selectedColors.splice(index, 1);
+                cardEl.classList.remove('selected');
+            } else {
+                // 3つ未満の場合のみ追加
+                if (selectedColors.length < 3) {
+                    selectedColors.push(color);
+                    cardEl.classList.add('selected');
+                } else {
+                    return; // 3つ選ばれている時は何もしない
+                }
+            }
+            updatePalette();
+            checkReady();
+        }
 
-        // 初期化実行
-        initializeColorCards();
-        updatePalette(); // 初期パレット表示
-        updateDiagnosisButtonState(); // 初期ボタン状態
+        // パレットの更新
+        function updatePalette() {
+            paletteEls.forEach((el, i) => {
+                if (i < selectedColors.length) {
+                    el.style.backgroundColor = selectedColors[i];
+                    el.textContent = '';
+                } else {
+                    el.style.backgroundColor = '#F9FAFB'; // gray-50
+                    el.textContent = i + 1;
+                }
+            });
+        }
+
+        // 診断ボタン表示チェック
+        function checkReady() {
+            if (selectedColors.length === 3) {
+                btnDiagnoseContainer.classList.remove('hide-btn');
+                btnDiagnoseContainer.classList.add('show-btn');
+            } else {
+                btnDiagnoseContainer.classList.remove('show-btn');
+                btnDiagnoseContainer.classList.add('hide-btn');
+            }
+        }
+
+        // 診断処理
+        btnDiagnose.addEventListener('click', () => {
+            // アニメーションで切り替え
+            viewSelect.classList.remove('fade-in');
+            viewSelect.classList.add('fade-out');
+            
+            setTimeout(() => {
+                viewSelect.classList.add('hidden');
+                
+                generateResult();
+                
+                viewResult.classList.remove('hidden');
+                viewResult.classList.remove('fade-out');
+                viewResult.classList.add('fade-in');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        });
+
+        function generateResult() {
+            const messageContainer = document.getElementById('result-messages');
+            messageContainer.innerHTML = '';
+
+            // 1. 各色のメッセージをランダムに1つ選んで表示
+            selectedColors.forEach(color => {
+                const msgs = messagesData[color];
+                if (msgs && msgs.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * msgs.length);
+                    const p = document.createElement('p');
+                    p.textContent = msgs[randomIndex];
+                    messageContainer.appendChild(p);
+                }
+            });
+
+            // 2. おすすめメニュー表示（最初に選んだ色を基準にする）
+            const mainColor = selectedColors[0];
+            const menuInfo = menusData[mainColor];
+            
+            if (menuInfo) {
+                document.getElementById('result-menu-name').textContent = menuInfo.name;
+                document.getElementById('result-menu-reason').textContent = menuInfo.reason;
+                
+                // リンクの更新
+                const linkUrl = menuLinks[menuInfo.name] || "https://spiritual-therapist-mii.studio.site/menu";
+                document.getElementById('link-detail').href = linkUrl;
+
+                // お客様の声リンクの更新
+                const reviewUrl = reviewLinks[menuInfo.name];
+                const linkReview = document.getElementById('link-review');
+                if (reviewUrl) {
+                    linkReview.href = reviewUrl;
+                    linkReview.style.display = 'block';
+                } else {
+                    linkReview.style.display = 'none';
+                }
+            }
+        }
+
+        // やり直す処理
+        btnRetry.addEventListener('click', () => {
+            selectedColors = [];
+            updatePalette();
+            checkReady();
+            
+            // 色カードの選択状態解除
+            document.querySelectorAll('.color-card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            viewResult.classList.remove('fade-in');
+            viewResult.classList.add('fade-out');
+            
+            setTimeout(() => {
+                viewResult.classList.add('hidden');
+                
+                viewSelect.classList.remove('hidden', 'fade-out');
+                viewSelect.classList.add('fade-in');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        });
+
     </script>
 </body>
 </html>
